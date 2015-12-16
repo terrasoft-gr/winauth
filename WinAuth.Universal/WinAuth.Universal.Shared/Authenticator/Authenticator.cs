@@ -40,6 +40,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security;
 using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.Core;
+using Windows.Security.Cryptography.DataProtection;
 using Windows.Storage.Streams;
 
 #if NUNIT
@@ -901,38 +902,39 @@ namespace WinAuth
 		/// <param name="yubidata">optional yubi data</param>
 		/// <param name="decode"></param>
 		/// <returns>decrypted string sequence</returns>
-		public static string DecryptSequence(string data, PasswordTypes encryptedTypes, string password, YubiKey yubi, bool decode = false)
-    {
+		public static async System.Threading.Tasks.Task<string> DecryptSequence(string data, PasswordTypes encryptedTypes, string password, YubiKey yubi, bool decode = false)
+		{
 			// check for encrpytion header
 			if (data.Length < ENCRYPTION_HEADER.Length || data.IndexOf(ENCRYPTION_HEADER) != 0)
 			{
-				return DecryptSequenceNoHash(data, encryptedTypes, password, yubi, decode);
+				return await DecryptSequenceNoHash(data, encryptedTypes, password, yubi, decode);
 			}
 
 			// extract salt and hash
-			using (var sha = new SHA256Managed())
-			{
+			HashAlgorithmProvider sha256 = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Sha256);
+
 				// jump header
 				int datastart = ENCRYPTION_HEADER.Length;
 				string salt = data.Substring(datastart, Math.Min(SALT_LENGTH * 2, data.Length - datastart));
 				datastart += salt.Length;
-				string hash = data.Substring(datastart, Math.Min(sha.HashSize / 8 * 2, data.Length - datastart));
+				string hash = data.Substring(datastart, Math.Min((int)sha256.HashLength / 8 * 2, data.Length - datastart));
 				datastart += hash.Length;
 				data = data.Substring(datastart);
 
-				data = DecryptSequenceNoHash(data, encryptedTypes, password, yubi);
+				data = await DecryptSequenceNoHash(data, encryptedTypes, password, yubi);
 
 				// check the hash
 				byte[] compareplain = StringToByteArray(salt + data);
-				string comparehash = ByteArrayToString(sha.ComputeHash(compareplain));
+				IBuffer compareBuffer = CryptographicBuffer.CreateFromByteArray(compareplain);
+				string comparehash = ByteArrayToString(sha256.HashData(compareBuffer).ToArray());
 				if (string.Compare(comparehash, hash) != 0)
 				{
 					throw new BadPasswordException();
 				}
-			}
 
-      return data;
-    }
+
+			return data;
+		}
 
 		/// <summary>
 		/// Decrypt a string sequence using the selected encryption types
@@ -943,30 +945,20 @@ namespace WinAuth
 		/// <param name="yubidata">optional yubi data</param>
 		/// <param name="decode"></param>
 		/// <returns>decrypted string sequence</returns>
-		private static string DecryptSequenceNoHash(string data, PasswordTypes encryptedTypes, string password, YubiKey yubi, bool decode = false)
+		private static async System.Threading.Tasks.Task<string> DecryptSequenceNoHash(string data, PasswordTypes encryptedTypes, string password, YubiKey yubi, bool decode = false)
 		{
 			try
 			{
 				// reverse order they were encrypted
-				if ((encryptedTypes & PasswordTypes.Machine) != 0)
-				{
-					// we are going to decrypt with the Windows local machine key
-					byte[] cipher = Authenticator.StringToByteArray(data);
-					byte[] plain = ProtectedData.Unprotect(cipher, null, DataProtectionScope.LocalMachine);
-					if (decode == true)
-					{
-						data = Encoding.UTF8.GetString(plain, 0, plain.Length);
-					}
-					else
-					{
-						data = ByteArrayToString(plain);
-					}
-				}
-				if ((encryptedTypes & PasswordTypes.User) != 0)
+				if ((encryptedTypes & PasswordTypes.Machine) != 0 || (encryptedTypes & PasswordTypes.User) != 0)
 				{
 					// we are going to decrypt with the Windows User account key
+					// I don't think there's Windows Local Machine key for WinRT
 					byte[] cipher = StringToByteArray(data);
-					byte[] plain = ProtectedData.Unprotect(cipher, null, DataProtectionScope.CurrentUser);
+					DataProtectionProvider pd = new DataProtectionProvider();
+					IBuffer unprotectedBuffer = await pd.UnprotectAsync(CryptographicBuffer.CreateFromByteArray(cipher));
+					byte[] plain = new byte[unprotectedBuffer.Length];
+					CryptographicBuffer.CopyToByteArray(unprotectedBuffer, out plain);
 					if (decode == true)
 					{
 						data = Encoding.UTF8.GetString(plain, 0, plain.Length);
@@ -1021,7 +1013,7 @@ namespace WinAuth
 			{
 				throw;
 			}
-			catch (BadYubiKeyException )
+			catch (BadYubiKeyException)
 			{
 				throw;
 			}
