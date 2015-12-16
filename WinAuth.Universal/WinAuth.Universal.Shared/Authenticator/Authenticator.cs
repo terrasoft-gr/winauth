@@ -1038,31 +1038,18 @@ namespace WinAuth
 		}
 
 		public static string EncryptSequence(string data, PasswordTypes passwordType, string password, YubiKey yubi)
-    {
+		{
 			// get hash of original
-			string salt;
-			using (var random = new RNGCryptoServiceProvider())
-			{
-				byte[] saltbytes = new byte[SALT_LENGTH];
-				random.GetBytes(saltbytes);
-				salt = ByteArrayToString(saltbytes);
-			}
-			string hash;
-			using (var sha = new SHA256Managed())
-			{
-        byte[] plain = StringToByteArray(salt + data);
-				hash = ByteArrayToString(sha.ComputeHash(plain));
-			}
+			string salt = ByteArrayToString(CryptographicBuffer.GenerateRandom(SALT_LENGTH).ToArray());
+			HashAlgorithmProvider sha256 = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Sha256);
+			byte[] plain = StringToByteArray(salt + data);
+			string hash = ByteArrayToString(sha256.HashData(CryptographicBuffer.CreateFromByteArray(plain)).ToArray());
 
 			if ((passwordType & PasswordTypes.YubiKeySlot1) != 0 || (passwordType & PasswordTypes.YubiKeySlot2) != 0)
 			{
 				if (yubi.YubiData.Length == 0)
 				{
-					byte[] seed = new byte[SALT_LENGTH];
-					using (var random = new RNGCryptoServiceProvider())
-					{
-						random.GetBytes(seed);
-					}
+					byte[] seed = CryptographicBuffer.GenerateRandom(SALT_LENGTH).ToArray();
 
 					// we encrypt the data using the hash of a random string from the YubiKey
 					int slot = ((passwordType & PasswordTypes.YubiKeySlot1) != 0 ? 1 : 2);
@@ -1096,14 +1083,14 @@ namespace WinAuth
       if ((passwordType & PasswordTypes.User) != 0)
       {
         // we encrypt the data using the Windows User account key
-        byte[] plain = StringToByteArray(data);
+        plain = StringToByteArray(data);
         byte[] cipher = ProtectedData.Protect(plain, null, DataProtectionScope.CurrentUser);
         data = ByteArrayToString(cipher);
       }
       if ((passwordType & PasswordTypes.Machine) != 0)
       {
         // we encrypt the data using the Local Machine account key
-        byte[] plain = StringToByteArray(data);
+        plain = StringToByteArray(data);
         byte[] cipher = ProtectedData.Protect(plain, null, DataProtectionScope.LocalMachine);
         data = ByteArrayToString(cipher);
       }
