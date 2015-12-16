@@ -194,19 +194,22 @@ namespace WinAuth
 					{
 						// old WinAuth2 version with secretdata + serial
 						SecretKey = Authenticator.StringToByteArray(value.Substring(0, 40));
-						Serial = Encoding.UTF8.GetString(Authenticator.StringToByteArray(value.Substring(40)));
+						byte[] serialBytes = Authenticator.StringToByteArray(value.Substring(40));
+						Serial = Encoding.UTF8.GetString(serialBytes, 0, serialBytes.Length);
 					}
 					else if (parts.Length == 3) // alpha 3.0.6
 					{
 						// secret|script|serial
 						base.SecretData = value;
-						Serial = (parts.Length > 2 ? Encoding.UTF8.GetString(Authenticator.StringToByteArray(parts[2])) : null);
+						byte[] serialBytes = Authenticator.StringToByteArray(parts[2]);
+						Serial = (parts.Length > 2 ? Encoding.UTF8.GetString(serialBytes, 0, serialBytes.Length) : null);
 					}
 					else
 					{
 						// secret|serial
 						base.SecretData = value;
-						Serial = (parts.Length > 1 ? Encoding.UTF8.GetString(Authenticator.StringToByteArray(parts[1])) : null);
+						byte[] serialBytes = Authenticator.StringToByteArray(parts[1]);
+						Serial = (parts.Length > 1 ? Encoding.UTF8.GetString(serialBytes, 0, serialBytes.Length) : null);
 					}
 				}
 				else
