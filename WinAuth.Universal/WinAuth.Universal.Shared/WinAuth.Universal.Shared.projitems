@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
@@ -15,5 +15,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Authenticator\Authenticator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Authenticator\AuthenticatorException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Authenticator\Base32.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Authenticator\BattleNetAuthenticator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Authenticator\GoogleAuthenticator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Authenticator\GuildWarsAuthenticator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Authenticator\HIDDevice.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Authenticator\HOTPAuthenticator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Authenticator\MicrosoftAuthenticator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Authenticator\SteamAuthenticator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Authenticator\TrionAuthenticator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Authenticator\YubiKey.cs" />
   </ItemGroup>
 </Project>
