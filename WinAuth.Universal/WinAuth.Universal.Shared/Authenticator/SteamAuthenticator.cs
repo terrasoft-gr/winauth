@@ -309,9 +309,9 @@ namespace WinAuth
 				{
 					string[] parts = value.Split('|');
 					base.SecretData = value;
-					var serialBytes = StringToByteArray(parts[1]);
-					var deviceBytes = StringToByteArray(parts[2]);
-					var steamDataBytes = StringToByteArray(parts[3]);
+					byte[] serialBytes = StringToByteArray(parts[1]);
+					byte[] deviceBytes = StringToByteArray(parts[2]);
+					byte[] steamDataBytes = StringToByteArray(parts[3]);
 					Serial = (parts.Length > 1 ? Encoding.UTF8.GetString(serialBytes, 0, serialBytes.Length) : null);
 					DeviceId = (parts.Length > 2 ? Encoding.UTF8.GetString(deviceBytes, 0, deviceBytes.Length) : null);
 					//RevocationCode = (parts.Length > 3 ? Encoding.UTF8.GetString(Authenticator.StringToByteArray(parts[3])) : string.Empty);
