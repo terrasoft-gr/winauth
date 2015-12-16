@@ -37,6 +37,9 @@ using Org.BouncyCastle.Crypto.Digests;
 using Org.BouncyCastle.Crypto.Generators;
 using System.Collections;
 using System.Security;
+using Windows.Security.Cryptography;
+using Windows.Security.Cryptography.Core;
+using Windows.Storage.Streams;
 
 #if NUNIT
 using NUnit.Framework;
@@ -494,12 +497,12 @@ namespace WinAuth
 					string data = Authenticator.ByteArrayToString(ms.ToArray());
 
 					// update secret hash
-					using (SHA1 sha1 = SHA1.Create())
-					{
-						this.SecretHash = sha1.ComputeHash(Encoding.UTF8.GetBytes(this.SecretData));
-					}
+					HashAlgorithmProvider sha1 = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Sha1);
+					IBuffer keyHash = sha1.HashData(CryptographicBuffer.ConvertStringToBinary(SecretData, BinaryStringEncoding.Utf8));
+					byte[] key;
+					CryptographicBuffer.CopyToByteArray(keyHash, out key);
+					SecretHash = key;
 
-					// encrypt
 					this.EncryptedData = Authenticator.EncryptSequence(data, passwordType, password, null);
 					this.PasswordType = passwordType;
 					if (this.PasswordType == PasswordTypes.Explicit)
@@ -555,10 +558,11 @@ namespace WinAuth
 				}
 				this.RequiresPassword = false;
 				// calculate hash of current secretdata
-				using (SHA1 sha1 = SHA1.Create())
-				{
-					this.SecretHash = sha1.ComputeHash(Encoding.UTF8.GetBytes(this.SecretData));
-				}
+				HashAlgorithmProvider sha1 = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Sha1);
+				IBuffer keyHash = sha1.HashData(CryptographicBuffer.ConvertStringToBinary(SecretData, BinaryStringEncoding.Utf8));
+				byte[] key = new byte[keyHash.Length];
+				CryptographicBuffer.CopyToByteArray(keyHash, out key);
+				SecretHash = key;
 				// keep the password until we reprotect in case data changes
 				this.Password = password;
 
@@ -578,10 +582,11 @@ namespace WinAuth
 						string encrypteddata = Authenticator.ByteArrayToString(ms.ToArray());
 
 						// update secret hash
-						using (SHA1 sha1 = SHA1.Create())
-						{
-							this.SecretHash = sha1.ComputeHash(Encoding.UTF8.GetBytes(this.SecretData));
-						}
+						sha1 = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Sha1);
+						keyHash = sha1.HashData(CryptographicBuffer.ConvertStringToBinary(SecretData, BinaryStringEncoding.Utf8));
+						key = new byte[keyHash.Length];
+						CryptographicBuffer.CopyToByteArray(keyHash, out key);
+						SecretHash = key;
 
 						// encrypt
 						this.EncryptedData = Authenticator.EncryptSequence(encrypteddata, passwordType, password, null);
@@ -826,18 +831,16 @@ namespace WinAuth
 			// in http://code.google.com/p/winauth/issues/detail?id=2
 			// so we switch out to use RNGCryptoServiceProvider instead of Random
 
-			RNGCryptoServiceProvider random = new RNGCryptoServiceProvider();
-
 			byte[] randomblock = new byte[length];
 
-			SHA1 sha1 = SHA1.Create();
 			int i = 0;
 			do
 			{
-				byte[] hashBlock = new byte[128];
-				random.GetBytes(hashBlock);
-
-				byte[] key = sha1.ComputeHash(hashBlock, 0, hashBlock.Length);
+				IBuffer hashBlockBuffer = CryptographicBuffer.GenerateRandom(128);
+				HashAlgorithmProvider sha1 = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Sha1);
+				IBuffer keyHash = sha1.HashData(hashBlockBuffer);
+				byte[] key = new byte[keyHash.Length];
+				CryptographicBuffer.CopyToByteArray(keyHash, out key);
 				if (key.Length >= randomblock.Length)
 				{
 					Array.Copy(key, 0, randomblock, i, randomblock.Length);
