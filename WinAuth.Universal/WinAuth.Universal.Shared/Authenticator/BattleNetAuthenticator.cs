@@ -282,7 +282,8 @@ namespace WinAuth
 								{
 									ms.Write(temp, 0, read);
 								}
-								responseString = Encoding.UTF8.GetString(ms.ToArray());
+								byte[] msBuffer = ms.ToArray();
+								responseString = Encoding.UTF8.GetString(msBuffer, 0, msBuffer.Length);
 							}
 						}
 					}
