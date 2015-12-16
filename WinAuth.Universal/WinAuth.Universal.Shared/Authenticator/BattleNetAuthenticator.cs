@@ -21,12 +21,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
 using Windows.Security.Cryptography;
 using Windows.Storage;
+using Windows.Web.Http;
+using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Macs;
@@ -34,6 +37,7 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Paddings;
 using Org.BouncyCastle.Crypto.Digests;
 using Org.BouncyCastle.Crypto.Generators;
+using HttpStatusCode = System.Net.HttpStatusCode;
 
 #if NUNIT
 using NUnit.Framework;
@@ -260,46 +264,20 @@ namespace WinAuth
 
 			// Battle.net does a GEO IP lookup anyway so there is no need to pass the region
 			// however China has its own URL so we must still do our own GEO IP lookup to find the country
-			HttpWebRequest georequest = (HttpWebRequest)WebRequest.Create(GEOIPURL);
-			georequest.Method = "GET";
-			georequest.ContentType = "application/json";
-			georequest.Timeout = 10000;
+			var georequest = new HttpClient();
+			//georequest.Method = "GET";
+			//georequest.ContentType = ;
+			//georequest.Timeout = 10000;
 			// get response
-			string responseString = null;
-			try
+			georequest.DefaultRequestHeaders.Accept.TryParseAdd("application/json");
+			HttpResponseMessage response = await georequest.GetAsync(new Uri("https://geoiplookup.wikimedia.org"));
+			if (response.IsSuccessStatusCode)
 			{
-				using (HttpWebResponse georesponse = (HttpWebResponse)georequest.GetResponse())
+				var responseString = await response.Content.ReadAsStringAsync();
+				var geoIPAttributes = JObject.Parse(responseString.Split('=')[1].Trim()); // JsonConvert.DeserializeObject<Dictionary<string, string>>();
+				country = geoIPAttributes.SelectToken("country").Value<string>();
+				if (!string.IsNullOrWhiteSpace(country))
 				{
-					// OK?
-					if (georesponse.StatusCode == HttpStatusCode.OK)
-					{
-						using (MemoryStream ms = new MemoryStream())
-						{
-							using (Stream bs = georesponse.GetResponseStream())
-							{
-								byte[] temp = new byte[RESPONSE_BUFFER_SIZE];
-								int read;
-								while ((read = bs.Read(temp, 0, RESPONSE_BUFFER_SIZE)) != 0)
-								{
-									ms.Write(temp, 0, read);
-								}
-								byte[] msBuffer = ms.ToArray();
-								responseString = Encoding.UTF8.GetString(msBuffer, 0, msBuffer.Length);
-							}
-						}
-					}
-				}
-			}
-			catch (Exception) { }
-			if (string.IsNullOrEmpty(responseString) == false)
-			{
-				// not worth a full json parser, just regex it
-				Match match = Regex.Match(responseString, ".*\"country\":\"([^\"]*)\".*", RegexOptions.IgnoreCase);
-				if (match.Success == true)
-				{
-					// match the correct region
-					country = match.Groups[1].Value.ToUpper();
-
 					if (EU_COUNTRIES.Contains(country) == true)
 					{
 						region = REGION_EU;
@@ -330,7 +308,7 @@ namespace WinAuth
 					country = configcountry;
 				}
 			}
-			catch (InvalidOperationException ) { }
+			catch (InvalidOperationException) { }
 			try
 			{
 				string configRegion = config.Values["BattleNetAuthenticator.Region"] as string;
@@ -339,7 +317,7 @@ namespace WinAuth
 					region = configRegion;
 				}
 			}
-			catch (InvalidOperationException ) {}
+			catch (InvalidOperationException) { }
 
 			// generate byte array of data:
 			//  00 byte[20] one-time key used to decrypt data when returned;
@@ -365,43 +343,19 @@ namespace WinAuth
 			byte[] responseData = null;
 			try
 			{
-				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(GetMobileUrl(region) + ENROLL_PATH);
-				request.Method = "POST";
-				request.ContentType = "application/octet-stream";
-				request.ContentLength = encrypted.Length;
-				request.Timeout = 10000;
-				Stream requestStream = request.GetRequestStream();
-				requestStream.Write(encrypted, 0, encrypted.Length);
-				requestStream.Close();
-				using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+				var request = new HttpClient();
+				request.DefaultRequestHeaders.Accept.TryParseAdd("application/octet-stream");
+				var content = new HttpBufferContent(encrypted.AsBuffer());
+				response = await request.PostAsync(new Uri(GetMobileUrl(region) + ENROLL_PATH), content); //.GetRequestStream();
+				if (!response.IsSuccessStatusCode)
 				{
-					// OK?
-					if (response.StatusCode != HttpStatusCode.OK)
-					{
-						throw new InvalidEnrollResponseException(string.Format("{0}: {1}", (int)response.StatusCode, response.StatusDescription));
-					}
-
-					// load back the buffer - should only be a byte[45]
-					using (MemoryStream ms = new MemoryStream())
-					{
-						//using (BufferedStream bs = new BufferedStream(response.GetResponseStream()))
-						using (Stream bs = response.GetResponseStream())
-						{
-							byte[] temp = new byte[RESPONSE_BUFFER_SIZE];
-							int read;
-							while ((read = bs.Read(temp, 0, RESPONSE_BUFFER_SIZE)) != 0)
-							{
-								ms.Write(temp, 0, read);
-							}
-							responseData = ms.ToArray();
-
-							// check it is correct size
-							if (responseData.Length != ENROLL_RESPONSE_SIZE)
-							{
-								throw new InvalidEnrollResponseException(string.Format("Invalid response data size (expected 45 got {0})", responseData.Length));
-							}
-						}
-					}
+					throw new InvalidEnrollResponseException($"{(int)response.StatusCode}: {response.ReasonPhrase}");
+				}
+				responseData = (await response.Content.ReadAsBufferAsync()).ToArray();
+				// check it is correct size
+				if (responseData.Length != ENROLL_RESPONSE_SIZE)
+				{
+					throw new InvalidEnrollResponseException($"Invalid response data size (expected 45 got {responseData.Length})");
 				}
 			}
 			catch (Exception ex)
@@ -428,7 +382,7 @@ namespace WinAuth
 			byte[] secretKey = new byte[20];
 			Array.Copy(responseData, 25, secretKey, 0, 20);
 			// decrypt the initdata with a simple xor with our key
-			for (int i = oneTimePad.Length-1; i >= 0; i--)
+			for (int i = oneTimePad.Length - 1; i >= 0; i--)
 			{
 				secretKey[i] ^= oneTimePad[i];
 			}
@@ -653,7 +607,8 @@ namespace WinAuth
 			requestStream.Write(postbytes, 0, postbytes.Length);
 			requestStream.Close();
 			byte[] secretKey = null;
-			try {
+			try
+			{
 				using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
 				{
 					// OK?
@@ -766,7 +721,7 @@ namespace WinAuth
 			string upperregion = region.ToUpper();
 			if (upperregion.Length > 2)
 			{
-				upperregion = upperregion.Substring(0,2);
+				upperregion = upperregion.Substring(0, 2);
 			}
 			if (MOBILE_URLS.ContainsKey(upperregion) == true)
 			{
@@ -784,7 +739,7 @@ namespace WinAuth
 		/// </summary>
 		/// <returns>restore code for authenticator (always 10 chars)</returns>
 		protected string BuildRestoreCode()
-    {
+		{
 			// return if not set
 			if (string.IsNullOrEmpty(Serial) == true || SecretKey == null)
 			{
@@ -815,7 +770,7 @@ namespace WinAuth
 			}
 
 			return code.ToString();
-    }
+		}
 
 		/// <summary>
 		/// Create a random Model string for initialization to armor the init string sent over the wire
@@ -824,11 +779,11 @@ namespace WinAuth
 		private static string GeneralRandomModel()
 		{
 			// create a model string with available characters
-            StringBuilder model = new StringBuilder(MODEL_SIZE);
-            for (int i = MODEL_SIZE; i > 0; i--)
-            {
-                model.Append(MODEL_CHARS[(int)CryptographicBuffer.GenerateRandomNumber()]);
-            }
+			StringBuilder model = new StringBuilder(MODEL_SIZE);
+			for (int i = MODEL_SIZE; i > 0; i--)
+			{
+				model.Append(MODEL_CHARS[(int)CryptographicBuffer.GenerateRandomNumber()]);
+			}
 
 			return model.ToString();
 		}
