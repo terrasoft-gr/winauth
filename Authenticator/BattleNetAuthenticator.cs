@@ -406,7 +406,7 @@ namespace WinAuth
 			// return data:
 			// 00-07 server time (Big Endian)
 			// 08-24 serial number (17)
-			// 25-44 secret key encrpyted with our pad
+			// 25-44 secret key encrypted with our pad
 			// 45 END
 
 			// extract the server time
@@ -462,7 +462,7 @@ namespace WinAuth
 			// check if data is protected
 			if (this.SecretKey == null && this.EncryptedData != null)
 			{
-				throw new EncrpytedSecretDataException();
+				throw new EncryptedSecretDataException();
 			}
 
 			// don't retry for 5 minutes

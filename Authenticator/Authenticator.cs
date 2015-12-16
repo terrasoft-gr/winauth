@@ -216,7 +216,7 @@ namespace WinAuth
 			{
 				if (this.SecretKey == null && this.EncryptedData != null)
 				{
-					throw new EncrpytedSecretDataException();
+					throw new EncryptedSecretDataException();
 				}
 
 				return CalculateCode(false);
@@ -455,11 +455,11 @@ namespace WinAuth
 
 		public void SetEncryption(PasswordTypes passwordType, string password = null)
 		{
-			// check if still encrpyted
+			// check if still encrypted
 			if (this.RequiresPassword == true)
 			{
 				// have to decrypt to be able to re-encrypt
-				throw new EncrpytedSecretDataException();
+				throw new EncryptedSecretDataException();
 			}
 
 			if (passwordType == PasswordTypes.None)
@@ -478,7 +478,7 @@ namespace WinAuth
 					settings.Encoding = Encoding.UTF8;
 					using (XmlWriter encryptedwriter = XmlWriter.Create(ms, settings))
 					{
-						string encrpytedData = this.EncryptedData;
+						string encryptedData = this.EncryptedData;
 						Authenticator.PasswordTypes savedpasswordType = PasswordType;
 						try
 						{
@@ -489,7 +489,7 @@ namespace WinAuth
 						finally
 						{
 							this.PasswordType = savedpasswordType;
-							this.EncryptedData = encrpytedData;
+							this.EncryptedData = encryptedData;
 						}
 					}
 					string data = Authenticator.ByteArrayToString(ms.ToArray());
@@ -591,7 +591,7 @@ namespace WinAuth
 
 				return changed;
 			}
-			catch (EncrpytedSecretDataException)
+			catch (EncryptedSecretDataException)
 			{
 				this.RequiresPassword = true;
 				throw;
@@ -625,7 +625,7 @@ namespace WinAuth
 				//		this.ReadXml(reader, password);
 				//	}
 				//}
-				//catch (EncrpytedSecretDataException)
+				//catch (EncryptedSecretDataException)
 				//{
 				//	this.RequiresPassword = true;
 				//	throw;
@@ -978,7 +978,7 @@ namespace WinAuth
 					// we use an explicit password to encrypt data
 					if (string.IsNullOrEmpty(password) == true)
 					{
-						throw new EncrpytedSecretDataException();
+						throw new EncryptedSecretDataException();
 					}
 					data = Authenticator.Decrypt(data, password, true);
 					if (decode == true)
@@ -1014,7 +1014,7 @@ namespace WinAuth
 					yubi.YubiData.Data = key;
 				}
 			}
-			catch (EncrpytedSecretDataException)
+			catch (EncryptedSecretDataException)
 			{
 				throw;
 			}
