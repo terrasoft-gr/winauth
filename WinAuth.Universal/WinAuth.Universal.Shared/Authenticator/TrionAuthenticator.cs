@@ -199,7 +199,7 @@ namespace WinAuth
 			// </DeviceKey>
 			XmlDocument doc = new XmlDocument();
 			doc.LoadXml(responseData);
-			XmlNode node = doc.SelectSingleNode("//ErrorCode");
+			IXmlNode node = doc.SelectSingleNode("//ErrorCode");
 			if (node != null && string.IsNullOrEmpty(node.InnerText) == false)
 			{
 				// an error occured
@@ -240,7 +240,7 @@ namespace WinAuth
 				// </DeviceKey>
 				XmlDocument doc = new XmlDocument();
 				doc.LoadXml(responseData);
-				XmlNode node = doc.SelectSingleNode("//ErrorCode");
+				IXmlNode node = doc.SelectSingleNode("//ErrorCode");
 				if (node != null && string.IsNullOrEmpty(node.InnerText) == false)
 				{
 					// an error occured
@@ -422,7 +422,7 @@ namespace WinAuth
 			// </SecurityQuestions>
 			XmlDocument doc = new XmlDocument();
 			doc.LoadXml(responseData);
-			XmlNode node = doc.SelectSingleNode("//ErrorCode");
+			IXmlNode node = doc.SelectSingleNode("//ErrorCode");
 			if (node != null && string.IsNullOrEmpty(node.InnerText) == false)
 			{
 				// an error occured
@@ -483,7 +483,7 @@ namespace WinAuth
 			// </DeviceKey>
 			XmlDocument doc = new XmlDocument();
 			doc.LoadXml(responseData);
-			XmlNode node = doc.SelectSingleNode("//ErrorCode");
+			IXmlNode node = doc.SelectSingleNode("//ErrorCode");
 			if (node != null && string.IsNullOrEmpty(node.InnerText) == false)
 			{
 				// an error occured
