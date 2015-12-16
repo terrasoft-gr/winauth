@@ -456,7 +456,7 @@ namespace WinAuth
 	/// <summary>
 	/// General YubiKey exception
 	/// </summary>
-	public class YubKeyException : ApplicationException
+	public class YubKeyException : Exception
 	{
 		public YubKeyException(string msg = null, Exception ex = null) : base(msg, ex) { }
 	}

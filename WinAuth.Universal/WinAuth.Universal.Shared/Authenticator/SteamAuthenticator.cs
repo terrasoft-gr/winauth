@@ -1152,7 +1152,7 @@ namespace WinAuth
 		/// <summary>
 		/// Our custom exception for the internal Http Request
 		/// </summary>
-		class InvalidRequestException : ApplicationException
+		class InvalidRequestException : Exception
 		{
 			public InvalidRequestException(string msg = null, Exception ex = null) : base(msg, ex) { }
 		}

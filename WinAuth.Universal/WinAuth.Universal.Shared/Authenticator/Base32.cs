@@ -212,7 +212,7 @@ namespace WinAuth
 		}
 	}
 
-	class Base32DecodingException : ApplicationException
+	class Base32DecodingException : Exception
 	{
 		public Base32DecodingException(string msg)
 			: base(msg)

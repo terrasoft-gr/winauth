@@ -31,7 +31,7 @@ namespace WinAuth
 	/// <summary>
 	/// Base Authenticator exception class
 	/// </summary>
-	public class AuthenticatorException : ApplicationException
+	public class AuthenticatorException : Exception
 	{
 		public AuthenticatorException()
 			: base()

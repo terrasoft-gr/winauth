@@ -286,7 +286,7 @@ namespace WinAuth
 					// OK?
 					if (response.StatusCode != HttpStatusCode.OK)
 					{
-						throw new ApplicationException(string.Format("{0}: {1}", (int)response.StatusCode, response.StatusDescription));
+						throw new Exception(string.Format("{0}: {1}", (int)response.StatusCode, response.StatusDescription));
 					}
 
 					// load the response
