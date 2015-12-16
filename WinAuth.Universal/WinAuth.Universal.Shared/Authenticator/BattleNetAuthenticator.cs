@@ -25,6 +25,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
+using Windows.Security.Cryptography;
 using Windows.Storage;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Engines;
@@ -822,18 +823,12 @@ namespace WinAuth
 		/// <returns>Random model string</returns>
 		private static string GeneralRandomModel()
 		{
-			// seed a new RNG
-			RNGCryptoServiceProvider randomSeedGenerator = new RNGCryptoServiceProvider();
-			byte[] seedBuffer = new byte[4];
-			randomSeedGenerator.GetBytes(seedBuffer);
-			Random random = new Random(BitConverter.ToInt32(seedBuffer, 0));
-
 			// create a model string with available characters
-			StringBuilder model = new StringBuilder(MODEL_SIZE);
-			for (int i = MODEL_SIZE; i > 0; i--)
-			{
-				model.Append(MODEL_CHARS[random.Next(MODEL_CHARS.Length)]);
-			}
+            StringBuilder model = new StringBuilder(MODEL_SIZE);
+            for (int i = MODEL_SIZE; i > 0; i--)
+            {
+                model.Append(MODEL_CHARS[(int)CryptographicBuffer.GenerateRandomNumber()]);
+            }
 
 			return model.ToString();
 		}
