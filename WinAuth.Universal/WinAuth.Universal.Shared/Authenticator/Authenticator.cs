@@ -322,7 +322,8 @@ namespace WinAuth
 			if (string.IsNullOrEmpty(authenticatorType) == false)
 			{
 				authenticatorType = authenticatorType.Replace("WindowsAuthenticator.", "WinAuth.");
-				Type type = System.Reflection.Assembly.GetExecutingAssembly().GetType(authenticatorType, false, true);
+				//TODO: This reflection stuff proably won't work.
+				Type type = typeof(Authenticator).GetTypeInfo().Assembly.GetType(authenticatorType);
 				authenticator = Activator.CreateInstance(type) as Authenticator;
 			}
 			if (authenticator == null)
