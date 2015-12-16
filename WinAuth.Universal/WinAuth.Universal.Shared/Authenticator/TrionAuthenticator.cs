@@ -19,14 +19,16 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
-using System.Security.Cryptography;
+// using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
-using System.Xml.XPath;
+using Windows.Security.Cryptography;
+using Windows.Data.Xml.Dom;
+using Windows.Web.Http;
 
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Engines;
@@ -159,7 +161,7 @@ namespace WinAuth
 		/// <summary>
 		/// Enroll the authenticator with the server.
 		/// </summary>
-		public void Enroll()
+		public async void Enroll()
 		{
 			// generate model name
 			string deviceId = GeneralRandomModel();
@@ -167,28 +169,14 @@ namespace WinAuth
 			string postdata = "deviceId=" + deviceId;
 
 			// call the enroll server
-			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ENROLL_URL);
-			request.Method = "POST";
-			request.ContentType = "application/x-www-form-urlencoded";
-			request.ContentLength = postdata.Length;
-			StreamWriter requestStream = new StreamWriter(request.GetRequestStream());
-			requestStream.Write(postdata);
-			requestStream.Close();
-			string responseData;
-			using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+			HttpClient request = new HttpClient();
+			HttpStringContent content = new HttpStringContent(postdata);
+			HttpResponseMessage response = await request.PostAsync(new Uri(ENROLL_URL), content);
+			if (!response.IsSuccessStatusCode)
 			{
-				// OK?
-				if (response.StatusCode != HttpStatusCode.OK)
-				{
-					throw new InvalidEnrollResponseException(string.Format("{0}: {1}", (int)response.StatusCode, response.StatusDescription));
-				}
-
-				// load the response
-				using (StreamReader responseStream = new StreamReader(response.GetResponseStream()))
-				{
-					responseData = responseStream.ReadToEnd();
-				} 
+				throw new InvalidEnrollResponseException($"{(int)response.StatusCode}: {response.ReasonPhrase}");
 			}
+			string responseData = await response.Content.ReadAsStringAsync();
 
 			// return data:
 			// <DeviceKey>
@@ -263,7 +251,7 @@ namespace WinAuth
 		/// <summary>
 		/// Synchorise this authenticator's time with server time. We update our data record with the difference from our UTC time.
 		/// </summary>
-		public override void Sync()
+		public override async void Sync()
 		{
 			// check if data is protected
 			if (this.SecretKey == null && this.EncryptedData != null)
@@ -280,25 +268,15 @@ namespace WinAuth
 			try
 			{
 				// create a connection to time sync server
-				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(SYNC_URL);
-				request.Method = "GET";
+				var request = new HttpClient();
 
 				// get response
-				string responseData;
-				using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+				var response = await request.GetAsync(new Uri(SYNC_URL));
+				if (!response.IsSuccessStatusCode)
 				{
-					// OK?
-					if (response.StatusCode != HttpStatusCode.OK)
-					{
-						throw new Exception(string.Format("{0}: {1}", (int)response.StatusCode, response.StatusDescription));
-					}
-
-					// load the response
-					using (StreamReader responseStream = new StreamReader(response.GetResponseStream()))
-					{
-						responseData = responseStream.ReadToEnd();
-					}
+					throw new Exception($"{(int)response.StatusCode}: {response.ReasonPhrase}");
 				}
+				var responseData = await response.Content.ReadAsStringAsync();
 
 				// return data is string version of time in milliseconds since epoch
 
@@ -385,33 +363,20 @@ namespace WinAuth
 		/// <param name="password">user's account password</param>
 		/// <param name="question1">returned secret question 1</param>
 		/// <param name="question2">returned secret question 2</param>
-		public static void SecurityQuestions(string email, string password, out string question1, out string question2)
+		public static async Task<Tuple<string,string>> SecurityQuestions(string email, string password)
 		{
+			string question1, question2;
 			string postdata = "emailAddress=" + email + "&password=" + password;
 
 			// call the enroll server
-			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(SECURITYQUESTIONS_URL);
-			request.Method = "POST";
-			request.ContentType = "application/x-www-form-urlencoded";
-			request.ContentLength = postdata.Length;
-			StreamWriter requestStream = new StreamWriter(request.GetRequestStream());
-			requestStream.Write(postdata);
-			requestStream.Close();
-			string responseData;
-			using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+			HttpClient request = new HttpClient();
+			HttpStringContent content = new HttpStringContent(postdata);
+			HttpResponseMessage response = await request.PostAsync(new Uri(SECURITYQUESTIONS_URL), content);
+			if (!response.IsSuccessStatusCode)
 			{
-				// OK?
-				if (response.StatusCode != HttpStatusCode.OK)
-				{
-					throw new InvalidRestoreResponseException(string.Format("{0}: {1}", (int)response.StatusCode, response.StatusDescription));
-				}
-
-				// load the response
-				using (StreamReader responseStream = new StreamReader(response.GetResponseStream()))
-				{
-					responseData = responseStream.ReadToEnd();
-				}
+				throw new InvalidRestoreResponseException($"{(int)response.StatusCode}: {response.ReasonPhrase}");
 			}
+			string responseData = await response.Content.ReadAsStringAsync();
 
 			// return data:
 			// <SecurityQuestions>
@@ -432,6 +397,7 @@ namespace WinAuth
 			// get the questions
 			question1 = doc.SelectSingleNode("//FirstQuestion").InnerText;
 			question2 = doc.SelectSingleNode("//SecondQuestion").InnerText;
+			return new Tuple<string, string>(question1, question2);
 		}
 
 		/// <summary>
@@ -442,7 +408,7 @@ namespace WinAuth
 		/// <param name="deviceId">register authenticator deviceid</param>
 		/// <param name="answer1">answer to secret question 1</param>
 		/// <param name="answer2">answer to secret question 2</param>
-		public void Restore(string email, string password, string deviceId, string answer1, string answer2)
+		public async void Restore(string email, string password, string deviceId, string answer1, string answer2)
 		{
 			string postdata = "emailAddress=" + email
 				+ "&password=" + password
@@ -451,28 +417,17 @@ namespace WinAuth
 				+ "&secondSecurityAnswer=" + answer2;
 
 			// call the enroll server
-			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(RESTORE_URL);
-			request.Method = "POST";
-			request.ContentType = "application/x-www-form-urlencoded";
-			request.ContentLength = postdata.Length;
-			StreamWriter requestStream = new StreamWriter(request.GetRequestStream());
-			requestStream.Write(postdata);
-			requestStream.Close();
-			string responseData;
-			using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+			HttpClient request = new HttpClient();
+			// request.DefaultRequestHeaders.
+			HttpStringContent postContent = new HttpStringContent(postdata);
+			HttpResponseMessage response = await request.PostAsync(new Uri(RESTORE_URL), postContent);
+			if (response.StatusCode != HttpStatusCode.Ok)
 			{
-				// OK?
-				if (response.StatusCode != HttpStatusCode.OK)
-				{
-					throw new InvalidRestoreResponseException(string.Format("{0}: {1}", (int)response.StatusCode, response.StatusDescription));
-				}
-
-				// load the response
-				using (StreamReader responseStream = new StreamReader(response.GetResponseStream()))
-				{
-					responseData = responseStream.ReadToEnd();
-				}
+				throw new InvalidRestoreResponseException($"{(int)response.StatusCode}: {response.ReasonPhrase}");
 			}
+			string responseData = await response.Content.ReadAsStringAsync();
+			// request.ContentType = "application/x-www-form-urlencoded";
+			// request.ContentLength = postdata.Length;
 
 			// return data:
 			// <DeviceKey>
