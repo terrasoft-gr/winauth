@@ -21,16 +21,17 @@ using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Cache;
-using System.Security.Cryptography;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
-using System.Xml.XPath;
+using System.Threading.Tasks;
+
+using Windows.Security.Cryptography;
+using Windows.Web.Http;
+using Windows.Web.Http.Filters;
+using Windows.Web.Http.Headers;
 
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Engines;
@@ -111,7 +112,7 @@ namespace WinAuth
 			public string EmailDomain { get; set; }
 			public string EmailAuthText { get; set; }
 			public string ActivationCode { get; set; }
-			public CookieContainer Cookies { get; set; }
+			public HttpCookieCollection Cookies { get; set; }
 
 			public string SteamId { get; set; }
 			public string OAuthToken { get; set; }
@@ -139,7 +140,7 @@ namespace WinAuth
 			public string CaptchaText { get; set; }
 			public string EmailDomain { get; set; }
 			public string EmailAuthText { get; set; }
-			public CookieContainer Cookies { get; set; }
+			public HttpCookieCollection Cookies { get; set; }
 
 			public string SteamId { get; set; }
 			public string OAuthToken { get; set; }
@@ -153,7 +154,7 @@ namespace WinAuth
 
 			public SteamSession()
 			{
-				this.Cookies = new CookieContainer();
+				this.Cookies = new HttpCookieCollection();
 			}
 
 			public byte[] GetData(string url)
@@ -174,7 +175,7 @@ namespace WinAuth
 				}
 			}
 
-			public byte[] Request(string url, string method, NameValueCollection data = null, NameValueCollection headers = null)
+			public byte[] Request(string url, string method, NameValueCollection data = null, HttpContentHeaderCollection headers = null)
 			{
 				// create form-encoded data for query or body
 				string query = (data == null ? string.Empty : string.Join("&", Array.ConvertAll(data.AllKeys, key => String.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(data[key])))));
@@ -340,7 +341,7 @@ namespace WinAuth
 		/// <param name="data">Name-data pairs</param>
 		/// <param name="cookies">current cookie container</param>
 		/// <returns>response body</returns>
-		private string Request(string url, string method, NameValueCollection data = null, CookieContainer cookies = null, NameValueCollection headers = null)
+		private string Request(string url, string method, NameValueCollection data = null, HttpCookieCollection cookies = null, HttpContentHeaderCollection headers = null)
 		{
 			// create form-encoded data for query or body
 			string query = (data == null ? string.Empty : string.Join("&", Array.ConvertAll(data.AllKeys, key => String.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(data[key])))));
@@ -423,7 +424,7 @@ namespace WinAuth
 			try
 			{
 				var data = new NameValueCollection();
-				var cookies = state.Cookies = state.Cookies ?? new CookieContainer();
+				var cookies = state.Cookies = state.Cookies ?? new HttpCookieCollection();
 				string response;
 
 				if (string.IsNullOrEmpty(state.OAuthToken) == true)
@@ -438,7 +439,7 @@ namespace WinAuth
 						cookies.Add(new Cookie("Steam_Language", "english", "/", ".steamcommunity.com"));
 						cookies.Add(new Cookie("dob", "", "/", ".steamcommunity.com"));
 
-						NameValueCollection headers = new NameValueCollection();
+						HttpContentHeaderCollection headers = new HttpContentHeaderCollection();
 						headers.Add("X-Requested-With", "com.valvesoftware.android.steam.community");
 
 						response = Request("https://steamcommunity.com/login?oauth_client_id=DE45CD61&oauth_scope=read_profile%20write_profile%20read_client%20write_client", "GET", null, cookies, headers);
@@ -823,7 +824,7 @@ namespace WinAuth
 			try
 			{
 				var data = new NameValueCollection();
-				var cookies = state.Cookies = state.Cookies ?? new CookieContainer();
+				var cookies = state.Cookies = state.Cookies ?? new HttpCookieCollection();
 				string response;
 
 				if (string.IsNullOrEmpty(state.OAuthToken) == true)
@@ -838,7 +839,7 @@ namespace WinAuth
 						cookies.Add(new Cookie("Steam_Language", "english", "/", ".steamcommunity.com"));
 						cookies.Add(new Cookie("dob", "", "/", ".steamcommunity.com"));
 
-						NameValueCollection headers = new NameValueCollection();
+						HttpContentHeaderCollection headers = new HttpContentHeaderCollection();
 						headers.Add("X-Requested-With", "com.valvesoftware.android.steam.community");
 
 						response = Request("https://steamcommunity.com/login?oauth_client_id=DE45CD61&oauth_scope=read_profile%20write_profile%20read_client%20write_client", "GET", null, cookies, headers);
@@ -1083,7 +1084,7 @@ namespace WinAuth
 		/// <param name="cookies">cookie container</param>
 		/// <param name="request">Request data</param>
 		/// <param name="ex">Thrown exception</param>
-		private static void LogRequest(string method, string url, CookieContainer cookies, NameValueCollection request, Exception ex)
+		private static void LogRequest(string method, string url, HttpCookieCollection cookies, NameValueCollection request, Exception ex)
 		{
 			LogRequest(method, url, cookies, request, ex.Message + Environment.NewLine + ex.StackTrace);
 		}
@@ -1096,7 +1097,7 @@ namespace WinAuth
 		/// <param name="cookies">cookie container</param>
 		/// <param name="request">Request data</param>
 		/// <param name="response">HttpWebResponse object</param>
-		private static void LogRequest(string method, string url, CookieContainer cookies, NameValueCollection request, HttpWebResponse response)
+		private static void LogRequest(string method, string url, HttpCookieCollection cookies, NameValueCollection request, HttpWebResponse response)
 		{
 			LogRequest(method, url, cookies, request, response.StatusCode.ToString() + " " + response.StatusDescription);
 		}
@@ -1109,7 +1110,7 @@ namespace WinAuth
 		/// <param name="cookies">cookie container</param>
 		/// <param name="request">Request data</param>
 		/// <param name="response">response body</param>
-		private static void LogRequest(string method, string url, CookieContainer cookies, NameValueCollection request, string response)
+		private static void LogRequest(string method, string url, HttpCookieCollection cookies, NameValueCollection request, string response)
 		{
 			StringBuilder data = new StringBuilder();
 			if (cookies != null)
@@ -1162,5 +1163,7 @@ namespace WinAuth
 
 	}
 
-
+	internal class NameValueCollection: Dictionary<string, string>
+	{
+	}
 }
