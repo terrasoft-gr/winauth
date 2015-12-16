@@ -1112,6 +1112,28 @@ namespace WinAuth
 			return ENCRYPTION_HEADER + salt + hash + data;
     }
 
+		private static byte[] Rfc2898DeriveBytes(string password, byte[] salt)
+		{
+			byte[] encryptionKeyOut;
+			IBuffer saltBuffer = CryptographicBuffer.CreateFromByteArray(salt);
+			KeyDerivationParameters kdfParameters = KeyDerivationParameters.BuildForPbkdf2(saltBuffer, 10000);  // 10000 iterations
+
+			// Get a KDF provider for PBKDF2 and hash the source password to a Cryptographic Key using the SHA256 algorithm.
+			// The generated key for the SHA256 algorithm is 256 bits (32 bytes) in length.
+			KeyDerivationAlgorithmProvider kdf = KeyDerivationAlgorithmProvider.OpenAlgorithm(KeyDerivationAlgorithmNames.Pbkdf2Sha256);
+			IBuffer passwordBuffer = CryptographicBuffer.ConvertStringToBinary(password, BinaryStringEncoding.Utf8);
+			CryptographicKey passwordSourceKey = kdf.CreateKey(passwordBuffer);
+
+			// Generate key material from the source password, salt, and iteration count
+			const int keySize = PBKDF2_KEYSIZE / 8;  // 256 bits = 32 bytes  
+			IBuffer key = CryptographicEngine.DeriveKeyMaterial(passwordSourceKey, kdfParameters, keySize);
+
+			// send the generated key back to the caller
+			CryptographicBuffer.CopyToByteArray(key, out encryptionKeyOut);
+
+			return encryptionKeyOut;  // success
+		}
+
 		/// <summary>
 		/// Encrypt a string with a given key
 		/// </summary>
@@ -1120,21 +1142,12 @@ namespace WinAuth
 		/// <returns>hex coded encrypted string</returns>
 		public static string Encrypt(string plain, string password)
 		{
-			byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
-
 			// build a new salt
-			RNGCryptoServiceProvider rg = new RNGCryptoServiceProvider();
-			byte[] saltbytes = new byte[SALT_LENGTH];
-			rg.GetBytes(saltbytes);
-			string salt = Authenticator.ByteArrayToString(saltbytes);
+			byte[] saltbytes = CryptographicBuffer.GenerateRandom(SALT_LENGTH).ToArray();
+			string salt = ByteArrayToString(saltbytes);
 
 			// build our PBKDF2 key
-#if NETCF
-			PBKDF2 kg = new PBKDF2(passwordBytes, saltbytes, PBKDF2_ITERATIONS);
-#else
-			Rfc2898DeriveBytes kg = new Rfc2898DeriveBytes(passwordBytes, saltbytes, PBKDF2_ITERATIONS);
-#endif
-			byte[] key = kg.GetBytes(PBKDF2_KEYSIZE);
+			byte[] key = Rfc2898DeriveBytes(password, saltbytes);
 
 			return salt + Encrypt(plain, key);
 		}
@@ -1187,12 +1200,7 @@ namespace WinAuth
 				byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
 
 				// build our PBKDF2 key
-#if NETCF
-			PBKDF2 kg = new PBKDF2(passwordBytes, saltbytes, 2000);
-#else
-				Rfc2898DeriveBytes kg = new Rfc2898DeriveBytes(passwordBytes, saltBytes, PBKDF2_ITERATIONS);
-#endif
-				key = kg.GetBytes(PBKDF2_KEYSIZE);
+				key = Rfc2898DeriveBytes(password, saltBytes);
 			}
 			else
 			{
