@@ -87,14 +87,13 @@ namespace WinAuth
 		/// <summary>
 		/// Type of password to use to encrypt secret data
 		/// </summary>
+		[Flags]
 		public enum PasswordTypes
 		{
 			None = 0,
 			Explicit = 1,
 			User = 2,
-			Machine = 4,
-			YubiKeySlot1 = 8,
-			YubiKeySlot2 = 16
+			Machine = 4
 		}
 
 		#region Authenticator data
@@ -420,12 +419,6 @@ namespace WinAuth
 						break;
 					case 'y':
 						passwordType |= PasswordTypes.Explicit;
-						break;
-					case 'a':
-						passwordType |= PasswordTypes.YubiKeySlot1;
-						break;
-					case 'b':
-						passwordType |= PasswordTypes.YubiKeySlot2;
 						break;
 					default:
 						break;
