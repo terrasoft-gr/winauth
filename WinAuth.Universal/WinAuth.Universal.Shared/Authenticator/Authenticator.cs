@@ -1197,7 +1197,7 @@ namespace WinAuth
 			else
 			{
 				// extract the salt from the data
-				byte[] passwordBytes = Encoding.Default.GetBytes(password);
+				byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
 				key = new byte[saltBytes.Length + passwordBytes.Length];
 				Array.Copy(saltBytes, key, saltBytes.Length);
 				Array.Copy(passwordBytes, 0, key, saltBytes.Length, passwordBytes.Length);
