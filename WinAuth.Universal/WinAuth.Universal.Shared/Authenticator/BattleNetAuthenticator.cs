@@ -256,7 +256,7 @@ namespace WinAuth
 		/// <summary>
 		/// Enroll the authenticator with the server.
 		/// </summary>
-		public void Enroll()
+		public async void Enroll()
 		{
 			// default to US
 			string region = REGION_US;
@@ -481,63 +481,28 @@ namespace WinAuth
 		/// </summary>
 		/// <param name="serial">serial code, e.g. US-1234-5678-1234</param>
 		/// <param name="restoreCode">restore code given on enroll, 10 chars.</param>
-		public void Restore(string serial, string restoreCode)
+		public async void Restore(string serial, string restoreCode)
 		{
 			// get the serial data
-			byte[] serialBytes = Encoding.UTF8.GetBytes(serial.ToUpper().Replace("-", string.Empty));
+			var serialBytes = Encoding.UTF8.GetBytes(serial.ToUpper().Replace("-", string.Empty));
 
 			// send the request to the server to get our challenge
-			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(GetMobileUrl(serial) + RESTORE_PATH);
-			request.Method = "POST";
-			request.ContentType = "application/octet-stream";
-			request.ContentLength = serialBytes.Length;
-			Stream requestStream = request.GetRequestStream();
-			requestStream.Write(serialBytes, 0, serialBytes.Length);
-			requestStream.Close();
-			byte[] challenge = null;
-			try
+			var request = new HttpClient();
+			request.DefaultRequestHeaders.Accept.TryParseAdd("application/octet-stream");
+			var content = new HttpBufferContent(serialBytes.AsBuffer());
+
+			var response = await request.PostAsync(new Uri(GetMobileUrl(serial) + RESTORE_PATH), content);
+			if (!response.IsSuccessStatusCode)
 			{
-				using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-				{
-					// OK?
-					if (response.StatusCode != HttpStatusCode.OK)
-					{
-						throw new InvalidRestoreResponseException(string.Format("{0}: {1}", (int)response.StatusCode, response.StatusDescription));
-					}
-
-					// load back the buffer - should only be a byte[32]
-					using (MemoryStream ms = new MemoryStream())
-					{
-						using (Stream bs = response.GetResponseStream())
-						{
-							byte[] temp = new byte[RESPONSE_BUFFER_SIZE];
-							int read;
-							while ((read = bs.Read(temp, 0, RESPONSE_BUFFER_SIZE)) != 0)
-							{
-								ms.Write(temp, 0, read);
-							}
-							challenge = ms.ToArray();
-
-							// check it is correct size
-							if (challenge.Length != RESTOREINIT_BUFFER_SIZE)
-							{
-								throw new InvalidRestoreResponseException(string.Format("Invalid response data size (expected 32 got {0})", challenge.Length));
-							}
-						}
-					}
-				}
+				throw new InvalidRestoreResponseException($"{(int)response.StatusCode}: {response.ReasonPhrase}");
 			}
-			catch (WebException we)
+			var challenge = (await response.Content.ReadAsBufferAsync()).ToArray();
+
+			// check it is correct size
+			if (challenge.Length != RESTOREINIT_BUFFER_SIZE)
 			{
-				int code = (int)((HttpWebResponse)we.Response).StatusCode;
-				if (code >= 500 && code < 600)
-				{
-					throw new InvalidRestoreResponseException(string.Format("No response from server ({0}). Perhaps maintainence?", code));
-				}
-				else
-				{
-					throw new InvalidRestoreResponseException(string.Format("Error communicating with server: {0} - {1}", code, ((HttpWebResponse)we.Response).StatusDescription));
-				}
+				throw new InvalidRestoreResponseException(
+					$"Invalid response data size (expected 32 got {challenge.Length})");
 			}
 
 			// only take the first 10 bytes of the restore code and encode to byte taking count of the missing chars
@@ -577,61 +542,29 @@ namespace WinAuth
 			Array.Copy(encrypted, 0, postbytes, serialBytes.Length, encrypted.Length);
 
 			// send the challenge response back to the server
-			request = (HttpWebRequest)WebRequest.Create(GetMobileUrl(serial) + RESTOREVALIDATE_PATH);
-			request.Method = "POST";
-			request.ContentType = "application/octet-stream";
-			request.ContentLength = postbytes.Length;
-			requestStream = request.GetRequestStream();
-			requestStream.Write(postbytes, 0, postbytes.Length);
-			requestStream.Close();
-			byte[] secretKey = null;
-			try
+			request = new HttpClient();
+			request.DefaultRequestHeaders.Accept.TryParseAdd("application/octet-stream");
+			content = new HttpBufferContent(postbytes.AsBuffer());
+			response = await request.PostAsync(new Uri(GetMobileUrl(serial) + RESTOREVALIDATE_PATH), content);
+			if (!response.IsSuccessStatusCode)
 			{
-				using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-				{
-					// OK?
-					if (response.StatusCode != HttpStatusCode.OK)
-					{
-						throw new InvalidRestoreResponseException(string.Format("{0}: {1}", (int)response.StatusCode, response.StatusDescription));
-					}
-
-					// load back the buffer - should only be a byte[32]
-					using (MemoryStream ms = new MemoryStream())
-					{
-						using (Stream bs = response.GetResponseStream())
-						{
-							byte[] temp = new byte[RESPONSE_BUFFER_SIZE];
-							int read;
-							while ((read = bs.Read(temp, 0, RESPONSE_BUFFER_SIZE)) != 0)
-							{
-								ms.Write(temp, 0, read);
-							}
-							secretKey = ms.ToArray();
-
-							// check it is correct size
-							if (secretKey.Length != RESTOREVALIDATE_BUFFER_SIZE)
-							{
-								throw new InvalidRestoreResponseException(string.Format("Invalid response data size (expected " + RESTOREVALIDATE_BUFFER_SIZE + " got {0})", secretKey.Length));
-							}
-						}
-					}
-				}
-			}
-			catch (WebException we)
-			{
-				int code = (int)((HttpWebResponse)we.Response).StatusCode;
+				var code = (int)response.StatusCode;
 				if (code >= 500 && code < 600)
 				{
-					throw new InvalidRestoreResponseException(string.Format("No response from server ({0}). Perhaps maintainence?", code));
+					throw new InvalidRestoreResponseException($"No response from server ({code}). Perhaps maintainence?");
 				}
-				else if (code >= 600 && code < 700)
+				if (code >= 600 && code < 700)
 				{
 					throw new InvalidRestoreCodeException("Invalid serial number or restore code.");
 				}
-				else
-				{
-					throw new InvalidRestoreResponseException(string.Format("Error communicating with server: {0} - {1}", code, ((HttpWebResponse)we.Response).StatusDescription));
-				}
+				throw new InvalidRestoreResponseException($"Error communicating with server: {code} - {response.ReasonPhrase}");
+			}
+			var secretKey = (await response.Content.ReadAsBufferAsync()).ToArray();
+
+			// check it is correct size
+			if (secretKey.Length != RESTOREVALIDATE_BUFFER_SIZE)
+			{
+				throw new InvalidRestoreResponseException(string.Format("Invalid response data size (expected " + RESTOREVALIDATE_BUFFER_SIZE + " got {0})", secretKey.Length));
 			}
 
 			// xor the returned data key with our pad to get the actual secret key
