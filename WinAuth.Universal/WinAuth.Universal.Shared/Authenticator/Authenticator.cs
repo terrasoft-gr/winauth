@@ -36,6 +36,7 @@ using Org.BouncyCastle.Crypto.Paddings;
 using Org.BouncyCastle.Crypto.Digests;
 using Org.BouncyCastle.Crypto.Generators;
 using System.Collections;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security;
 using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.Core;
@@ -1201,8 +1202,10 @@ namespace WinAuth
 				Array.Copy(saltBytes, key, saltBytes.Length);
 				Array.Copy(passwordBytes, 0, key, saltBytes.Length, passwordBytes.Length);
 				// build out combined key
-				MD5 md5 = MD5.Create();
-				key = md5.ComputeHash(key);
+				IBuffer buffEntry = CryptographicBuffer.CreateFromByteArray(key);
+				HashAlgorithmProvider algProvider = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Md5);
+				IBuffer buffHashed = algProvider.HashData(buffEntry);
+				key = buffHashed.ToArray();
 			}
 
 			// extract the actual data to be decrypted
