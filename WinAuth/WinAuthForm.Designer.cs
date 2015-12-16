@@ -346,7 +346,6 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
 			this.ClientSize = new System.Drawing.Size(420, 180);
 			this.Controls.Add(this.loadingPanel);
 			this.Controls.Add(this.yubiPanel);
@@ -359,8 +358,6 @@
 			this.MaximumSize = new System.Drawing.Size(1620, 1080);
 			this.MinimumSize = new System.Drawing.Size(300, 180);
 			this.Name = "WinAuthForm";
-			this.Resizable = false;
-			this.StyleManager = this.metroStyleManager;
 			this.Text = "WinAuth";
 			this.TopMost = true;
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.WinAuthForm_FormClosing);

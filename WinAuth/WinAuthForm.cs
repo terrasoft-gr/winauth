@@ -43,8 +43,8 @@ using System.Net;
 
 namespace WinAuth
 {
-	public partial class WinAuthForm : ResourceForm
-  {
+	public partial class WinAuthForm : Form
+	{
 #if BETA
 		/// <summary>
 		/// Registry data name for beta key
@@ -256,7 +256,7 @@ namespace WinAuth
 					System.Diagnostics.Process.GetCurrentProcess().Kill();
 					return;
 				}
-				else if (ex is EncrpytedSecretDataException)
+				else if (ex is EncryptedSecretDataException)
 				{
 					loadingPanel.Visible = false;
 					passwordPanel.Visible = true;
@@ -485,7 +485,7 @@ namespace WinAuth
 					needPassword = false;
 					retry = false;
 				}
-				catch (EncrpytedSecretDataException)
+				catch (EncryptedSecretDataException)
 				{
 					needPassword = true;
 					invalidPassword = false;
@@ -622,13 +622,6 @@ namespace WinAuth
 
 			// save the position of the list within the form else starting as minimized breaks the size
 			_listoffset = new Rectangle(authenticatorList.Left, authenticatorList.Top, (this.Width - authenticatorList.Width), (this.Height - authenticatorList.Height));
-
-			// set the shadow type (change in config for compatibility)
-			MetroFormShadowType shadow;
-			if (Enum.TryParse<MetroFormShadowType>(this.Config.ShadowType, true, out shadow) == true)
-			{
-				this.ShadowType = shadow;
-			}
 
 			// set positions
 			if (this.Config.Position.IsEmpty == false)
@@ -1001,7 +994,7 @@ namespace WinAuth
 			{
 				code = auth.CurrentCode;
 			}
-			catch (EncrpytedSecretDataException)
+			catch (EncryptedSecretDataException)
 			{
 				// if the authenticator is current protected we display the password window, get the code, and reprotect it
 				// with a bit of window jiggling to make sure we get focus and then put it back
@@ -1136,11 +1129,9 @@ namespace WinAuth
 				height += (this.Config.Count * authenticatorList.ItemHeight);
 				this.Height = Math.Min(Screen.GetWorkingArea(this).Height * 62 / 100, height);
 
-				this.Resizable = false;
 			}
 			else
 			{
-				this.Resizable = true;
 				if (Config.Width != 0)
 				{
 					this.Width = Config.Width;
