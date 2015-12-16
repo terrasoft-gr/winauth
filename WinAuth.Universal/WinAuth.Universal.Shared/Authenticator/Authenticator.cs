@@ -52,7 +52,7 @@ namespace WinAuth
 	/// <summary>
 	/// Class that implements base RFC 4226 an RFC 6238 authenticator
 	/// </summary>
-	public abstract class Authenticator : ICloneable
+	public abstract class Authenticator
 	{
 		/// <summary>
 		/// Number of bytes making up the salt
@@ -231,7 +231,7 @@ namespace WinAuth
 		static Authenticator()
 		{
 			// Issue#71: remove the default .net expect header, which can cause issues (http://stackoverflow.com/questions/566437/)
-			System.Net.ServicePointManager.Expect100Continue = false;
+			// System.Net.ServicePointManager.Expect100Continue = false;
 		}
 
 		/// <summary>
