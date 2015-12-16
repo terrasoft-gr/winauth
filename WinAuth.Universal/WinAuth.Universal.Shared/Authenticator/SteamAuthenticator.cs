@@ -456,7 +456,7 @@ namespace WinAuth
 					byte[] encryptedPassword;
 					using (var rsa = new RSACryptoServiceProvider())
 					{
-						var passwordBytes = Encoding.ASCII.GetBytes(state.Password);
+						var passwordBytes = Encoding.UTF8.GetBytes(state.Password);
 						var p = rsa.ExportParameters(false);
 						p.Exponent = Authenticator.StringToByteArray(rsaresponse.SelectToken("publickey_exp").Value<string>());
 						p.Modulus = Authenticator.StringToByteArray(rsaresponse.SelectToken("publickey_mod").Value<string>());
@@ -855,7 +855,7 @@ namespace WinAuth
 					string encryptedPassword64;
 					using (var rsa = new RSACryptoServiceProvider())
 					{
-						var passwordBytes = Encoding.ASCII.GetBytes(state.Password);
+						var passwordBytes = Encoding.UTF8.GetBytes(state.Password);
 						var p = rsa.ExportParameters(false);
 						p.Exponent = Authenticator.StringToByteArray(rsaresponse.SelectToken("publickey_exp").Value<string>());
 						p.Modulus = Authenticator.StringToByteArray(rsaresponse.SelectToken("publickey_mod").Value<string>());

@@ -429,7 +429,7 @@ namespace WinAuth
 			SecretKey = secretKey;
 
 			// get the serial number
-			Serial = Encoding.Default.GetString(responseData, 8, 17);
+			Serial = Encoding.UTF8.GetString(responseData, 8, 17);
 		}
 
 #if DEBUG
