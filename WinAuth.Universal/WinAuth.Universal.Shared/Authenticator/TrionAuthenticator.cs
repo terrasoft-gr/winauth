@@ -118,14 +118,18 @@ namespace WinAuth
 					{
 						// alpha 3.0.6 version
 						SecretKey = Authenticator.StringToByteArray(parts[0]);
-						Serial = (parts.Length > 2 ? Encoding.UTF8.GetString(Authenticator.StringToByteArray(parts[2])) : null);
-						DeviceId = (parts.Length > 3 ? Encoding.UTF8.GetString(Authenticator.StringToByteArray(parts[3])) : null);
+						byte[] serialBytes = Authenticator.StringToByteArray(parts[2]);
+						byte[] deviceBytes = Authenticator.StringToByteArray(parts[3]);
+						Serial = (parts.Length > 2 ? Encoding.UTF8.GetString(serialBytes, 0, serialBytes.Length) : null);
+						DeviceId = (parts.Length > 3 ? Encoding.UTF8.GetString(deviceBytes, 0, deviceBytes.Length) : null);
 					}
 					else
 					{
 						base.SecretData = value;
-						Serial = (parts.Length > 1 ? Encoding.UTF8.GetString(Authenticator.StringToByteArray(parts[1])) : null);
-						DeviceId = (parts.Length > 2 ? Encoding.UTF8.GetString(Authenticator.StringToByteArray(parts[2])) : null);
+						byte[] serialBytes = Authenticator.StringToByteArray(parts[1]);
+						byte[] deviceBytes = Authenticator.StringToByteArray(parts[2]);
+						Serial = (parts.Length > 1 ? Encoding.UTF8.GetString(serialBytes, 0, serialBytes.Length) : null);
+						DeviceId = (parts.Length > 2 ? Encoding.UTF8.GetString(deviceBytes, 0, deviceBytes.Length) : null);
 					}
 				}
 				else
