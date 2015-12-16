@@ -308,10 +308,13 @@ namespace WinAuth
 				{
 					string[] parts = value.Split('|');
 					base.SecretData = value;
-					Serial = (parts.Length > 1 ? Encoding.UTF8.GetString(Authenticator.StringToByteArray(parts[1])) : null);
-					DeviceId = (parts.Length > 2 ? Encoding.UTF8.GetString(Authenticator.StringToByteArray(parts[2])) : null);
+					var serialBytes = StringToByteArray(parts[1]);
+					var deviceBytes = StringToByteArray(parts[2]);
+					var steamDataBytes = StringToByteArray(parts[3]);
+					Serial = (parts.Length > 1 ? Encoding.UTF8.GetString(serialBytes, 0, serialBytes.Length) : null);
+					DeviceId = (parts.Length > 2 ? Encoding.UTF8.GetString(deviceBytes, 0, deviceBytes.Length) : null);
 					//RevocationCode = (parts.Length > 3 ? Encoding.UTF8.GetString(Authenticator.StringToByteArray(parts[3])) : string.Empty);
-					SteamData = (parts.Length > 3 ? Encoding.UTF8.GetString(Authenticator.StringToByteArray(parts[3])) : string.Empty);
+					SteamData = (parts.Length > 3 ? Encoding.UTF8.GetString(steamDataBytes, 0, deviceBytes.Length) : string.Empty);
 					if (string.IsNullOrEmpty(SteamData) == false && SteamData[0] != '{')
 					{
 						// convert old recovation code into SteamData json
