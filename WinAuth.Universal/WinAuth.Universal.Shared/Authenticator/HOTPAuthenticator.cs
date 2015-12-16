@@ -21,15 +21,11 @@ using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Net.Cache;
-using System.Security.Cryptography;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
-using System.Xml.XPath;
 
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Engines;
