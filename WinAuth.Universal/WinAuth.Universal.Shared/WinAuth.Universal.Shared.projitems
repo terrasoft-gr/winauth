@@ -21,11 +21,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Authenticator\BattleNetAuthenticator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Authenticator\GoogleAuthenticator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Authenticator\GuildWarsAuthenticator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Authenticator\HIDDevice.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Authenticator\HOTPAuthenticator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Authenticator\MicrosoftAuthenticator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Authenticator\SteamAuthenticator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Authenticator\TrionAuthenticator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Authenticator\YubiKey.cs" />
   </ItemGroup>
 </Project>
