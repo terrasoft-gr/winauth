@@ -416,7 +416,7 @@ namespace WinAuth
 		/// <summary>
 		/// Synchronise this authenticator's time with server time. We update our data record with the difference from our UTC time.
 		/// </summary>
-		public override void Sync()
+        public override async void Sync()
 		{
 			// check if data is protected
 			if (this.SecretKey == null && this.EncryptedData != null)
@@ -433,41 +433,19 @@ namespace WinAuth
 			try
 			{
 				// create a connection to time sync server
-				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(GetMobileUrl(this.Region) + SYNC_PATH);
-				request.Method = "GET";
-				request.Timeout = 5000;
+				var request = new HttpClient();
+				var response = await request.GetAsync(new Uri(GetMobileUrl(Region) + SYNC_PATH));
+				if (!response.IsSuccessStatusCode)
+				{
+					throw new InvalidSyncResponseException($"{(int)response.StatusCode}: {response.ReasonPhrase}");
+				}
 
 				// get response
-				byte[] responseData = null;
-				using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+				var responseData = (await response.Content.ReadAsBufferAsync()).ToArray();
+				// check it is correct size
+				if (responseData.Length != SYNC_RESPONSE_SIZE)
 				{
-					// OK?
-					if (response.StatusCode != HttpStatusCode.OK)
-					{
-						throw new Exception(string.Format("{0}: {1}", (int)response.StatusCode, response.StatusDescription));
-					}
-
-					// load back the buffer - should only be a byte[8]
-					using (MemoryStream ms = new MemoryStream())
-					{
-						// using (BufferedStream bs = new BufferedStream(response.GetResponseStream()))
-						using (Stream bs = response.GetResponseStream())
-						{
-							byte[] temp = new byte[RESPONSE_BUFFER_SIZE];
-							int read;
-							while ((read = bs.Read(temp, 0, RESPONSE_BUFFER_SIZE)) != 0)
-							{
-								ms.Write(temp, 0, read);
-							}
-							responseData = ms.ToArray();
-
-							// check it is correct size
-							if (responseData.Length != SYNC_RESPONSE_SIZE)
-							{
-								throw new InvalidSyncResponseException(string.Format("Invalid response data size (expected " + SYNC_RESPONSE_SIZE + " got {0}", responseData.Length));
-							}
-						}
-					}
+					throw new InvalidSyncResponseException(string.Format("Invalid response data size (expected {1} got {0})", responseData.Length, SYNC_RESPONSE_SIZE));
 				}
 
 				// return data:
@@ -488,7 +466,7 @@ namespace WinAuth
 				// clear any sync error
 				_lastSyncError = DateTime.MinValue;
 			}
-			catch (WebException)
+			catch (InvalidSyncResponseException)
 			{
 				// don't retry for a while after error
 				_lastSyncError = DateTime.Now;
