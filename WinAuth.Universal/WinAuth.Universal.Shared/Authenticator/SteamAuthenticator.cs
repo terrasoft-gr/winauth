@@ -179,7 +179,7 @@ namespace WinAuth
 			{
 				// create form-encoded data for query or body
 				string query = (data == null ? string.Empty : string.Join("&", Array.ConvertAll(data.AllKeys, key => String.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(data[key])))));
-				if (string.Compare(method, "GET", true) == 0)
+				if (method.ToUpperInvariant() == "GET")
 				{
 					url += (url.IndexOf("?") == -1 ? "?" : "&") + query;
 				}
@@ -199,7 +199,7 @@ namespace WinAuth
 
 				request.CookieContainer = this.Cookies;
 
-				if (string.Compare(method, "POST", true) == 0)
+				if (method.ToUpper() == "POST")
 				{
 					request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
 					request.ContentLength = query.Length;
@@ -231,7 +231,7 @@ namespace WinAuth
 
 							return ms.ToArray();
 						}
-      //      using (var responseStream = new StreamReader(response.GetResponseStream()))
+						//      using (var responseStream = new StreamReader(response.GetResponseStream()))
 						//{
 						//	string responseData = responseStream.ReadToEnd();
 						//	return responseData;
@@ -277,7 +277,7 @@ namespace WinAuth
 		/// <summary>
 		/// Expanding offsets to retry when creating first code
 		/// </summary>
-		private int[] ENROLL_OFFSETS = new int[] { 0, -30, 30, -60, 60, -90, 90, -120, 120};
+		private int[] ENROLL_OFFSETS = new int[] { 0, -30, 30, -60, 60, -90, 90, -120, 120 };
 
 		/// <summary>
 		/// Create a new Authenticator object
@@ -345,7 +345,7 @@ namespace WinAuth
 		{
 			// create form-encoded data for query or body
 			string query = (data == null ? string.Empty : string.Join("&", Array.ConvertAll(data.AllKeys, key => String.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(data[key])))));
-			if (string.Compare(method, "GET", true) == 0)
+			if (method.ToUpperInvariant() == "GET")
 			{
 				url += (url.IndexOf("?") == -1 ? "?" : "&") + query;
 			}
@@ -368,7 +368,7 @@ namespace WinAuth
 				request.CookieContainer = cookies;
 			}
 
-			if (string.Compare(method, "POST", true) == 0)
+			if (method.ToUpperInvariant() == "POST")
 			{
 				request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
 				request.ContentLength = query.Length;
@@ -378,7 +378,8 @@ namespace WinAuth
 				requestStream.Close();
 			}
 
-			try {
+			try
+			{
 				using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
 				{
 #if DEBUG
@@ -432,8 +433,8 @@ namespace WinAuth
 					// get session
 					if (cookies.Count == 0)
 					{
-						cookies.Add(new Cookie("mobileClientVersion", "3067969+%282.1.3%29", "/", ".steamcommunity.com")); 
-            cookies.Add(new Cookie("mobileClient", "android", "/", ".steamcommunity.com"));
+						cookies.Add(new Cookie("mobileClientVersion", "3067969+%282.1.3%29", "/", ".steamcommunity.com"));
+						cookies.Add(new Cookie("mobileClient", "android", "/", ".steamcommunity.com"));
 						cookies.Add(new Cookie("steamid", "", "/", ".steamcommunity.com"));
 						cookies.Add(new Cookie("steamLogin", "", "/", ".steamcommunity.com"));
 						cookies.Add(new Cookie("Steam_Language", "english", "/", ".steamcommunity.com"));
@@ -477,7 +478,7 @@ namespace WinAuth
 					data.Add("loginfriendlyname", "#login_emailauth_friendlyname_mobile");
 					data.Add("captchagid", (state.CaptchaId != null ? state.CaptchaId : "-1"));
 					data.Add("captcha_text", (state.CaptchaText != null ? state.CaptchaText : "enter above characters"));
-					data.Add("emailsteamid", (state.EmailAuthText != null ? state.SteamId ?? string.Empty: string.Empty));
+					data.Add("emailsteamid", (state.EmailAuthText != null ? state.SteamId ?? string.Empty : string.Empty));
 					data.Add("rsatimestamp", rsaresponse.SelectToken("timestamp").Value<string>());
 					data.Add("remember_login", "false");
 					data.Add("oauth_client_id", "DE45CD61");
@@ -745,7 +746,7 @@ namespace WinAuth
 				// clear any sync error
 				_lastSyncError = DateTime.MinValue;
 			}
-			catch (Exception )
+			catch (Exception)
 			{
 				// don't retry for a while after error
 				_lastSyncError = DateTime.Now;
@@ -802,7 +803,7 @@ namespace WinAuth
 
 			// build the alphanumeric code
 			StringBuilder code = new StringBuilder();
-			for (var i=0; i<CODE_DIGITS; i++)
+			for (var i = 0; i < CODE_DIGITS; i++)
 			{
 				code.Append(STEAMCHARS[fullcode % STEAMCHARS.Length]);
 				fullcode /= (uint)STEAMCHARS.Length;
@@ -1146,7 +1147,7 @@ namespace WinAuth
 				}
 				data.Append(" ");
 			}
-			
+
 			string message = string.Format(@"{0} {1} {2} {3} {4}", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"), method, url, data.ToString(), (response != null ? response.Replace("\n", "\\n").Replace("\r", "") : string.Empty));
 
 			System.Diagnostics.Trace.TraceWarning(message);
@@ -1163,7 +1164,7 @@ namespace WinAuth
 
 	}
 
-	internal class NameValueCollection: Dictionary<string, string>
+	internal class NameValueCollection : Dictionary<string, string>
 	{
 	}
 }
