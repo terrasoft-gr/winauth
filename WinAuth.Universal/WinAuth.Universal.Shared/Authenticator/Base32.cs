@@ -121,7 +121,7 @@ namespace WinAuth
 			encoded = Regex.Replace(encoded, @"[=]*$", "");
 
 			// convert as uppercase
-			encoded = encoded.ToUpper(System.Globalization.CultureInfo.InvariantCulture);
+			encoded = encoded.ToUpperInvariant();
 
 			// handle zero case
 			if (encoded.Length == 0)
