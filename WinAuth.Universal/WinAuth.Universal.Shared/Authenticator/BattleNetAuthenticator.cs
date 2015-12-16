@@ -25,7 +25,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
-
+using Windows.Storage;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Macs;
@@ -318,10 +318,11 @@ namespace WinAuth
 			}
 
 			// allow override of country for CN using US from app.config
-			System.Configuration.AppSettingsReader config = new System.Configuration.AppSettingsReader();
+			// TODO: Make some kind of config screen for this
+			ApplicationDataContainer config = Windows.Storage.ApplicationData.Current.LocalSettings;
 			try
 			{
-				string configcountry = config.GetValue("BattleNetAuthenticator.Country", typeof(string)) as string;
+				string configcountry = config.Values["BattleNetAuthenticator.Country"] as string;
 				if (string.IsNullOrEmpty(configcountry) == false)
 				{
 					country = configcountry;
@@ -330,10 +331,10 @@ namespace WinAuth
 			catch (InvalidOperationException ) { }
 			try
 			{
-				string configregion = config.GetValue("BattleNetAuthenticator.Region", typeof(string)) as string;
-				if (string.IsNullOrEmpty(configregion) == false)
+				string configRegion = config.Values["BattleNetAuthenticator.Region"] as string;
+				if (string.IsNullOrEmpty(configRegion) == false)
 				{
-					region = configregion;
+					region = configRegion;
 				}
 			}
 			catch (InvalidOperationException ) {}
