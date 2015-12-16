@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -152,96 +153,79 @@ namespace WinAuth
 
 			public string Error { get; set; }
 
-			public SteamSession()
+			public async Task<byte[]> GetData(string url)
 			{
-				this.Cookies = new HttpCookieCollection();
+				return await Request(url, "GET");
 			}
 
-			public byte[] GetData(string url)
+			public async Task<string> GetString(string url)
 			{
-				return Request(url, "GET");
-			}
-
-			public string GetString(string url)
-			{
-				byte[] data = Request(url, "GET");
+				byte[] data = await Request(url, "GET");
 				if (data == null || data.Length == 0)
 				{
 					return string.Empty;
 				}
 				else
 				{
-					return Encoding.UTF8.GetString(data);
+					return Encoding.UTF8.GetString(data, 0, data.Length);
 				}
 			}
 
-			public byte[] Request(string url, string method, NameValueCollection data = null, HttpContentHeaderCollection headers = null)
+			public async Task<byte[]> Request(string url, string method, NameValueCollection data = null, HttpContentHeaderCollection headers = null)
 			{
 				// create form-encoded data for query or body
-				string query = (data == null ? string.Empty : string.Join("&", Array.ConvertAll(data.AllKeys, key => String.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(data[key])))));
+				string query = "";
 				if (method.ToUpperInvariant() == "GET")
 				{
-					url += (url.IndexOf("?") == -1 ? "?" : "&") + query;
+					HttpFormUrlEncodedContent formContent = new HttpFormUrlEncodedContent(data);
+					query = await formContent.ReadAsStringAsync();
+					url += (url.Contains("?") ? "&" : "?") + query;
 				}
+
 
 				// call the server
-				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-				request.Method = method;
-				request.Accept = "text/javascript, text/html, application/xml, text/xml, */*";
-				request.ServicePoint.Expect100Continue = false;
-				request.UserAgent = "Mozilla/5.0 (Linux; U; Android 4.1.1; en-us; Google Nexus 4 - 4.1.1 - API 16 - 768x1280 Build/JRO03S) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30";
-				request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
-				request.Referer = COMMUNITY_BASE; // + "/mobilelogin?oauth_client_id=DE45CD61&oauth_scope=read_profile%20write_profile%20read_client%20write_client";
+				HttpClient request = new HttpClient();
+				request.DefaultRequestHeaders.Accept.TryParseAdd("text/javascript, text/html, application/xml, text/xml, */*");
+				// request.ServicePoint.Expect100Continue = false;
+				request.DefaultRequestHeaders["User-Agent"] = "Mozilla/5.0 (Linux; U; Android 4.1.1; en-us; Google Nexus 4 - 4.1.1 - API 16 - 768x1280 Build/JRO03S) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30";
+				// request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+				request.DefaultRequestHeaders["Referer"] = COMMUNITY_BASE + "/mobilelogin?oauth_client_id=DE45CD61&oauth_scope=read_profile%20write_profile%20read_client%20write_client";
 				if (headers != null)
 				{
-					request.Headers.Add(headers);
-				}
-
-				request.CookieContainer = this.Cookies;
-
-				if (method.ToUpper() == "POST")
-				{
-					request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-					request.ContentLength = query.Length;
-
-					StreamWriter requestStream = new StreamWriter(request.GetRequestStream());
-					requestStream.Write(query);
-					requestStream.Close();
-				}
-
-				try
-				{
-					using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+					foreach (KeyValuePair<string, string> h in headers)
 					{
-						// OK?
-						if (response.StatusCode != HttpStatusCode.OK)
-						{
-							throw new InvalidRequestException(string.Format("{0}: {1}", (int)response.StatusCode, response.StatusDescription));
-						}
-
-						// load the response
-						using (MemoryStream ms = new MemoryStream())
-						{
-							byte[] buffer = new byte[4096];
-							int read;
-							while ((read = response.GetResponseStream().Read(buffer, 0, 4096)) > 0)
-							{
-								ms.Write(buffer, 0, read);
-							}
-
-							return ms.ToArray();
-						}
-						//      using (var responseStream = new StreamReader(response.GetResponseStream()))
-						//{
-						//	string responseData = responseStream.ReadToEnd();
-						//	return responseData;
-						//}
+						request.DefaultRequestHeaders[h.Key] = h.Value;
 					}
 				}
-				catch (Exception ex)
+
+				if (this.Cookies != null)
 				{
-					throw new InvalidRequestException(ex.Message, ex);
+					HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
+					foreach (HttpCookie cookie in this.Cookies)
+					{
+						filter.CookieManager.SetCookie(cookie, false);
+					}
 				}
+
+				HttpResponseMessage response;
+				if (method.ToUpper() == "POST")
+				{
+					request.DefaultRequestHeaders["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
+					response = await request.PostAsync(new Uri(url), new HttpStringContent(query));
+				}
+				else
+				{
+					response = await request.GetAsync(new Uri(url));
+				}
+
+				// OK?
+				if (!response.IsSuccessStatusCode)
+				{
+					throw new InvalidRequestException($"{(int)response.StatusCode}: {response.ReasonPhrase}");
+				}
+
+				byte[] responseData = (await response.Content.ReadAsBufferAsync()).ToArray();
+				return responseData;
 			}
 		}
 
@@ -341,114 +325,101 @@ namespace WinAuth
 		/// <param name="data">Name-data pairs</param>
 		/// <param name="cookies">current cookie container</param>
 		/// <returns>response body</returns>
-		private string Request(string url, string method, NameValueCollection data = null, HttpCookieCollection cookies = null, HttpContentHeaderCollection headers = null)
+		private async Task<string> Request(string url, string method, NameValueCollection data = null, HttpCookieCollection cookies = null, HttpContentHeaderCollection headers = null)
 		{
 			// create form-encoded data for query or body
-			string query = (data == null ? string.Empty : string.Join("&", Array.ConvertAll(data.AllKeys, key => String.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(data[key])))));
+			string query = "";
 			if (method.ToUpperInvariant() == "GET")
 			{
-				url += (url.IndexOf("?") == -1 ? "?" : "&") + query;
+				HttpFormUrlEncodedContent formContent = new HttpFormUrlEncodedContent(data);
+				query = await formContent.ReadAsStringAsync();
+				url += (url.Contains("?") ? "&" : "?") + query;
 			}
 
 			// call the server
-			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-			request.Method = method;
-			request.Accept = "text/javascript, text/html, application/xml, text/xml, */*";
-			request.ServicePoint.Expect100Continue = false;
-			request.UserAgent = "Mozilla/5.0 (Linux; U; Android 4.1.1; en-us; Google Nexus 4 - 4.1.1 - API 16 - 768x1280 Build/JRO03S) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30";
-			request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
-			request.Referer = COMMUNITY_BASE; // + "/mobilelogin?oauth_client_id=DE45CD61&oauth_scope=read_profile%20write_profile%20read_client%20write_client";
+			HttpClient request = new Windows.Web.Http.HttpClient();
+			request.DefaultRequestHeaders.Accept.TryParseAdd("text/javascript, text/html, application/xml, text/xml, */*");
+			// request.ServicePoint.Expect100Continue = false;
+
+			request.DefaultRequestHeaders["User-Agent"] = "Mozilla/5.0 (Linux; U; Android 4.1.1; en-us; Google Nexus 4 - 4.1.1 - API 16 - 768x1280 Build/JRO03S) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30";
+			// request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+			request.DefaultRequestHeaders["Referer"] = COMMUNITY_BASE + "/mobilelogin?oauth_client_id=DE45CD61&oauth_scope=read_profile%20write_profile%20read_client%20write_client";
 			if (headers != null)
 			{
-				request.Headers.Add(headers);
+				foreach (KeyValuePair<string, string> h in headers)
+				{
+					request.DefaultRequestHeaders[h.Key] = h.Value;
+				}
 			}
 
 			if (cookies != null)
 			{
-				request.CookieContainer = cookies;
-			}
-
-			if (method.ToUpperInvariant() == "POST")
-			{
-				request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-				request.ContentLength = query.Length;
-
-				StreamWriter requestStream = new StreamWriter(request.GetRequestStream());
-				requestStream.Write(query);
-				requestStream.Close();
-			}
-
-			try
-			{
-				using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+				HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
+				foreach (HttpCookie cookie in cookies)
 				{
-#if DEBUG
-					string s = response.ToString();
-					LogRequest(method, url, cookies, data, response);
-#endif
-
-					// OK?
-					if (response.StatusCode != HttpStatusCode.OK)
-					{
-						throw new InvalidRequestException(string.Format("{0}: {1}", (int)response.StatusCode, response.StatusDescription));
-					}
-
-					// load the response
-					using (StreamReader responseStream = new StreamReader(response.GetResponseStream()))
-					{
-						string responseData = responseStream.ReadToEnd();
-#if DEBUG
-						LogRequest(method, url, cookies, data, responseData);
-#endif
-
-						return responseData;
-					}
+					filter.CookieManager.SetCookie(cookie, false);
 				}
 			}
-			catch (Exception ex)
+
+			HttpResponseMessage response = null;
+			if (method.ToUpperInvariant() == "POST")
 			{
-#if DEBUG
-				LogRequest(method, url, cookies, data, ex);
-#endif
-				throw new InvalidRequestException(ex.Message, ex);
+				request.DefaultRequestHeaders["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
+				response = await request.PostAsync(new Uri(url), new HttpStringContent(query));
 			}
+			else
+			{
+				response = await request.GetAsync(new Uri(url));
+			}
+			if (!response.IsSuccessStatusCode)
+			{
+				throw new InvalidRequestException($"{(int)response.StatusCode}: {response.ReasonPhrase}");
+			}
+
+			string responseData = await response.Content.ReadAsStringAsync();
+			return responseData;
 		}
 
 		/// <summary>
 		/// Enroll the authenticator with the server
 		/// </summary>
-		public bool Enroll(EnrollState state)
+		public async Task<bool> Enroll(EnrollState state)
 		{
 			// clear error
 			state.Error = null;
 
 			try
 			{
-				var data = new NameValueCollection();
-				var cookies = state.Cookies = state.Cookies ?? new HttpCookieCollection();
+				NameValueCollection data = new NameValueCollection();
+				Uri steamUrl = new Uri("https://steamcommunity.com");
+				HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
+				HttpCookieManager cookieJar = filter.CookieManager;
+
 				string response;
 
 				if (string.IsNullOrEmpty(state.OAuthToken) == true)
 				{
 					// get session
-					if (cookies.Count == 0)
+					if (cookieJar.GetCookies(steamUrl).Count == 0)
 					{
-						cookies.Add(new Cookie("mobileClientVersion", "3067969+%282.1.3%29", "/", ".steamcommunity.com"));
-						cookies.Add(new Cookie("mobileClient", "android", "/", ".steamcommunity.com"));
-						cookies.Add(new Cookie("steamid", "", "/", ".steamcommunity.com"));
-						cookies.Add(new Cookie("steamLogin", "", "/", ".steamcommunity.com"));
-						cookies.Add(new Cookie("Steam_Language", "english", "/", ".steamcommunity.com"));
-						cookies.Add(new Cookie("dob", "", "/", ".steamcommunity.com"));
+						cookieJar.SetCookie(new HttpCookie("mobileClientVersion", ".steamcommunity.com", "/") { Value = "3067969+%282.1.3%29" });
+						cookieJar.SetCookie(new HttpCookie("mobileClient", ".steamcommunity.com", "/") { Value = "android" });
+						cookieJar.SetCookie(new HttpCookie("steamid", ".steamcommunity.com", "/") { Value = "" });
+						cookieJar.SetCookie(new HttpCookie("steamLogin", ".steamcommunity.com", "/") { Value = "" });
+						cookieJar.SetCookie(new HttpCookie("Steam_Language", ".steamcommunity.com", "/") { Value = "" });
+						cookieJar.SetCookie(new HttpCookie("dob", ".steamcommunity.com", "/") { Value = "" });
 
-						HttpContentHeaderCollection headers = new HttpContentHeaderCollection();
-						headers.Add("X-Requested-With", "com.valvesoftware.android.steam.community");
+						var headers = new HttpContentHeaderCollection
+						{
+							["X-Requested-With"] = "com.valvesoftware.android.steam.community"
+						};
 
-						response = Request("https://steamcommunity.com/login?oauth_client_id=DE45CD61&oauth_scope=read_profile%20write_profile%20read_client%20write_client", "GET", null, cookies, headers);
+						response = await Request("https://steamcommunity.com/login?oauth_client_id=DE45CD61&oauth_scope=read_profile%20write_profile%20read_client%20write_client", "GET", null, cookieJar.GetCookies(steamUrl), headers);
 					}
 
 					// get the user's RSA key
 					data.Add("username", state.Username);
-					response = Request(COMMUNITY_BASE + "/login/getrsakey", "POST", data, cookies);
+					response = await Request(COMMUNITY_BASE + "/login/getrsakey", "POST", data, cookieJar.GetCookies(steamUrl));
 					var rsaresponse = JObject.Parse(response);
 					if (rsaresponse.SelectToken("success").Value<bool>() != true)
 					{
@@ -457,34 +428,40 @@ namespace WinAuth
 					//state.SteamId = rsaresponse.SelectToken("steamid").Value<string>();
 
 					// encrypt password with RSA key
-					RNGCryptoServiceProvider random = new RNGCryptoServiceProvider();
-					byte[] encryptedPassword;
-					using (var rsa = new RSACryptoServiceProvider())
-					{
-						var passwordBytes = Encoding.UTF8.GetBytes(state.Password);
-						var p = rsa.ExportParameters(false);
-						p.Exponent = Authenticator.StringToByteArray(rsaresponse.SelectToken("publickey_exp").Value<string>());
-						p.Modulus = Authenticator.StringToByteArray(rsaresponse.SelectToken("publickey_mod").Value<string>());
-						rsa.ImportParameters(p);
-						encryptedPassword = rsa.Encrypt(passwordBytes, false);
-					}
+					var passwordBytes = Encoding.UTF8.GetBytes(state.Password);
+
+					RsaEngine rsa = new RsaEngine();
+					var enrollModulus = rsaresponse.SelectToken("publickey_mod").Value<string>();
+					var enrollExponent = rsaresponse.SelectToken("publickey_exp").Value<string>();
+					rsa.Init(true, new RsaKeyParameters(
+						false,
+						new Org.BouncyCastle.Math.BigInteger(enrollModulus, 16),
+						new Org.BouncyCastle.Math.BigInteger(enrollExponent, 16)));
+					byte[] encryptedPassword = rsa.ProcessBlock(passwordBytes, 0, passwordBytes.Length);
 
 					// login request
-					data = new NameValueCollection();
-					data.Add("password", Convert.ToBase64String(encryptedPassword));
-					data.Add("username", state.Username);
-					data.Add("twofactorcode", "");
-					data.Add("emailauth", (state.EmailAuthText != null ? state.EmailAuthText : string.Empty));
-					data.Add("loginfriendlyname", "#login_emailauth_friendlyname_mobile");
-					data.Add("captchagid", (state.CaptchaId != null ? state.CaptchaId : "-1"));
-					data.Add("captcha_text", (state.CaptchaText != null ? state.CaptchaText : "enter above characters"));
-					data.Add("emailsteamid", (state.EmailAuthText != null ? state.SteamId ?? string.Empty : string.Empty));
-					data.Add("rsatimestamp", rsaresponse.SelectToken("timestamp").Value<string>());
-					data.Add("remember_login", "false");
-					data.Add("oauth_client_id", "DE45CD61");
-					data.Add("oauth_scope", "read_profile write_profile read_client write_client");
-					data.Add("donotache", new DateTime().ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds.ToString());
-					response = Request(COMMUNITY_BASE + "/login/dologin/", "POST", data, cookies);
+					data = new NameValueCollection
+					{
+						{"password", Convert.ToBase64String(encryptedPassword)},
+						{"username", state.Username},
+						{"twofactorcode", ""},
+						{"emailauth", (state.EmailAuthText ?? string.Empty)},
+						{"loginfriendlyname", "#login_emailauth_friendlyname_mobile"},
+						{"captchagid", (state.CaptchaId ?? "-1")},
+						{"captcha_text", (state.CaptchaText ?? "enter above characters")},
+						{"emailsteamid", (state.EmailAuthText != null ? state.SteamId ?? string.Empty : string.Empty)},
+						{"rsatimestamp", rsaresponse.SelectToken("timestamp").Value<string>()},
+						{"remember_login", "false"},
+						{"oauth_client_id", "DE45CD61"},
+						{"oauth_scope", "read_profile write_profile read_client write_client"},
+						{
+							"donotache",
+							new DateTime().ToUniversalTime()
+								.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc))
+								.TotalMilliseconds.ToString()
+						}
+					};
+					response = await Request(COMMUNITY_BASE + "/login/dologin/", "POST", data, cookieJar.GetCookies(steamUrl));
 					Dictionary<string, object> loginresponse = JsonConvert.DeserializeObject<Dictionary<string, object>>(response);
 
 					if (loginresponse.ContainsKey("emailsteamid") == true)
@@ -512,7 +489,7 @@ namespace WinAuth
 					{
 						if (loginresponse.ContainsKey("emaildomain") == true)
 						{
-							var emaildomain = (string)loginresponse["emaildomain"];
+							string emaildomain = (string)loginresponse["emaildomain"];
 							if (string.IsNullOrEmpty(emaildomain) == false)
 							{
 								state.EmailDomain = emaildomain;
@@ -552,7 +529,7 @@ namespace WinAuth
 
 					// get the OAuth token - is stringified json
 					string oauth = (string)loginresponse["oauth"];
-					var oauthjson = JObject.Parse(oauth);
+					JObject oauthjson = JObject.Parse(oauth);
 					state.OAuthToken = oauthjson.SelectToken("oauth_token").Value<string>();
 					if (oauthjson.SelectToken("steamid") != null)
 					{
@@ -563,9 +540,10 @@ namespace WinAuth
 				// login to webapi
 				data.Clear();
 				data.Add("access_token", state.OAuthToken);
-				response = Request(WEBAPI_BASE + "/ISteamWebUserPresenceOAuth/Logon/v0001", "POST", data);
+				response = await Request(WEBAPI_BASE + "/ISteamWebUserPresenceOAuth/Logon/v0001", "POST", data);
 
-				var sessionid = cookies.GetCookies(new Uri(COMMUNITY_BASE + "/"))["sessionid"].Value;
+				var cookies = cookieJar.GetCookies(new Uri(COMMUNITY_BASE + "/"));
+				var sessionid = cookies.First(c => c.Name == "sessionid").Value;
 
 				if (state.RequiresActivation == false)
 				{
@@ -573,9 +551,9 @@ namespace WinAuth
 					data.Add("op", "has_phone");
 					data.Add("arg", "null");
 					data.Add("sessionid", sessionid);
-					response = Request(COMMUNITY_BASE + "/steamguard/phoneajax", "POST", data, cookies);
-					var jsonresponse = JObject.Parse(response);
-					var hasPhone = jsonresponse.SelectToken("has_phone").Value<Boolean>();
+					response = await Request(COMMUNITY_BASE + "/steamguard/phoneajax", "POST", data, cookieJar.GetCookies(steamUrl));
+					JObject jsonresponse = JObject.Parse(response);
+					bool hasPhone = jsonresponse.SelectToken("has_phone").Value<Boolean>();
 					if (hasPhone == false)
 					{
 						state.OAuthToken = null; // force new login
@@ -595,8 +573,8 @@ namespace WinAuth
 					data.Add("authenticator_type", "1");
 					data.Add("device_identifier", deviceId);
 					data.Add("sms_phone_id", "1");
-					response = Request(WEBAPI_BASE + "/ITwoFactorService/AddAuthenticator/v0001", "POST", data);
-					var tfaresponse = JObject.Parse(response);
+					response = await Request(WEBAPI_BASE + "/ITwoFactorService/AddAuthenticator/v0001", "POST", data);
+					JObject tfaresponse = JObject.Parse(response);
 					if (response.IndexOf("status") == -1 && tfaresponse.SelectToken("response.status").Value<int>() == 84)
 					{
 						// invalid response
@@ -617,14 +595,14 @@ namespace WinAuth
 					}
 
 					// save data into this authenticator
-					var secret = tfaresponse.SelectToken("response.shared_secret").Value<string>();
+					string secret = tfaresponse.SelectToken("response.shared_secret").Value<string>();
 					this.SecretKey = Convert.FromBase64String(secret);
 					this.Serial = tfaresponse.SelectToken("response.serial_number").Value<string>();
 					this.DeviceId = deviceId;
 					state.RevocationCode = tfaresponse.SelectToken("response.revocation_code").Value<string>();
 
 					// add the steamid into the data
-					var steamdata = JObject.Parse(tfaresponse.SelectToken("response").ToString());
+					JObject steamdata = JObject.Parse(tfaresponse.SelectToken("response").ToString());
 					if (steamdata.SelectToken("steamid") == null)
 					{
 						steamdata.Add("steamid", state.SteamId);
@@ -652,13 +630,13 @@ namespace WinAuth
 				data.Add("activation_code", state.ActivationCode);
 
 				// try and authorise
-				var retries = 0;
+				int retries = 0;
 				while (state.RequiresActivation == true && retries < ENROLL_ACTIVATE_RETRIES)
 				{
 					data.Add("authenticator_code", this.CalculateCode(false));
 					data.Add("authenticator_time", this.ServerTime.ToString());
-					response = Request(WEBAPI_BASE + "/ITwoFactorService/FinalizeAddAuthenticator/v0001", "POST", data);
-					var finalizeresponse = JObject.Parse(response);
+					response = await Request(WEBAPI_BASE + "/ITwoFactorService/FinalizeAddAuthenticator/v0001", "POST", data);
+					JObject finalizeresponse = JObject.Parse(response);
 					if (response.IndexOf("status") != -1 && finalizeresponse.SelectToken("response.status").Value<int>() == INVALID_ACTIVATION_CODE)
 					{
 						state.Error = "Invalid activation code";
@@ -704,7 +682,7 @@ namespace WinAuth
 				data.Add("access_token", state.OAuthToken);
 				data.Add("steamid", state.SteamId);
 				data.Add("email_type", "2");
-				response = Request(WEBAPI_BASE + "/ITwoFactorService/SendEmail/v0001", "POST", data);
+				response = await Request(WEBAPI_BASE + "/ITwoFactorService/SendEmail/v0001", "POST", data);
 
 				return true;
 			}
@@ -717,7 +695,7 @@ namespace WinAuth
 		/// <summary>
 		/// Synchronise this authenticator's time with Steam.
 		/// </summary>
-		public override void Sync()
+		public override async void Sync()
 		{
 			// check if data is protected
 			if (this.SecretKey == null && this.EncryptedData != null)
@@ -733,8 +711,8 @@ namespace WinAuth
 
 			try
 			{
-				var response = Request(SYNC_URL, "POST");
-				var json = JObject.Parse(response);
+				string response = await Request(SYNC_URL, "POST");
+				JObject json = JObject.Parse(response);
 
 				// get servertime in ms
 				long servertime = json.SelectToken("response.server_time").Value<long>() * 1000;
@@ -803,7 +781,7 @@ namespace WinAuth
 
 			// build the alphanumeric code
 			StringBuilder code = new StringBuilder();
-			for (var i = 0; i < CODE_DIGITS; i++)
+			for (int i = 0; i < CODE_DIGITS; i++)
 			{
 				code.Append(STEAMCHARS[fullcode % STEAMCHARS.Length]);
 				fullcode /= (uint)STEAMCHARS.Length;
@@ -817,57 +795,58 @@ namespace WinAuth
 		/// </summary>
 		/// <param name="state">current Steam session</param>
 		/// <returns></returns>
-		public string LoadTrades(SteamSession state)
+		public async Task<string> LoadTrades(SteamSession state)
 		{
 			// clear error
 			state.Error = null;
 
 			try
 			{
-				var data = new NameValueCollection();
-				var cookies = state.Cookies = state.Cookies ?? new HttpCookieCollection();
+				NameValueCollection data = new NameValueCollection();
+				Uri steamUrl = new Uri("https://steamcommunity.com");
+				HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
+				HttpCookieManager cookieJar = filter.CookieManager;
 				string response;
 
 				if (string.IsNullOrEmpty(state.OAuthToken) == true)
 				{
 					// get session
-					if (cookies.Count == 0)
+					if (cookieJar.GetCookies(steamUrl).Count == 0)
 					{
-						cookies.Add(new Cookie("mobileClientVersion", "3067969+%282.1.3%29", "/", ".steamcommunity.com"));
-						cookies.Add(new Cookie("mobileClient", "android", "/", ".steamcommunity.com"));
-						cookies.Add(new Cookie("steamid", "", "/", ".steamcommunity.com"));
-						cookies.Add(new Cookie("steamLogin", "", "/", ".steamcommunity.com"));
-						cookies.Add(new Cookie("Steam_Language", "english", "/", ".steamcommunity.com"));
-						cookies.Add(new Cookie("dob", "", "/", ".steamcommunity.com"));
+						cookieJar.SetCookie(new HttpCookie("mobileClientVersion", ".steamcommunity.com", "/") { Value = "3067969+%282.1.3%29" });
+						cookieJar.SetCookie(new HttpCookie("mobileClient", ".steamcommunity.com", "/") { Value = "android" });
+						cookieJar.SetCookie(new HttpCookie("steamid", ".steamcommunity.com", "/") { Value = "" });
+						cookieJar.SetCookie(new HttpCookie("steamLogin", ".steamcommunity.com", "/") { Value = "" });
+						cookieJar.SetCookie(new HttpCookie("Steam_Language", ".steamcommunity.com", "/") { Value = "" });
+						cookieJar.SetCookie(new HttpCookie("dob", ".steamcommunity.com", "/") { Value = "" });
+
 
 						HttpContentHeaderCollection headers = new HttpContentHeaderCollection();
 						headers.Add("X-Requested-With", "com.valvesoftware.android.steam.community");
 
-						response = Request("https://steamcommunity.com/login?oauth_client_id=DE45CD61&oauth_scope=read_profile%20write_profile%20read_client%20write_client", "GET", null, cookies, headers);
+						response = await Request("https://steamcommunity.com/login?oauth_client_id=DE45CD61&oauth_scope=read_profile%20write_profile%20read_client%20write_client", "GET", null, cookieJar.GetCookies(steamUrl), headers);
 					}
 
 					// get the user's RSA key
 					data.Add("username", state.Username);
-					response = Request(COMMUNITY_BASE + "/login/getrsakey", "POST", data, cookies);
-					var rsaresponse = JObject.Parse(response);
+					response = await Request(COMMUNITY_BASE + "/login/getrsakey", "POST", data, cookieJar.GetCookies(steamUrl));
+					JObject rsaresponse = JObject.Parse(response);
 					if (rsaresponse.SelectToken("success").Value<bool>() != true)
 					{
 						throw new InvalidTradesResponseException("Cannot get steam information for user: " + state.Username);
 					}
 
 					// encrypt password with RSA key
-					RNGCryptoServiceProvider random = new RNGCryptoServiceProvider();
-					string encryptedPassword64;
-					using (var rsa = new RSACryptoServiceProvider())
-					{
-						var passwordBytes = Encoding.UTF8.GetBytes(state.Password);
-						var p = rsa.ExportParameters(false);
-						p.Exponent = Authenticator.StringToByteArray(rsaresponse.SelectToken("publickey_exp").Value<string>());
-						p.Modulus = Authenticator.StringToByteArray(rsaresponse.SelectToken("publickey_mod").Value<string>());
-						rsa.ImportParameters(p);
-						byte[] encryptedPassword = rsa.Encrypt(passwordBytes, false);
-						encryptedPassword64 = Convert.ToBase64String(encryptedPassword);
-					}
+					byte[] passwordBytes = Encoding.UTF8.GetBytes(state.Password);
+					RsaEngine rsa = new RsaEngine();
+					var enrollModulus = rsaresponse.SelectToken("publickey_mod").Value<string>();
+					var enrollExponent = rsaresponse.SelectToken("publickey_exp").Value<string>();
+					rsa.Init(true, new RsaKeyParameters(
+						false,
+						new Org.BouncyCastle.Math.BigInteger(enrollModulus, 16),
+						new Org.BouncyCastle.Math.BigInteger(enrollExponent, 16)));
+					byte[] encryptedPassword = rsa.ProcessBlock(passwordBytes, 0, passwordBytes.Length);
+					string encryptedPassword64 = Convert.ToBase64String(encryptedPassword);
 
 					// login request
 					data = new NameValueCollection();
@@ -884,7 +863,7 @@ namespace WinAuth
 					data.Add("oauth_client_id", "DE45CD61");
 					data.Add("oauth_scope", "read_profile write_profile read_client write_client");
 					data.Add("donotache", new DateTime().ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds.ToString());
-					response = Request(COMMUNITY_BASE + "/login/dologin/", "POST", data, cookies);
+					response = await Request(COMMUNITY_BASE + "/login/dologin/", "POST", data, cookieJar.GetCookies(steamUrl));
 					Dictionary<string, object> loginresponse = JsonConvert.DeserializeObject<Dictionary<string, object>>(response);
 
 					if (loginresponse.ContainsKey("emailsteamid") == true)
@@ -912,7 +891,7 @@ namespace WinAuth
 					{
 						if (loginresponse.ContainsKey("emaildomain") == true)
 						{
-							var emaildomain = (string)loginresponse["emaildomain"];
+							string emaildomain = (string)loginresponse["emaildomain"];
 							if (string.IsNullOrEmpty(emaildomain) == false)
 							{
 								state.EmailDomain = emaildomain;
@@ -953,14 +932,14 @@ namespace WinAuth
 
 					// get the OAuth token
 					string oauth = (string)loginresponse["oauth"];
-					var oauthjson = JObject.Parse(oauth);
+					JObject oauthjson = JObject.Parse(oauth);
 					state.OAuthToken = oauthjson.SelectToken("oauth_token").Value<string>();
 					if (oauthjson.SelectToken("steamid") != null)
 					{
 						state.SteamId = oauthjson.SelectToken("steamid").Value<string>();
 
 						// add the steamid into the data if missing
-						var steamdata = JObject.Parse(this.SteamData);
+						JObject steamdata = JObject.Parse(this.SteamData);
 						if (steamdata.SelectToken("steamid") == null)
 						{
 							steamdata.Add("steamid", state.SteamId);
@@ -975,10 +954,10 @@ namespace WinAuth
 				//long servertime = timejson.SelectToken("response.server_time").Value<long>();
 				long servertime = (CurrentTime + ServerTimeDiff) / 1000L;
 
-				var jids = JObject.Parse(this.SteamData).SelectToken("identity_secret");
+				JToken jids = JObject.Parse(this.SteamData).SelectToken("identity_secret");
 				string ids = (jids != null ? jids.Value<string>() : string.Empty);
 
-				var timehash = CreateTimeHash(servertime, "conf", ids);
+				string timehash = CreateTimeHash(servertime, "conf", ids);
 
 				data.Clear();
 				data.Add("p", this.DeviceId);
@@ -988,7 +967,7 @@ namespace WinAuth
 				data.Add("m", "android");
 				data.Add("tag", "conf");
 
-				return Request(COMMUNITY_BASE + "/mobileconf/conf", "GET", data, state.Cookies);
+				return await Request(COMMUNITY_BASE + "/mobileconf/conf", "GET", data, state.Cookies);
 			}
 			catch (InvalidRequestException ex)
 			{
@@ -1005,7 +984,7 @@ namespace WinAuth
 		/// <param name="key">key for trade</param>
 		/// <param name="accept">true to accept, false to reject</param>
 		/// <returns>response data</returns>
-		public string ConfirmTrade(SteamSession state, string id, string key, bool accept)
+		public async Task<string> ConfirmTrade(SteamSession state, string id, string key, bool accept)
 		{
 			// clear error
 			state.Error = null;
@@ -1015,11 +994,11 @@ namespace WinAuth
 				// get servertime
 				long servertime = (CurrentTime + ServerTimeDiff) / 1000L;
 
-				var jids = JObject.Parse(this.SteamData).SelectToken("identity_secret");
+				JToken jids = JObject.Parse(this.SteamData).SelectToken("identity_secret");
 				string ids = (jids != null ? jids.Value<string>() : string.Empty);
-				var timehash = CreateTimeHash(servertime, "conf", ids);
+				string timehash = CreateTimeHash(servertime, "conf", ids);
 
-				var data = new NameValueCollection();
+				NameValueCollection data = new NameValueCollection();
 				data.Add("op", accept ? "allow" : "cancel");
 				data.Add("p", this.DeviceId);
 				data.Add("a", state.SteamId);
@@ -1030,7 +1009,7 @@ namespace WinAuth
 				//
 				data.Add("cid", id);
 				data.Add("ck", key);
-				return Request(COMMUNITY_BASE + "/mobileconf/ajaxop", "GET", data, state.Cookies);
+				return await Request(COMMUNITY_BASE + "/mobileconf/ajaxop", "GET", data, state.Cookies);
 			}
 			catch (InvalidRequestException ex)
 			{
@@ -1061,10 +1040,12 @@ namespace WinAuth
 				Array.Copy(Encoding.UTF8.GetBytes(tag), 0, buffer, 8, bufferSize - 8);
 			}
 
-			HMACSHA1 hmac = new HMACSHA1(b64secret, true);
-			byte[] hash = hmac.ComputeHash(buffer);
+			HMac hmac = new HMac(new Sha1Digest());
+			hmac.Init(new KeyParameter(b64secret));
+			byte[] mac = new byte[hmac.GetMacSize()];
+			hmac.DoFinal(mac, 0);
 
-			return Convert.ToBase64String(hash, Base64FormattingOptions.None);
+			return Convert.ToBase64String(mac);
 		}
 
 		/// <summary>
@@ -1085,7 +1066,7 @@ namespace WinAuth
 		/// <param name="cookies">cookie container</param>
 		/// <param name="request">Request data</param>
 		/// <param name="ex">Thrown exception</param>
-		private static void LogRequest(string method, string url, HttpCookieCollection cookies, NameValueCollection request, Exception ex)
+		private static void LogRequest(string method, string url, HttpCookieManager cookies, NameValueCollection request, Exception ex)
 		{
 			LogRequest(method, url, cookies, request, ex.Message + Environment.NewLine + ex.StackTrace);
 		}
@@ -1098,9 +1079,9 @@ namespace WinAuth
 		/// <param name="cookies">cookie container</param>
 		/// <param name="request">Request data</param>
 		/// <param name="response">HttpWebResponse object</param>
-		private static void LogRequest(string method, string url, HttpCookieCollection cookies, NameValueCollection request, HttpWebResponse response)
+		private static void LogRequest(string method, string url, HttpCookieManager cookies, NameValueCollection request, HttpResponseMessage response)
 		{
-			LogRequest(method, url, cookies, request, response.StatusCode.ToString() + " " + response.StatusDescription);
+			LogRequest(method, url, cookies, request, response.StatusCode + " " + response.ReasonPhrase);
 		}
 
 		/// <summary>
@@ -1111,12 +1092,12 @@ namespace WinAuth
 		/// <param name="cookies">cookie container</param>
 		/// <param name="request">Request data</param>
 		/// <param name="response">response body</param>
-		private static void LogRequest(string method, string url, HttpCookieCollection cookies, NameValueCollection request, string response)
+		private static void LogRequest(string method, string url, HttpCookieManager cookies, NameValueCollection request, string response)
 		{
 			StringBuilder data = new StringBuilder();
 			if (cookies != null)
 			{
-				foreach (Cookie cookie in cookies.GetCookies(new Uri(url)))
+				foreach (HttpCookie cookie in cookies.GetCookies(new Uri(url)))
 				{
 					if (data.Length == 0)
 					{
@@ -1133,7 +1114,7 @@ namespace WinAuth
 
 			if (request != null)
 			{
-				foreach (var key in request.AllKeys)
+				foreach (var entry in request)
 				{
 					if (data.Length == 0)
 					{
@@ -1143,14 +1124,14 @@ namespace WinAuth
 					{
 						data.Append("&");
 					}
-					data.Append(key + "=" + request[key]);
+					data.Append(entry.Key + "=" + entry.Value);
 				}
 				data.Append(" ");
 			}
 
 			string message = string.Format(@"{0} {1} {2} {3} {4}", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"), method, url, data.ToString(), (response != null ? response.Replace("\n", "\\n").Replace("\r", "") : string.Empty));
 
-			System.Diagnostics.Trace.TraceWarning(message);
+			System.Diagnostics.Debug.WriteLine(message);
 		}
 #endif
 
@@ -1164,7 +1145,7 @@ namespace WinAuth
 
 	}
 
-	internal class NameValueCollection : Dictionary<string, string>
+	public class NameValueCollection : Dictionary<string, string>
 	{
 	}
 }
