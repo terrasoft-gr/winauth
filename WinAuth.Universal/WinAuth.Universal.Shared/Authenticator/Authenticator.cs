@@ -362,7 +362,7 @@ namespace WinAuth
 							if (passwordType != PasswordTypes.None)
 							{
 								// this is an old version so there is no hash
-								data = await DecryptSequence(data, passwordType, password, null);
+								data = await DecryptSequence(data, passwordType, password);
 							}
 
 							authenticator.PasswordType = PasswordTypes.None;
@@ -507,7 +507,7 @@ namespace WinAuth
 					CryptographicBuffer.CopyToByteArray(keyHash, out key);
 					SecretHash = key;
 
-					this.EncryptedData = await Authenticator.EncryptSequence(data, passwordType, password, null);
+					this.EncryptedData = await Authenticator.EncryptSequence(data, passwordType, password);
 					this.PasswordType = passwordType;
 					if (this.PasswordType == PasswordTypes.Explicit)
 					{
@@ -554,7 +554,7 @@ namespace WinAuth
 			bool changed = false;
 			try
 			{
-				string data = await Authenticator.DecryptSequence(this.EncryptedData, this.PasswordType, password, null);
+				string data = await Authenticator.DecryptSequence(this.EncryptedData, this.PasswordType, password);
 				using (MemoryStream ms = new MemoryStream(Authenticator.StringToByteArray(data)))
 				{
 					XmlReader reader = XmlReader.Create(ms);
@@ -593,7 +593,7 @@ namespace WinAuth
 						SecretHash = key;
 
 						// encrypt
-						this.EncryptedData = await Authenticator.EncryptSequence(encrypteddata, passwordType, password, null);
+						this.EncryptedData = await Authenticator.EncryptSequence(encrypteddata, passwordType, password);
 					}
 				}
 
@@ -904,12 +904,12 @@ namespace WinAuth
 		/// <param name="yubidata">optional yubi data</param>
 		/// <param name="decode"></param>
 		/// <returns>decrypted string sequence</returns>
-		public static async Task<string> DecryptSequence(string data, PasswordTypes encryptedTypes, string password, YubiKey yubi, bool decode = false)
+		public static async Task<string> DecryptSequence(string data, PasswordTypes encryptedTypes, string password, bool decode = false)
 		{
 			// check for encrpytion header
 			if (data.Length < ENCRYPTION_HEADER.Length || data.IndexOf(ENCRYPTION_HEADER) != 0)
 			{
-				return await DecryptSequenceNoHash(data, encryptedTypes, password, yubi, decode);
+				return await DecryptSequenceNoHash(data, encryptedTypes, password, decode);
 			}
 
 			// extract salt and hash
@@ -923,7 +923,7 @@ namespace WinAuth
 			datastart += hash.Length;
 			data = data.Substring(datastart);
 
-			data = await DecryptSequenceNoHash(data, encryptedTypes, password, yubi);
+			data = await DecryptSequenceNoHash(data, encryptedTypes, password);
 
 			// check the hash
 			byte[] compareplain = StringToByteArray(salt + data);
@@ -947,7 +947,7 @@ namespace WinAuth
 		/// <param name="yubidata">optional yubi data</param>
 		/// <param name="decode"></param>
 		/// <returns>decrypted string sequence</returns>
-		private static async Task<string> DecryptSequenceNoHash(string data, PasswordTypes encryptedTypes, string password, YubiKey yubi, bool decode = false)
+		private static async Task<string> DecryptSequenceNoHash(string data, PasswordTypes encryptedTypes, string password, bool decode = false)
 		{
 			try
 			{
@@ -984,32 +984,6 @@ namespace WinAuth
 						data = Encoding.UTF8.GetString(plain, 0, plain.Length);
 					}
 				}
-				if ((encryptedTypes & PasswordTypes.YubiKeySlot1) != 0 || (encryptedTypes & PasswordTypes.YubiKeySlot2) != 0)
-				{
-					if (string.IsNullOrEmpty(yubi.Info.Error) == false)
-					{
-						throw new BadYubiKeyException("Unable to detect YubiKey");
-					}
-					if (yubi.Info.Status.VersionMajor == 0)
-					{
-						throw new BadYubiKeyException("Please insert your YubiKey");
-					}
-					int slot = ((encryptedTypes & PasswordTypes.YubiKeySlot1) != 0 ? 1 : 2);
-
-					string seed = data.Substring(0, SALT_LENGTH * 2);
-					data = data.Substring(seed.Length);
-					byte[] key = yubi.ChallengeResponse(slot, StringToByteArray(seed));
-
-					data = Authenticator.Decrypt(data, key);
-					if (decode == true)
-					{
-						byte[] plain = Authenticator.StringToByteArray(data);
-						data = Encoding.UTF8.GetString(plain, 0, plain.Length);
-					}
-
-					yubi.YubiData.Seed = seed;
-					yubi.YubiData.Data = key;
-				}
 			}
 			catch (EncryptedSecretDataException)
 			{
@@ -1019,10 +993,6 @@ namespace WinAuth
 			{
 				throw;
 			}
-			catch (ChallengeResponseException ex)
-			{
-				throw new BadYubiKeyException("Please check your YubiKey or touch the flashing button", ex);
-			}
 			catch (Exception ex)
 			{
 				throw new BadPasswordException(ex.Message, ex);
@@ -1031,7 +1001,7 @@ namespace WinAuth
 			return data;
 		}
 
-		public static async Task<string> EncryptSequence(string data, PasswordTypes passwordType, string password, YubiKey yubi)
+		public static async Task<string> EncryptSequence(string data, PasswordTypes passwordType, string password)
 		{
 			// get hash of original
 			string salt = ByteArrayToString(CryptographicBuffer.GenerateRandom(SALT_LENGTH).ToArray());
@@ -1039,29 +1009,6 @@ namespace WinAuth
 			byte[] plain = StringToByteArray(salt + data);
 			string hash = ByteArrayToString(sha256.HashData(CryptographicBuffer.CreateFromByteArray(plain)).ToArray());
 
-			if ((passwordType & PasswordTypes.YubiKeySlot1) != 0 || (passwordType & PasswordTypes.YubiKeySlot2) != 0)
-			{
-				if (yubi.YubiData.Length == 0)
-				{
-					byte[] seed = CryptographicBuffer.GenerateRandom(SALT_LENGTH).ToArray();
-
-					// we encrypt the data using the hash of a random string from the YubiKey
-					int slot = ((passwordType & PasswordTypes.YubiKeySlot1) != 0 ? 1 : 2);
-					yubi.YubiData.Data = yubi.ChallengeResponse(slot, seed);
-					yubi.YubiData.Seed = Authenticator.ByteArrayToString(seed);
-				}
-
-				byte[] key = yubi.YubiData.Data;
-				string encrypted = Encrypt(data, key);
-
-				// test the encryption
-				string decrypted = Decrypt(encrypted, key);
-				if (string.Compare(data, decrypted) != 0)
-				{
-					throw new InvalidEncryptionException(data, password, encrypted, decrypted);
-				}
-				data = yubi.YubiData.Seed + encrypted;
-			}
 			if ((passwordType & PasswordTypes.Explicit) != 0)
 			{
 				string encrypted = Encrypt(data, password);
