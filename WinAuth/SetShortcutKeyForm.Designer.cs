@@ -45,6 +45,7 @@
 			this.advancedTextbox = new System.Windows.Forms.TextBox();
 			this.injectTextbox = new System.Windows.Forms.TextBox();
 			this.advancedLink = new System.Windows.Forms.LinkLabel();
+			this.tooltip = new System.Windows.Forms.ToolTip();
 			this.notifyRadioButton = new WinAuth.GroupMetroRadioButton();
 			this.SuspendLayout();
 			// 
