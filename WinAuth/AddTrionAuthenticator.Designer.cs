@@ -30,41 +30,41 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddTrionAuthenticator));
-			this.allowCopyNewButton = new MetroFramework.Controls.MetroCheckBox();
-			this.enrollAuthenticatorButton = new MetroFramework.Controls.MetroButton();
-			this.label3 = new MetroFramework.Controls.MetroLabel();
-			this.label8 = new MetroFramework.Controls.MetroLabel();
-			this.label2 = new MetroFramework.Controls.MetroLabel();
-			this.label1 = new MetroFramework.Controls.MetroLabel();
-			this.restoreAnswer2Field = new MetroFramework.Controls.MetroTextBox();
-			this.restoreAnswer1Field = new MetroFramework.Controls.MetroTextBox();
-			this.restoreGetQuestionsButton = new MetroFramework.Controls.MetroButton();
-			this.restoreQuestion1Label = new MetroFramework.Controls.MetroLabel();
-			this.label13 = new MetroFramework.Controls.MetroLabel();
-			this.restoreQuestion2Label = new MetroFramework.Controls.MetroLabel();
-			this.label12 = new MetroFramework.Controls.MetroLabel();
-			this.label5 = new MetroFramework.Controls.MetroLabel();
-			this.restoreDeviceIdField = new MetroFramework.Controls.MetroTextBox();
-			this.restorePasswordField = new MetroFramework.Controls.MetroTextBox();
-			this.restoreEmailField = new MetroFramework.Controls.MetroTextBox();
-			this.label7 = new MetroFramework.Controls.MetroLabel();
-			this.label4 = new MetroFramework.Controls.MetroLabel();
-			this.label9 = new MetroFramework.Controls.MetroLabel();
-			this.okButton = new MetroFramework.Controls.MetroButton();
-			this.cancelButton = new MetroFramework.Controls.MetroButton();
+			this.allowCopyNewButton = new System.Windows.Forms.CheckBox();
+			this.enrollAuthenticatorButton = new System.Windows.Forms.Button();
+			this.label3 = new System.Windows.Forms.Label();
+			this.label8 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
+			this.restoreAnswer2Field = new System.Windows.Forms.TextBox();
+			this.restoreAnswer1Field = new System.Windows.Forms.TextBox();
+			this.restoreGetQuestionsButton = new System.Windows.Forms.Button();
+			this.restoreQuestion1Label = new System.Windows.Forms.Label();
+			this.label13 = new System.Windows.Forms.Label();
+			this.restoreQuestion2Label = new System.Windows.Forms.Label();
+			this.label12 = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.restoreDeviceIdField = new System.Windows.Forms.TextBox();
+			this.restorePasswordField = new System.Windows.Forms.TextBox();
+			this.restoreEmailField = new System.Windows.Forms.TextBox();
+			this.label7 = new System.Windows.Forms.Label();
+			this.label4 = new System.Windows.Forms.Label();
+			this.label9 = new System.Windows.Forms.Label();
+			this.okButton = new System.Windows.Forms.Button();
+			this.cancelButton = new System.Windows.Forms.Button();
 			this.newAuthenticatorTimer = new System.Windows.Forms.Timer(this.components);
 			this.archeageIconRadioButton = new WinAuth.GroupMetroRadioButton();
 			this.riftIconRadioButton = new WinAuth.GroupMetroRadioButton();
 			this.glyphIconRadioButton = new WinAuth.GroupMetroRadioButton();
-			this.label10 = new MetroFramework.Controls.MetroLabel();
-			this.label6 = new MetroFramework.Controls.MetroLabel();
-			this.nameField = new MetroFramework.Controls.MetroTextBox();
-			this.tabControl1 = new MetroFramework.Controls.MetroTabControl();
-			this.newAuthenticatorTab = new MetroFramework.Controls.MetroTabPage();
+			this.label10 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
+			this.nameField = new System.Windows.Forms.TextBox();
+			this.tabControl1 = new System.Windows.Forms.TabControl();
+			this.newAuthenticatorTab = new System.Windows.Forms.TabPage();
 			this.newRestoreCodeField = new WinAuth.SecretTextBox();
 			this.newLoginCodeField = new WinAuth.SecretTextBox();
 			this.newSerialNumberField = new WinAuth.SecretTextBox();
-			this.recoverAuthenticatorTab = new MetroFramework.Controls.MetroTabPage();
+			this.recoverAuthenticatorTab = new System.Windows.Forms.TabPage();
 			this.trionAuthenticatorRadioButton = new WinAuth.GroupMetroRadioButton();
 			this.iconTrion = new System.Windows.Forms.PictureBox();
 			this.archeageIcon = new System.Windows.Forms.PictureBox();
@@ -87,7 +87,6 @@
 			this.allowCopyNewButton.Size = new System.Drawing.Size(87, 15);
 			this.allowCopyNewButton.TabIndex = 2;
 			this.allowCopyNewButton.Text = "Allow copy?";
-			this.allowCopyNewButton.UseSelectable = true;
 			this.allowCopyNewButton.CheckedChanged += new System.EventHandler(this.allowCopyNewButton_CheckedChanged);
 			// 
 			// enrollAuthenticatorButton
@@ -97,7 +96,6 @@
 			this.enrollAuthenticatorButton.Size = new System.Drawing.Size(177, 24);
 			this.enrollAuthenticatorButton.TabIndex = 0;
 			this.enrollAuthenticatorButton.Text = "Create Authenticator";
-			this.enrollAuthenticatorButton.UseSelectable = true;
 			this.enrollAuthenticatorButton.Click += new System.EventHandler(this.enrollAuthenticatorButton_Click);
 			// 
 			// label3
@@ -144,7 +142,6 @@
 			this.restoreAnswer2Field.SelectedText = "";
 			this.restoreAnswer2Field.Size = new System.Drawing.Size(257, 22);
 			this.restoreAnswer2Field.TabIndex = 5;
-			this.restoreAnswer2Field.UseSelectable = true;
 			// 
 			// restoreAnswer1Field
 			// 
@@ -156,7 +153,6 @@
 			this.restoreAnswer1Field.SelectedText = "";
 			this.restoreAnswer1Field.Size = new System.Drawing.Size(257, 22);
 			this.restoreAnswer1Field.TabIndex = 4;
-			this.restoreAnswer1Field.UseSelectable = true;
 			// 
 			// restoreGetQuestionsButton
 			// 
@@ -165,7 +161,6 @@
 			this.restoreGetQuestionsButton.Size = new System.Drawing.Size(166, 23);
 			this.restoreGetQuestionsButton.TabIndex = 2;
 			this.restoreGetQuestionsButton.Text = "Get Security Questions";
-			this.restoreGetQuestionsButton.UseSelectable = true;
 			this.restoreGetQuestionsButton.Click += new System.EventHandler(this.restoreGetQuestionsButton_Click);
 			// 
 			// restoreQuestion1Label
@@ -221,7 +216,6 @@
 			this.restoreDeviceIdField.SelectedText = "";
 			this.restoreDeviceIdField.Size = new System.Drawing.Size(257, 22);
 			this.restoreDeviceIdField.TabIndex = 3;
-			this.restoreDeviceIdField.UseSelectable = true;
 			// 
 			// restorePasswordField
 			// 
@@ -233,7 +227,6 @@
 			this.restorePasswordField.SelectedText = "";
 			this.restorePasswordField.Size = new System.Drawing.Size(257, 22);
 			this.restorePasswordField.TabIndex = 1;
-			this.restorePasswordField.UseSelectable = true;
 			this.restorePasswordField.UseSystemPasswordChar = true;
 			// 
 			// restoreEmailField
@@ -246,7 +239,6 @@
 			this.restoreEmailField.SelectedText = "";
 			this.restoreEmailField.Size = new System.Drawing.Size(257, 22);
 			this.restoreEmailField.TabIndex = 0;
-			this.restoreEmailField.UseSelectable = true;
 			// 
 			// label7
 			// 
@@ -284,7 +276,6 @@
 			this.okButton.Size = new System.Drawing.Size(75, 23);
 			this.okButton.TabIndex = 5;
 			this.okButton.Text = "OK";
-			this.okButton.UseSelectable = true;
 			this.okButton.Click += new System.EventHandler(this.okButton_Click);
 			// 
 			// cancelButton
@@ -296,7 +287,6 @@
 			this.cancelButton.Size = new System.Drawing.Size(75, 23);
 			this.cancelButton.TabIndex = 6;
 			this.cancelButton.Text = "Cancel";
-			this.cancelButton.UseSelectable = true;
 			this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
 			// 
 			// newAuthenticatorTimer
@@ -313,7 +303,6 @@
 			this.archeageIconRadioButton.Size = new System.Drawing.Size(14, 13);
 			this.archeageIconRadioButton.TabIndex = 3;
 			this.archeageIconRadioButton.Tag = "ArcheAgeIcon.png";
-			this.archeageIconRadioButton.UseSelectable = true;
 			this.archeageIconRadioButton.CheckedChanged += new System.EventHandler(this.iconRadioButton_CheckedChanged);
 			// 
 			// riftIconRadioButton
@@ -324,7 +313,6 @@
 			this.riftIconRadioButton.Size = new System.Drawing.Size(14, 13);
 			this.riftIconRadioButton.TabIndex = 2;
 			this.riftIconRadioButton.Tag = "RiftIcon.png";
-			this.riftIconRadioButton.UseSelectable = true;
 			this.riftIconRadioButton.CheckedChanged += new System.EventHandler(this.iconRadioButton_CheckedChanged);
 			// 
 			// glyphIconRadioButton
@@ -337,7 +325,6 @@
 			this.glyphIconRadioButton.TabIndex = 1;
 			this.glyphIconRadioButton.TabStop = true;
 			this.glyphIconRadioButton.Tag = "GlyphIcon.png";
-			this.glyphIconRadioButton.UseSelectable = true;
 			this.glyphIconRadioButton.CheckedChanged += new System.EventHandler(this.iconRadioButton_CheckedChanged);
 			// 
 			// label10
@@ -368,7 +355,6 @@
 			this.nameField.SelectedText = "";
 			this.nameField.Size = new System.Drawing.Size(388, 22);
 			this.nameField.TabIndex = 0;
-			this.nameField.UseSelectable = true;
 			// 
 			// tabControl1
 			// 
@@ -381,7 +367,6 @@
 			this.tabControl1.SelectedIndex = 0;
 			this.tabControl1.Size = new System.Drawing.Size(456, 352);
 			this.tabControl1.TabIndex = 4;
-			this.tabControl1.UseSelectable = true;
 			this.tabControl1.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl1_DrawItem);
 			// 
 			// newAuthenticatorTab
@@ -396,18 +381,12 @@
 			this.newAuthenticatorTab.Controls.Add(this.newLoginCodeField);
 			this.newAuthenticatorTab.Controls.Add(this.label1);
 			this.newAuthenticatorTab.Controls.Add(this.newSerialNumberField);
-			this.newAuthenticatorTab.HorizontalScrollbarBarColor = true;
-			this.newAuthenticatorTab.HorizontalScrollbarHighlightOnWheel = false;
-			this.newAuthenticatorTab.HorizontalScrollbarSize = 10;
 			this.newAuthenticatorTab.Location = new System.Drawing.Point(4, 22);
 			this.newAuthenticatorTab.Name = "newAuthenticatorTab";
 			this.newAuthenticatorTab.Padding = new System.Windows.Forms.Padding(3);
 			this.newAuthenticatorTab.Size = new System.Drawing.Size(448, 326);
 			this.newAuthenticatorTab.TabIndex = 0;
 			this.newAuthenticatorTab.Text = "New Authenticator";
-			this.newAuthenticatorTab.VerticalScrollbarBarColor = true;
-			this.newAuthenticatorTab.VerticalScrollbarHighlightOnWheel = false;
-			this.newAuthenticatorTab.VerticalScrollbarSize = 10;
 			// 
 			// newRestoreCodeField
 			// 
@@ -460,18 +439,12 @@
 			this.recoverAuthenticatorTab.Controls.Add(this.label4);
 			this.recoverAuthenticatorTab.Controls.Add(this.label13);
 			this.recoverAuthenticatorTab.Controls.Add(this.restoreQuestion2Label);
-			this.recoverAuthenticatorTab.HorizontalScrollbarBarColor = true;
-			this.recoverAuthenticatorTab.HorizontalScrollbarHighlightOnWheel = false;
-			this.recoverAuthenticatorTab.HorizontalScrollbarSize = 10;
 			this.recoverAuthenticatorTab.Location = new System.Drawing.Point(4, 22);
 			this.recoverAuthenticatorTab.Name = "recoverAuthenticatorTab";
 			this.recoverAuthenticatorTab.Padding = new System.Windows.Forms.Padding(3);
 			this.recoverAuthenticatorTab.Size = new System.Drawing.Size(448, 326);
 			this.recoverAuthenticatorTab.TabIndex = 1;
 			this.recoverAuthenticatorTab.Text = "Recover Authenticator";
-			this.recoverAuthenticatorTab.VerticalScrollbarBarColor = true;
-			this.recoverAuthenticatorTab.VerticalScrollbarHighlightOnWheel = false;
-			this.recoverAuthenticatorTab.VerticalScrollbarSize = 10;
 			// 
 			// trionAuthenticatorRadioButton
 			// 
@@ -481,7 +454,6 @@
 			this.trionAuthenticatorRadioButton.Size = new System.Drawing.Size(14, 13);
 			this.trionAuthenticatorRadioButton.TabIndex = 3;
 			this.trionAuthenticatorRadioButton.Tag = "TrionAuthenticatorIcon.png";
-			this.trionAuthenticatorRadioButton.UseSelectable = true;
 			this.trionAuthenticatorRadioButton.CheckedChanged += new System.EventHandler(this.iconRadioButton_CheckedChanged);
 			// 
 			// iconTrion
@@ -533,7 +505,6 @@
 			this.AcceptButton = this.okButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
 			this.CancelButton = this.cancelButton;
 			this.ClientSize = new System.Drawing.Size(502, 585);
 			this.Controls.Add(this.tabControl1);
@@ -552,7 +523,6 @@
 			this.Controls.Add(this.label10);
 			this.MaximizeBox = false;
 			this.Name = "AddTrionAuthenticator";
-			this.Resizable = false;
 			this.ShowIcon = false;
 			this.Text = "Add Glyph Authenticator";
 			this.Load += new System.EventHandler(this.AddTrionAuthenticator_Load);
@@ -572,44 +542,44 @@
 
 		#endregion
 
-		private MetroFramework.Controls.MetroLabel label1;
+		private System.Windows.Forms.Label label1;
 		private WinAuth.SecretTextBox newRestoreCodeField;
 		private WinAuth.SecretTextBox newLoginCodeField;
 		private WinAuth.SecretTextBox newSerialNumberField;
-		private MetroFramework.Controls.MetroButton enrollAuthenticatorButton;
-		private MetroFramework.Controls.MetroLabel label3;
-		private MetroFramework.Controls.MetroLabel label2;
-		private MetroFramework.Controls.MetroCheckBox allowCopyNewButton;
-		private MetroFramework.Controls.MetroLabel label7;
-		private MetroFramework.Controls.MetroTextBox restoreDeviceIdField;
-		private MetroFramework.Controls.MetroLabel label9;
-		private MetroFramework.Controls.MetroButton okButton;
-		private MetroFramework.Controls.MetroButton cancelButton;
+		private System.Windows.Forms.Button enrollAuthenticatorButton;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.CheckBox allowCopyNewButton;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.TextBox restoreDeviceIdField;
+		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.Button okButton;
+		private System.Windows.Forms.Button cancelButton;
 		private System.Windows.Forms.Timer newAuthenticatorTimer;
-		private MetroFramework.Controls.MetroLabel label13;
-		private MetroFramework.Controls.MetroLabel label12;
-		private MetroFramework.Controls.MetroTextBox restorePasswordField;
-		private MetroFramework.Controls.MetroTextBox restoreEmailField;
-		private MetroFramework.Controls.MetroLabel restoreQuestion1Label;
-		private MetroFramework.Controls.MetroTextBox restoreAnswer1Field;
-		private MetroFramework.Controls.MetroTextBox restoreAnswer2Field;
-		private MetroFramework.Controls.MetroLabel restoreQuestion2Label;
-		private MetroFramework.Controls.MetroButton restoreGetQuestionsButton;
-		private MetroFramework.Controls.MetroLabel label8;
-		private MetroFramework.Controls.MetroLabel label5;
-		private MetroFramework.Controls.MetroLabel label4;
+		private System.Windows.Forms.Label label13;
+		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.TextBox restorePasswordField;
+		private System.Windows.Forms.TextBox restoreEmailField;
+		private System.Windows.Forms.Label restoreQuestion1Label;
+		private System.Windows.Forms.TextBox restoreAnswer1Field;
+		private System.Windows.Forms.TextBox restoreAnswer2Field;
+		private System.Windows.Forms.Label restoreQuestion2Label;
+		private System.Windows.Forms.Button restoreGetQuestionsButton;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label label4;
 		private WinAuth.GroupMetroRadioButton archeageIconRadioButton;
 		private WinAuth.GroupMetroRadioButton riftIconRadioButton;
 		private WinAuth.GroupMetroRadioButton glyphIconRadioButton;
 		private System.Windows.Forms.PictureBox archeageIcon;
 		private System.Windows.Forms.PictureBox iconRift;
 		private System.Windows.Forms.PictureBox iconGlyph;
-		private MetroFramework.Controls.MetroLabel label6;
-		private MetroFramework.Controls.MetroTextBox nameField;
-		private MetroFramework.Controls.MetroLabel label10;
-		private MetroFramework.Controls.MetroTabControl tabControl1;
-		private MetroFramework.Controls.MetroTabPage newAuthenticatorTab;
-		private MetroFramework.Controls.MetroTabPage recoverAuthenticatorTab;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.TextBox nameField;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.TabControl tabControl1;
+		private System.Windows.Forms.TabPage newAuthenticatorTab;
+		private System.Windows.Forms.TabPage recoverAuthenticatorTab;
 		private System.Windows.Forms.PictureBox iconTrion;
 		private GroupMetroRadioButton trionAuthenticatorRadioButton;
 	}

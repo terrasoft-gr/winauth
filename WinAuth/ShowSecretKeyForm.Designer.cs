@@ -46,12 +46,12 @@ namespace WinAuth
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShowSecretKeyForm));
-			this.allowCopyCheckBox = new MetroFramework.Controls.MetroCheckBox();
+			this.allowCopyCheckBox = new System.Windows.Forms.CheckBox();
 			this.secretKeyField = new WinAuth.SecretTextBox();
 			this.qrImage = new System.Windows.Forms.PictureBox();
-			this.label4 = new MetroFramework.Controls.MetroLabel();
-			this.btnClose = new MetroFramework.Controls.MetroButton();
-			this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
+			this.label4 = new System.Windows.Forms.Label();
+			this.btnClose = new System.Windows.Forms.Button();
+			this.metroLabel1 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.qrImage)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -63,7 +63,6 @@ namespace WinAuth
 			this.allowCopyCheckBox.Size = new System.Drawing.Size(82, 15);
 			this.allowCopyCheckBox.TabIndex = 5;
 			this.allowCopyCheckBox.Text = "Allow copy";
-			this.allowCopyCheckBox.UseSelectable = true;
 			this.allowCopyCheckBox.CheckedChanged += new System.EventHandler(this.allowCopyCheckBox_CheckedChanged);
 			// 
 			// secretKeyField
@@ -104,7 +103,6 @@ namespace WinAuth
 			this.btnClose.Size = new System.Drawing.Size(75, 23);
 			this.btnClose.TabIndex = 4;
 			this.btnClose.Text = "Close";
-			this.btnClose.UseSelectable = true;
 			// 
 			// metroLabel1
 			// 
@@ -119,7 +117,6 @@ namespace WinAuth
 			this.AcceptButton = this.btnClose;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
 			this.CancelButton = this.btnClose;
 			this.ClientSize = new System.Drawing.Size(407, 513);
 			this.Controls.Add(this.allowCopyCheckBox);
@@ -129,7 +126,6 @@ namespace WinAuth
 			this.Controls.Add(this.metroLabel1);
 			this.Controls.Add(this.label4);
 			this.Name = "ShowSecretKeyForm";
-			this.Resizable = false;
 			this.ShowIcon = false;
 			this.Text = "Secret Key";
 			this.Load += new System.EventHandler(this.ShowSecretKeyForm_Load);
@@ -141,11 +137,11 @@ namespace WinAuth
 
 		#endregion
 
-		private MetroFramework.Controls.MetroButton btnClose;
-		private MetroFramework.Controls.MetroLabel label4;
+		private System.Windows.Forms.Button btnClose;
+		private System.Windows.Forms.Label label4;
 		private SecretTextBox secretKeyField;
 		private System.Windows.Forms.PictureBox qrImage;
-		private MetroFramework.Controls.MetroCheckBox allowCopyCheckBox;
-		private MetroFramework.Controls.MetroLabel metroLabel1;
+		private System.Windows.Forms.CheckBox allowCopyCheckBox;
+		private System.Windows.Forms.Label metroLabel1;
 	}
 }

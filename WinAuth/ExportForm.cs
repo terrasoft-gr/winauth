@@ -32,7 +32,7 @@ namespace WinAuth
 	/// <summary>
 	/// Form for exporting authenticators to a file
 	/// </summary>
-	public partial class ExportForm : WinAuth.ResourceForm
+	public partial class ExportForm : Form
 	{
 		/// <summary>
 		/// Create the form

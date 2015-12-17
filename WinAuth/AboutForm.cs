@@ -35,7 +35,7 @@ namespace WinAuth
 	/// <summary>
 	/// Show the About form
 	/// </summary>
-	public partial class AboutForm : ResourceForm
+	public partial class AboutForm : Form
 	{
 		/// <summary>
 		/// Current config object

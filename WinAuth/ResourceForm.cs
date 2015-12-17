@@ -25,9 +25,6 @@ using System.ComponentModel;
 using System.Security;
 using System.Windows.Forms;
 
-using MetroFramework.Components;
-using MetroFramework.Drawing;
-using MetroFramework.Interfaces;
 using System.Resources;
 
 namespace WinAuth
@@ -35,9 +32,8 @@ namespace WinAuth
 	/// <summary>
 	/// Subclass of the MetroForm that replaces Text properties of any matching controls from the resource file
 	/// </summary>
-	[Designer("MetroFramework.Design.Controls.MetroLabelDesigner, " + MetroFramework.AssemblyRef.MetroFrameworkDesignSN)]
 	[ToolboxBitmap(typeof(Form))]
-	public class ResourceForm : MetroFramework.Forms.MetroForm
+	public class ResourceForm : Form
 	{
 		/// <summary>
 		/// Comparer that checks two types and returns trues if they are the same or one is based on the other
@@ -81,7 +77,7 @@ namespace WinAuth
 		protected override void OnLoad(EventArgs e)
 		{
 			// go through all controls and set any text from resources (including this form)
-			//var controls = GetControls(this, new Type[] { typeof(MetroFramework.Controls.MetroLabel), typeof(MetroFramework.Controls.MetroCheckBox) });
+			//var controls = GetControls(this, new Type[] { typeof(System.Windows.Forms.Label), typeof(System.Windows.Forms.CheckBox) });
 			var controls = GetControls(this);
 
 			string formname = "_" + this.Name + "_";
@@ -96,14 +92,7 @@ namespace WinAuth
 				text = WinAuthMain.StringResources.GetString(controlname, System.Threading.Thread.CurrentThread.CurrentCulture);
 				if (text != null)
 				{
-					if (c is MetroFramework.Controls.MetroTextBox)
-					{
-						((MetroFramework.Controls.MetroTextBox)c).PromptText = text;
-					}
-					else
-					{
-						c.Text = text;
-					}
+					c.Text = text;
 				}
 			}
 

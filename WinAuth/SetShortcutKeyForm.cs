@@ -29,7 +29,7 @@ using WinAuth.Resources;
 
 namespace WinAuth
 {
-	public partial class SetShortcutKeyForm : ResourceForm
+	public partial class SetShortcutKeyForm : Form
 	{
 		/// <summary>
 		/// Inner class to put into the dropdown to represent the keys

@@ -29,27 +29,27 @@ namespace WinAuth
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.secretCodeField = new MetroFramework.Controls.MetroTextBox();
-			this.step1Label = new MetroFramework.Controls.MetroLabel();
-			this.okButton = new MetroFramework.Controls.MetroButton();
-			this.cancelButton = new MetroFramework.Controls.MetroButton();
-			this.nameLabel = new MetroFramework.Controls.MetroLabel();
-			this.nameField = new MetroFramework.Controls.MetroTextBox();
-			this.step2Label = new MetroFramework.Controls.MetroLabel();
-			this.verifyButton = new MetroFramework.Controls.MetroButton();
+			this.secretCodeField = new System.Windows.Forms.TextBox();
+			this.step1Label = new System.Windows.Forms.Label();
+			this.okButton = new System.Windows.Forms.Button();
+			this.cancelButton = new System.Windows.Forms.Button();
+			this.nameLabel = new System.Windows.Forms.Label();
+			this.nameField = new System.Windows.Forms.TextBox();
+			this.step2Label = new System.Windows.Forms.Label();
+			this.verifyButton = new System.Windows.Forms.Button();
 			this.codeProgress = new System.Windows.Forms.ProgressBar();
 			this.codeField = new WinAuth.SecretTextBox();
-			this.step4Label = new MetroFramework.Controls.MetroLabel();
+			this.step4Label = new System.Windows.Forms.Label();
 			this.timer = new System.Windows.Forms.Timer(this.components);
-			this.step3Label = new MetroFramework.Controls.MetroLabel();
-			this.timeBasedRadio = new MetroFramework.Controls.MetroRadioButton();
-			this.counterBasedRadio = new MetroFramework.Controls.MetroRadioButton();
+			this.step3Label = new System.Windows.Forms.Label();
+			this.timeBasedRadio = new System.Windows.Forms.RadioButton();
+			this.counterBasedRadio = new System.Windows.Forms.RadioButton();
 			this.timeBasedPanel = new System.Windows.Forms.Panel();
 			this.counterBasedPanel = new System.Windows.Forms.Panel();
-			this.verifyCounterButton = new MetroFramework.Controls.MetroButton();
-			this.counterField = new MetroFramework.Controls.MetroTextBox();
-			this.step3CounterLabel = new MetroFramework.Controls.MetroLabel();
-			this.secretCodeButton = new MetroFramework.Controls.MetroButton();
+			this.verifyCounterButton = new System.Windows.Forms.Button();
+			this.counterField = new System.Windows.Forms.TextBox();
+			this.step3CounterLabel = new System.Windows.Forms.Label();
+			this.secretCodeButton = new System.Windows.Forms.Button();
 			this.timeBasedPanel.SuspendLayout();
 			this.counterBasedPanel.SuspendLayout();
 			this.SuspendLayout();
@@ -66,7 +66,6 @@ namespace WinAuth
 			this.secretCodeField.SelectedText = "";
 			this.secretCodeField.Size = new System.Drawing.Size(311, 22);
 			this.secretCodeField.TabIndex = 1;
-			this.secretCodeField.UseSelectable = true;
 			// 
 			// step1Label
 			// 
@@ -86,7 +85,6 @@ namespace WinAuth
 			this.okButton.Size = new System.Drawing.Size(75, 23);
 			this.okButton.TabIndex = 6;
 			this.okButton.Text = "OK";
-			this.okButton.UseSelectable = true;
 			this.okButton.Click += new System.EventHandler(this.okButton_Click);
 			// 
 			// cancelButton
@@ -98,7 +96,6 @@ namespace WinAuth
 			this.cancelButton.Size = new System.Drawing.Size(75, 23);
 			this.cancelButton.TabIndex = 7;
 			this.cancelButton.Text = "Cancel";
-			this.cancelButton.UseSelectable = true;
 			this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
 			// 
 			// nameLabel
@@ -120,7 +117,6 @@ namespace WinAuth
 			this.nameField.SelectedText = "";
 			this.nameField.Size = new System.Drawing.Size(371, 22);
 			this.nameField.TabIndex = 0;
-			this.nameField.UseSelectable = true;
 			// 
 			// step2Label
 			// 
@@ -138,7 +134,6 @@ namespace WinAuth
 			this.verifyButton.Size = new System.Drawing.Size(158, 23);
 			this.verifyButton.TabIndex = 0;
 			this.verifyButton.Text = "Verify Authenticator";
-			this.verifyButton.UseSelectable = true;
 			this.verifyButton.Click += new System.EventHandler(this.verifyButton_Click);
 			// 
 			// codeProgress
@@ -197,7 +192,6 @@ namespace WinAuth
 			this.timeBasedRadio.TabIndex = 3;
 			this.timeBasedRadio.TabStop = true;
 			this.timeBasedRadio.Text = "Time-based";
-			this.timeBasedRadio.UseSelectable = true;
 			this.timeBasedRadio.CheckedChanged += new System.EventHandler(this.timeBasedRadio_CheckedChanged);
 			// 
 			// counterBasedRadio
@@ -208,7 +202,6 @@ namespace WinAuth
 			this.counterBasedRadio.Size = new System.Drawing.Size(102, 15);
 			this.counterBasedRadio.TabIndex = 4;
 			this.counterBasedRadio.Text = "Counter-based";
-			this.counterBasedRadio.UseSelectable = true;
 			this.counterBasedRadio.CheckedChanged += new System.EventHandler(this.counterBasedRadio_CheckedChanged);
 			// 
 			// timeBasedPanel
@@ -242,7 +235,6 @@ namespace WinAuth
 			this.verifyCounterButton.Size = new System.Drawing.Size(158, 23);
 			this.verifyCounterButton.TabIndex = 1;
 			this.verifyCounterButton.Text = "Verify Authenticator";
-			this.verifyCounterButton.UseSelectable = true;
 			this.verifyCounterButton.Click += new System.EventHandler(this.verifyButton_Click);
 			// 
 			// counterField
@@ -257,7 +249,6 @@ namespace WinAuth
 			this.counterField.SelectedText = "";
 			this.counterField.Size = new System.Drawing.Size(74, 20);
 			this.counterField.TabIndex = 0;
-			this.counterField.UseSelectable = true;
 			// 
 			// step3CounterLabel
 			// 
@@ -275,7 +266,6 @@ namespace WinAuth
 			this.secretCodeButton.Size = new System.Drawing.Size(75, 23);
 			this.secretCodeButton.TabIndex = 2;
 			this.secretCodeButton.Text = "Decode";
-			this.secretCodeButton.UseSelectable = true;
 			this.secretCodeButton.Click += new System.EventHandler(this.secretCodeButton_Click);
 			// 
 			// AddAuthenticator
@@ -283,7 +273,6 @@ namespace WinAuth
 			this.AcceptButton = this.okButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
 			this.CancelButton = this.cancelButton;
 			this.ClientSize = new System.Drawing.Size(471, 516);
 			this.Controls.Add(this.secretCodeButton);
@@ -303,7 +292,6 @@ namespace WinAuth
 			this.Controls.Add(this.step1Label);
 			this.MaximizeBox = false;
 			this.Name = "AddAuthenticator";
-			this.Resizable = false;
 			this.ShowIcon = false;
 			this.Text = "Add Authenticator";
 			this.Load += new System.EventHandler(this.AddAuthenticator_Load);
@@ -316,26 +304,26 @@ namespace WinAuth
 
 		#endregion
 
-		private MetroFramework.Controls.MetroLabel step1Label;
-		private MetroFramework.Controls.MetroButton okButton;
-		private MetroFramework.Controls.MetroButton cancelButton;
-		private MetroFramework.Controls.MetroTextBox secretCodeField;
-		private MetroFramework.Controls.MetroLabel nameLabel;
-		private MetroFramework.Controls.MetroTextBox nameField;
-		private MetroFramework.Controls.MetroLabel step2Label;
-		private MetroFramework.Controls.MetroButton verifyButton;
+		private System.Windows.Forms.Label step1Label;
+		private System.Windows.Forms.Button okButton;
+		private System.Windows.Forms.Button cancelButton;
+		private System.Windows.Forms.TextBox secretCodeField;
+		private System.Windows.Forms.Label nameLabel;
+		private System.Windows.Forms.TextBox nameField;
+		private System.Windows.Forms.Label step2Label;
+		private System.Windows.Forms.Button verifyButton;
 		private System.Windows.Forms.ProgressBar codeProgress;
 		private SecretTextBox codeField;
-		private MetroFramework.Controls.MetroLabel step4Label;
+		private System.Windows.Forms.Label step4Label;
 		private System.Windows.Forms.Timer timer;
-		private MetroFramework.Controls.MetroLabel step3Label;
-		private MetroFramework.Controls.MetroRadioButton timeBasedRadio;
-		private MetroFramework.Controls.MetroRadioButton counterBasedRadio;
+		private System.Windows.Forms.Label step3Label;
+		private System.Windows.Forms.RadioButton timeBasedRadio;
+		private System.Windows.Forms.RadioButton counterBasedRadio;
 		private System.Windows.Forms.Panel timeBasedPanel;
 		private System.Windows.Forms.Panel counterBasedPanel;
-		private MetroFramework.Controls.MetroLabel step3CounterLabel;
-		private MetroFramework.Controls.MetroTextBox counterField;
-		private MetroFramework.Controls.MetroButton verifyCounterButton;
-		private MetroFramework.Controls.MetroButton secretCodeButton;
+		private System.Windows.Forms.Label step3CounterLabel;
+		private System.Windows.Forms.TextBox counterField;
+		private System.Windows.Forms.Button verifyCounterButton;
+		private System.Windows.Forms.Button secretCodeButton;
 	}
 }

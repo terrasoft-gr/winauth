@@ -39,7 +39,7 @@ namespace WinAuth
 	/// <summary>
 	/// Form class for create a new Battle.net authenticator
 	/// </summary>
-	public partial class AddAuthenticator : ResourceForm
+	public partial class AddAuthenticator : Form
 	{
 		/// <summary>
 		/// HOTP string

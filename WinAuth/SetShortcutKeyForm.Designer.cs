@@ -28,24 +28,23 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.introLabel = new MetroFramework.Controls.MetroLabel();
-			this.shiftToggle = new MetroFramework.Controls.MetroToggle();
-			this.ctrlLabel = new MetroFramework.Controls.MetroLabel();
-			this.shiftLabel = new MetroFramework.Controls.MetroLabel();
-			this.altLabel = new MetroFramework.Controls.MetroLabel();
-			this.ctrlToggle = new MetroFramework.Controls.MetroToggle();
-			this.altToggle = new MetroFramework.Controls.MetroToggle();
-			this.keyCombo = new MetroFramework.Controls.MetroComboBox();
-			this.keyLabel = new MetroFramework.Controls.MetroLabel();
-			this.cancelButton = new MetroFramework.Controls.MetroButton();
-			this.okButton = new MetroFramework.Controls.MetroButton();
+			this.introLabel = new System.Windows.Forms.Label();
+			this.shiftToggle = new System.Windows.Forms.CheckBox();
+			this.ctrlLabel = new System.Windows.Forms.Label();
+			this.shiftLabel = new System.Windows.Forms.Label();
+			this.altLabel = new System.Windows.Forms.Label();
+			this.ctrlToggle = new System.Windows.Forms.CheckBox();
+			this.altToggle = new System.Windows.Forms.CheckBox();
+			this.keyCombo = new System.Windows.Forms.ComboBox();
+			this.keyLabel = new System.Windows.Forms.Label();
+			this.cancelButton = new System.Windows.Forms.Button();
+			this.okButton = new System.Windows.Forms.Button();
 			this.injectRadioButton = new WinAuth.GroupMetroRadioButton();
 			this.pasteRadioButton = new WinAuth.GroupMetroRadioButton();
 			this.advancedRadioButton = new WinAuth.GroupMetroRadioButton();
-			this.advancedTextbox = new MetroFramework.Controls.MetroTextBox();
-			this.injectTextbox = new MetroFramework.Controls.MetroTextBox();
-			this.tooltip = new MetroFramework.Drawing.Html.HtmlToolTip();
-			this.advancedLink = new MetroFramework.Controls.MetroLink();
+			this.advancedTextbox = new System.Windows.Forms.TextBox();
+			this.injectTextbox = new System.Windows.Forms.TextBox();
+			this.advancedLink = new System.Windows.Forms.LinkLabel();
 			this.notifyRadioButton = new WinAuth.GroupMetroRadioButton();
 			this.SuspendLayout();
 			// 
@@ -65,7 +64,6 @@
 			this.shiftToggle.Size = new System.Drawing.Size(80, 17);
 			this.shiftToggle.TabIndex = 0;
 			this.shiftToggle.Text = "Off";
-			this.shiftToggle.UseSelectable = true;
 			// 
 			// ctrlLabel
 			// 
@@ -102,7 +100,6 @@
 			this.ctrlToggle.Size = new System.Drawing.Size(80, 17);
 			this.ctrlToggle.TabIndex = 1;
 			this.ctrlToggle.Text = "Off";
-			this.ctrlToggle.UseSelectable = true;
 			// 
 			// altToggle
 			// 
@@ -112,7 +109,6 @@
 			this.altToggle.Size = new System.Drawing.Size(80, 17);
 			this.altToggle.TabIndex = 2;
 			this.altToggle.Text = "Off";
-			this.altToggle.UseSelectable = true;
 			// 
 			// keyCombo
 			// 
@@ -168,7 +164,6 @@
 			this.keyCombo.Name = "keyCombo";
 			this.keyCombo.Size = new System.Drawing.Size(144, 29);
 			this.keyCombo.TabIndex = 3;
-			this.keyCombo.UseSelectable = true;
 			this.keyCombo.SelectedIndexChanged += new System.EventHandler(this.keyCombo_SelectedIndexChanged);
 			// 
 			// keyLabel
@@ -189,7 +184,6 @@
 			this.cancelButton.Size = new System.Drawing.Size(75, 23);
 			this.cancelButton.TabIndex = 11;
 			this.cancelButton.Text = "Cancel";
-			this.cancelButton.UseSelectable = true;
 			// 
 			// okButton
 			// 
@@ -200,7 +194,6 @@
 			this.okButton.Size = new System.Drawing.Size(75, 23);
 			this.okButton.TabIndex = 10;
 			this.okButton.Text = "OK";
-			this.okButton.UseSelectable = true;
 			this.okButton.Click += new System.EventHandler(this.okButton_Click);
 			// 
 			// injectRadioButton
@@ -213,7 +206,6 @@
 			this.injectRadioButton.Size = new System.Drawing.Size(269, 15);
 			this.injectRadioButton.TabIndex = 5;
 			this.injectRadioButton.Text = "Enter code into current window or one called...";
-			this.injectRadioButton.UseSelectable = true;
 			this.injectRadioButton.CheckedChanged += new System.EventHandler(this.injectRadioButton_CheckedChanged);
 			// 
 			// pasteRadioButton
@@ -226,7 +218,6 @@
 			this.pasteRadioButton.Size = new System.Drawing.Size(167, 15);
 			this.pasteRadioButton.TabIndex = 7;
 			this.pasteRadioButton.Text = "Copy code to the clipboard";
-			this.pasteRadioButton.UseSelectable = true;
 			// 
 			// advancedRadioButton
 			// 
@@ -238,7 +229,6 @@
 			this.advancedRadioButton.Size = new System.Drawing.Size(85, 15);
 			this.advancedRadioButton.TabIndex = 8;
 			this.advancedRadioButton.Text = "Advanced...";
-			this.advancedRadioButton.UseSelectable = true;
 			this.advancedRadioButton.CheckedChanged += new System.EventHandler(this.advancedRadioButton_CheckedChanged);
 			// 
 			// advancedTextbox
@@ -254,7 +244,6 @@
 			this.advancedTextbox.Size = new System.Drawing.Size(315, 68);
 			this.advancedTextbox.TabIndex = 9;
 			this.tooltip.SetToolTip(this.advancedTextbox, "_SetShortcutKeyForm_advancedTextbox_tooltip");
-			this.advancedTextbox.UseSelectable = true;
 			// 
 			// injectTextbox
 			// 
@@ -263,12 +252,10 @@
 			this.injectTextbox.MaxLength = 32767;
 			this.injectTextbox.Name = "injectTextbox";
 			this.injectTextbox.PasswordChar = '\0';
-			this.injectTextbox.PromptText = "Window title or process name";
 			this.injectTextbox.ScrollBars = System.Windows.Forms.ScrollBars.None;
 			this.injectTextbox.SelectedText = "";
 			this.injectTextbox.Size = new System.Drawing.Size(315, 23);
 			this.injectTextbox.TabIndex = 6;
-			this.injectTextbox.UseSelectable = true;
 			// 
 			// tooltip
 			// 
@@ -283,7 +270,6 @@
 			this.advancedLink.TabIndex = 11;
 			this.advancedLink.Text = "more info";
 			this.advancedLink.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.advancedLink.UseSelectable = true;
 			this.advancedLink.Click += new System.EventHandler(this.advancedLink_Click);
 			// 
 			// notifyRadioButton
@@ -298,14 +284,12 @@
 			this.notifyRadioButton.TabIndex = 4;
 			this.notifyRadioButton.TabStop = true;
 			this.notifyRadioButton.Text = "Show a notification";
-			this.notifyRadioButton.UseSelectable = true;
 			this.notifyRadioButton.CheckedChanged += new System.EventHandler(this.injectRadioButton_CheckedChanged);
 			// 
 			// SetShortcutKeyForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
 			this.CancelButton = this.cancelButton;
 			this.ClientSize = new System.Drawing.Size(387, 440);
 			this.Controls.Add(this.advancedLink);
@@ -327,7 +311,6 @@
 			this.Controls.Add(this.shiftToggle);
 			this.Controls.Add(this.introLabel);
 			this.Name = "SetShortcutKeyForm";
-			this.Resizable = false;
 			this.Text = "Shortcut Key";
 			this.Load += new System.EventHandler(this.SetShortcutKeyForm_Load);
 			this.ResumeLayout(false);
@@ -337,24 +320,24 @@
 
 		#endregion
 
-		private MetroFramework.Controls.MetroLabel introLabel;
-		private MetroFramework.Controls.MetroToggle shiftToggle;
-		private MetroFramework.Controls.MetroLabel ctrlLabel;
-		private MetroFramework.Controls.MetroLabel shiftLabel;
-		private MetroFramework.Controls.MetroLabel altLabel;
-		private MetroFramework.Controls.MetroToggle ctrlToggle;
-		private MetroFramework.Controls.MetroToggle altToggle;
-		private MetroFramework.Controls.MetroComboBox keyCombo;
-		private MetroFramework.Controls.MetroLabel keyLabel;
-		private MetroFramework.Controls.MetroButton cancelButton;
-		private MetroFramework.Controls.MetroButton okButton;
+		private System.Windows.Forms.Label introLabel;
+		private System.Windows.Forms.CheckBox shiftToggle;
+		private System.Windows.Forms.Label ctrlLabel;
+		private System.Windows.Forms.Label shiftLabel;
+		private System.Windows.Forms.Label altLabel;
+		private System.Windows.Forms.CheckBox ctrlToggle;
+		private System.Windows.Forms.CheckBox altToggle;
+		private System.Windows.Forms.ComboBox keyCombo;
+		private System.Windows.Forms.Label keyLabel;
+		private System.Windows.Forms.Button cancelButton;
+		private System.Windows.Forms.Button okButton;
 		private GroupMetroRadioButton injectRadioButton;
 		private GroupMetroRadioButton pasteRadioButton;
 		private GroupMetroRadioButton advancedRadioButton;
-		private MetroFramework.Controls.MetroTextBox advancedTextbox;
-		private MetroFramework.Controls.MetroTextBox injectTextbox;
-		private MetroFramework.Drawing.Html.HtmlToolTip tooltip;
-		private MetroFramework.Controls.MetroLink advancedLink;
+		private System.Windows.Forms.TextBox advancedTextbox;
+		private System.Windows.Forms.TextBox injectTextbox;
+		private System.Windows.Forms.ToolTip tooltip;
+		private System.Windows.Forms.LinkLabel advancedLink;
 		private GroupMetroRadioButton notifyRadioButton;
 	}
 }

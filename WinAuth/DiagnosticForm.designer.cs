@@ -31,7 +31,7 @@ namespace WinAuth
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DiagnosticForm));
 			this.dataText = new System.Windows.Forms.TextBox();
 			this.label = new System.Windows.Forms.Label();
-			this.closeButton = new MetroFramework.Controls.MetroButton();
+			this.closeButton = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// dataText
@@ -67,20 +67,17 @@ namespace WinAuth
 			this.closeButton.Size = new System.Drawing.Size(75, 23);
 			this.closeButton.TabIndex = 6;
 			this.closeButton.Text = "Close";
-			this.closeButton.UseSelectable = true;
 			// 
 			// DiagnosticForm
 			// 
 			this.AcceptButton = this.closeButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
 			this.ClientSize = new System.Drawing.Size(514, 425);
 			this.Controls.Add(this.closeButton);
 			this.Controls.Add(this.dataText);
 			this.Controls.Add(this.label);
 			this.Name = "DiagnosticForm";
-			this.Resizable = false;
 			this.Text = "Diagnostic Information";
 			this.Load += new System.EventHandler(this.ErrorReportForm_Load);
 			this.ResumeLayout(false);
@@ -92,6 +89,6 @@ namespace WinAuth
 
 		private System.Windows.Forms.Label label;
 		private System.Windows.Forms.TextBox dataText;
-		private MetroFramework.Controls.MetroButton closeButton;
+		private System.Windows.Forms.Button closeButton;
 	}
 }

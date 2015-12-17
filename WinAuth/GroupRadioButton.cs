@@ -27,7 +27,7 @@ using System.Windows.Forms;
 
 namespace WinAuth
 {
-	public class GroupMetroRadioButton : MetroFramework.Controls.MetroRadioButton
+	public class GroupMetroRadioButton : System.Windows.Forms.RadioButton
 	{
 		public GroupMetroRadioButton()
 			: base()

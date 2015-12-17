@@ -34,8 +34,6 @@ using System.Xml;
 using System.Web;
 using System.Windows.Forms;
 
-using MetroFramework;
-using MetroFramework.Forms;
 
 using WinAuth.Resources;
 using System.Security;

@@ -29,10 +29,10 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.passwordField = new MetroFramework.Controls.MetroTextBox();
-			this.cancelButton = new MetroFramework.Controls.MetroButton();
-			this.okButton = new MetroFramework.Controls.MetroButton();
-			this.invalidPasswordLabel = new MetroFramework.Controls.MetroLabel();
+			this.passwordField = new System.Windows.Forms.TextBox();
+			this.cancelButton = new System.Windows.Forms.Button();
+			this.okButton = new System.Windows.Forms.Button();
+			this.invalidPasswordLabel = new System.Windows.Forms.Label();
 			this.invalidPasswordTimer = new System.Windows.Forms.Timer(this.components);
 			this.SuspendLayout();
 			// 
@@ -42,12 +42,10 @@
 			this.passwordField.MaxLength = 32767;
 			this.passwordField.Name = "passwordField";
 			this.passwordField.PasswordChar = '●';
-			this.passwordField.PromptText = "Password";
 			this.passwordField.ScrollBars = System.Windows.Forms.ScrollBars.None;
 			this.passwordField.SelectedText = "";
 			this.passwordField.Size = new System.Drawing.Size(277, 23);
 			this.passwordField.TabIndex = 1;
-			this.passwordField.UseSelectable = true;
 			this.passwordField.UseSystemPasswordChar = true;
 			// 
 			// cancelButton
@@ -59,7 +57,6 @@
 			this.cancelButton.Size = new System.Drawing.Size(75, 23);
 			this.cancelButton.TabIndex = 2;
 			this.cancelButton.Text = "strings.Cancel";
-			this.cancelButton.UseSelectable = true;
 			// 
 			// okButton
 			// 
@@ -70,7 +67,6 @@
 			this.okButton.Size = new System.Drawing.Size(75, 23);
 			this.okButton.TabIndex = 2;
 			this.okButton.Text = "strings.OK";
-			this.okButton.UseSelectable = true;
 			this.okButton.Click += new System.EventHandler(this.okButton_Click);
 			// 
 			// invalidPasswordLabel
@@ -82,7 +78,6 @@
 			this.invalidPasswordLabel.Size = new System.Drawing.Size(140, 19);
 			this.invalidPasswordLabel.TabIndex = 3;
 			this.invalidPasswordLabel.Text = "strings.InvalidPassword";
-			this.invalidPasswordLabel.UseCustomForeColor = true;
 			this.invalidPasswordLabel.Visible = false;
 			// 
 			// invalidPasswordTimer
@@ -95,7 +90,6 @@
 			this.AcceptButton = this.okButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
 			this.CancelButton = this.cancelButton;
 			this.ClientSize = new System.Drawing.Size(331, 162);
 			this.Controls.Add(this.invalidPasswordLabel);
@@ -105,7 +99,6 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "GetPasswordForm";
-			this.Resizable = false;
 			this.Text = "_GetPasswordForm_";
 			this.Load += new System.EventHandler(this.GetPasswordForm_Load);
 			this.ResumeLayout(false);
@@ -115,10 +108,10 @@
 
 		#endregion
 
-		private MetroFramework.Controls.MetroTextBox passwordField;
-		private MetroFramework.Controls.MetroButton cancelButton;
-		private MetroFramework.Controls.MetroButton okButton;
-		private MetroFramework.Controls.MetroLabel invalidPasswordLabel;
+		private System.Windows.Forms.TextBox passwordField;
+		private System.Windows.Forms.Button cancelButton;
+		private System.Windows.Forms.Button okButton;
+		private System.Windows.Forms.Label invalidPasswordLabel;
 		private System.Windows.Forms.Timer invalidPasswordTimer;
 	}
 }

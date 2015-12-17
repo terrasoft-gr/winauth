@@ -131,7 +131,6 @@ namespace WinAuth
 			this.AcceptButton = this.continueButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
 			this.ClientSize = new System.Drawing.Size(685, 523);
 			this.ControlBox = false;
 			this.Controls.Add(this.errorLabel);
@@ -146,7 +145,6 @@ namespace WinAuth
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ExceptionForm";
-			this.Resizable = false;
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "WinAuth Error";

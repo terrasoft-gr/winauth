@@ -29,12 +29,12 @@
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutForm));
-			this.aboutLabel = new MetroFramework.Controls.MetroLabel();
-			this.licenseLabel = new MetroFramework.Controls.MetroLabel();
+			this.aboutLabel = new System.Windows.Forms.Label();
+			this.licenseLabel = new System.Windows.Forms.Label();
 			this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-			this.trademarkLabel = new MetroFramework.Controls.MetroLabel();
-			this.reportButton = new MetroFramework.Controls.MetroButton();
-			this.closeButton = new MetroFramework.Controls.MetroButton();
+			this.trademarkLabel = new System.Windows.Forms.Label();
+			this.reportButton = new System.Windows.Forms.Button();
+			this.closeButton = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// aboutLabel
@@ -68,7 +68,6 @@
 			// 
 			// trademarkLabel
 			// 
-			this.trademarkLabel.FontSize = MetroFramework.MetroLabelSize.Small;
 			this.trademarkLabel.Location = new System.Drawing.Point(23, 308);
 			this.trademarkLabel.Name = "trademarkLabel";
 			this.trademarkLabel.Size = new System.Drawing.Size(368, 280);
@@ -83,7 +82,6 @@
 			this.reportButton.Size = new System.Drawing.Size(112, 23);
 			this.reportButton.TabIndex = 7;
 			this.reportButton.Text = "Diagnostics...";
-			this.reportButton.UseSelectable = true;
 			this.reportButton.Click += new System.EventHandler(this.reportButton_Click);
 			// 
 			// closeButton
@@ -95,14 +93,12 @@
 			this.closeButton.Size = new System.Drawing.Size(75, 23);
 			this.closeButton.TabIndex = 8;
 			this.closeButton.Text = "Close";
-			this.closeButton.UseSelectable = true;
 			this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
 			// 
 			// AboutForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
 			this.ClientSize = new System.Drawing.Size(415, 645);
 			this.Controls.Add(this.reportButton);
 			this.Controls.Add(this.closeButton);
@@ -111,7 +107,6 @@
 			this.Controls.Add(this.licenseLabel);
 			this.Controls.Add(this.aboutLabel);
 			this.Name = "AboutForm";
-			this.Resizable = false;
 			this.Text = "About WinAuth";
 			this.Load += new System.EventHandler(this.AboutForm_Load);
 			this.ResumeLayout(false);
@@ -121,11 +116,11 @@
 
 		#endregion
 
-		private MetroFramework.Controls.MetroLabel aboutLabel;
-		private MetroFramework.Controls.MetroLabel licenseLabel;
+		private System.Windows.Forms.Label aboutLabel;
+		private System.Windows.Forms.Label licenseLabel;
 		private System.Windows.Forms.RichTextBox richTextBox1;
-		private MetroFramework.Controls.MetroLabel trademarkLabel;
-		private MetroFramework.Controls.MetroButton reportButton;
-		private MetroFramework.Controls.MetroButton closeButton;
+		private System.Windows.Forms.Label trademarkLabel;
+		private System.Windows.Forms.Button reportButton;
+		private System.Windows.Forms.Button closeButton;
 	}
 }

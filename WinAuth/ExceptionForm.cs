@@ -39,7 +39,7 @@ namespace WinAuth
 	/// <summary>
 	/// General error report form
 	/// </summary>
-	public partial class ExceptionForm : WinAuth.ResourceForm
+	public partial class ExceptionForm : Form
 	{
 		/// <summary>
 		/// Exception that caused the error report

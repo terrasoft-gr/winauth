@@ -33,7 +33,7 @@ namespace WinAuth
 	/// <summary>
 	/// Class for form that prompts for password and unprotects authenticator
 	/// </summary>
-	public partial class GetPGPKeyForm : ResourceForm
+	public partial class GetPGPKeyForm : Form
 	{
 		/// <summary>
 		/// Create new form

@@ -33,7 +33,7 @@ namespace WinAuth
 	/// <summary>
 	/// General error report form
 	/// </summary>
-	public partial class DiagnosticForm : WinAuth.ResourceForm
+	public partial class DiagnosticForm : Form
 	{
 		/// <summary>
 		/// Current Winauth config settings

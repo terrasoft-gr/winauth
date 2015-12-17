@@ -28,7 +28,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MetroFramework.Controls;
 using WinAuth.Resources;
 
 namespace WinAuth
@@ -36,7 +35,7 @@ namespace WinAuth
 	/// <summary>
 	/// Form for setting the password and encryption for the current authenticators
 	/// </summary>
-	public partial class ChangePasswordForm : WinAuth.ResourceForm
+	public partial class ChangePasswordForm : Form
 	{
 		/// <summary>
 		/// Used to show a filled password box

@@ -29,10 +29,10 @@ namespace WinAuth
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BetaForm));
-			this.betaLabel = new MetroFramework.Controls.MetroLabel();
-			this.ckAgree = new MetroFramework.Controls.MetroCheckBox();
-			this.btnCancel = new MetroFramework.Controls.MetroButton();
-			this.btnOK = new MetroFramework.Controls.MetroButton();
+			this.betaLabel = new System.Windows.Forms.Label();
+			this.ckAgree = new System.Windows.Forms.CheckBox();
+			this.btnCancel = new System.Windows.Forms.Button();
+			this.btnOK = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// betaLabel
@@ -53,7 +53,6 @@ namespace WinAuth
 			this.ckAgree.Size = new System.Drawing.Size(340, 15);
 			this.ckAgree.TabIndex = 1;
 			this.ckAgree.Text = "I understand and accept the conditions of this BETA version.";
-			this.ckAgree.UseSelectable = true;
 			this.ckAgree.CheckedChanged += new System.EventHandler(this.ckAgree_CheckedChanged);
 			// 
 			// btnCancel
@@ -65,7 +64,6 @@ namespace WinAuth
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 1;
 			this.btnCancel.Text = "Cancel";
-			this.btnCancel.UseSelectable = true;
 			// 
 			// btnOK
 			// 
@@ -77,7 +75,6 @@ namespace WinAuth
 			this.btnOK.Size = new System.Drawing.Size(75, 23);
 			this.btnOK.TabIndex = 0;
 			this.btnOK.Text = "OK";
-			this.btnOK.UseSelectable = true;
 			this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
 			// 
 			// BetaForm
@@ -85,7 +82,6 @@ namespace WinAuth
 			this.AcceptButton = this.btnOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
 			this.CancelButton = this.btnCancel;
 			this.ClientSize = new System.Drawing.Size(683, 430);
 			this.Controls.Add(this.ckAgree);
@@ -103,9 +99,9 @@ namespace WinAuth
 
 		#endregion
 
-		private MetroFramework.Controls.MetroButton btnCancel;
-		private MetroFramework.Controls.MetroCheckBox ckAgree;
-		private MetroFramework.Controls.MetroButton btnOK;
-		private MetroFramework.Controls.MetroLabel betaLabel;
+		private System.Windows.Forms.Button btnCancel;
+		private System.Windows.Forms.CheckBox ckAgree;
+		private System.Windows.Forms.Button btnOK;
+		private System.Windows.Forms.Label betaLabel;
 	}
 }

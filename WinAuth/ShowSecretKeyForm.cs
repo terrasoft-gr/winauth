@@ -32,7 +32,7 @@ namespace WinAuth
 	/// <summary>
 	/// Form display initialization confirmation.
 	/// </summary>
-	public partial class ShowSecretKeyForm : ResourceForm
+	public partial class ShowSecretKeyForm : Form
 	{
 		/// <summary>
 		/// Current authenticator

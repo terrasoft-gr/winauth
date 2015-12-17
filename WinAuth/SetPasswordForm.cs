@@ -32,7 +32,7 @@ namespace WinAuth
 	/// <summary>
 	/// Form used to get a password used to protect an authenticator
 	/// </summary>
-	public partial class SetPasswordForm : ResourceForm
+	public partial class SetPasswordForm : Form
 	{
 		/// <summary>
 		/// Default constructor

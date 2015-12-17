@@ -28,12 +28,12 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.cancelButton = new MetroFramework.Controls.MetroButton();
-			this.versionInfoLabel = new MetroFramework.Drawing.Html.HtmlLabel();
-			this.autoCheckbox = new MetroFramework.Controls.MetroCheckBox();
-			this.autoDropdown = new MetroFramework.Controls.MetroComboBox();
-			this.okButton = new MetroFramework.Controls.MetroButton();
-			this.autoLabel = new MetroFramework.Controls.MetroLabel();
+			this.cancelButton = new System.Windows.Forms.Button();
+			this.versionInfoLabel = new System.Windows.Forms.Label();
+			this.autoCheckbox = new System.Windows.Forms.CheckBox();
+			this.autoDropdown = new System.Windows.Forms.ComboBox();
+			this.okButton = new System.Windows.Forms.Button();
+			this.autoLabel = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// cancelButton
@@ -45,14 +45,11 @@
 			this.cancelButton.Size = new System.Drawing.Size(75, 23);
 			this.cancelButton.TabIndex = 2;
 			this.cancelButton.Text = "Cancel";
-			this.cancelButton.UseSelectable = true;
 			// 
 			// versionInfoLabel
 			// 
 			this.versionInfoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.versionInfoLabel.AutoScroll = true;
-			this.versionInfoLabel.AutoScrollMinSize = new System.Drawing.Size(141, 23);
 			this.versionInfoLabel.AutoSize = false;
 			this.versionInfoLabel.BackColor = System.Drawing.SystemColors.Window;
 			this.versionInfoLabel.Location = new System.Drawing.Point(23, 63);
@@ -67,7 +64,6 @@
 			this.autoCheckbox.Name = "autoCheckbox";
 			this.autoCheckbox.Size = new System.Drawing.Size(254, 26);
 			this.autoCheckbox.TabIndex = 4;
-			this.autoCheckbox.UseSelectable = true;
 			this.autoCheckbox.CheckedChanged += new System.EventHandler(this.autoCheckbox_CheckedChanged);
 			// 
 			// autoDropdown
@@ -84,7 +80,6 @@
 			this.autoDropdown.Name = "autoDropdown";
 			this.autoDropdown.Size = new System.Drawing.Size(117, 29);
 			this.autoDropdown.TabIndex = 5;
-			this.autoDropdown.UseSelectable = true;
 			this.autoDropdown.SelectedIndexChanged += new System.EventHandler(this.autoDropdown_SelectedIndexChanged);
 			// 
 			// okButton
@@ -96,7 +91,6 @@
 			this.okButton.Size = new System.Drawing.Size(75, 23);
 			this.okButton.TabIndex = 2;
 			this.okButton.Text = "OK";
-			this.okButton.UseSelectable = true;
 			this.okButton.Click += new System.EventHandler(this.okButton_Click);
 			// 
 			// autoLabel
@@ -113,7 +107,6 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
-			this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
 			this.CancelButton = this.cancelButton;
 			this.ClientSize = new System.Drawing.Size(304, 295);
 			this.Controls.Add(this.autoLabel);
@@ -125,7 +118,6 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "UpdateCheckForm";
-			this.Resizable = false;
 			this.Text = "Check for Updates";
 			this.Load += new System.EventHandler(this.UpdateCheckForm_Load);
 			this.ResumeLayout(false);
@@ -134,11 +126,11 @@
 
 		#endregion
 
-		private MetroFramework.Controls.MetroButton cancelButton;
-		private MetroFramework.Drawing.Html.HtmlLabel versionInfoLabel;
-		private MetroFramework.Controls.MetroCheckBox autoCheckbox;
-		private MetroFramework.Controls.MetroComboBox autoDropdown;
-		private MetroFramework.Controls.MetroButton okButton;
-		private MetroFramework.Controls.MetroLabel autoLabel;
+		private System.Windows.Forms.Button cancelButton;
+		private System.Windows.Forms.Label versionInfoLabel;
+		private System.Windows.Forms.CheckBox autoCheckbox;
+		private System.Windows.Forms.ComboBox autoDropdown;
+		private System.Windows.Forms.Button okButton;
+		private System.Windows.Forms.Label autoLabel;
 	}
 }

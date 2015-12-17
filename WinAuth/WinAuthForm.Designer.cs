@@ -1,8 +1,6 @@
 ﻿namespace WinAuth
 {
-	using MetroFramework;
-	using MetroFramework.Forms;
-	
+			
 	partial class WinAuthForm
   {
     /// <summary>
@@ -36,37 +34,34 @@
 			this.mainTimer = new System.Windows.Forms.Timer(this.components);
 			this.authenticatorMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.metroStyleExtender = new MetroFramework.Components.MetroStyleExtender(this.components);
 			this.addAuthenticatorMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.optionsMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
 			this.notifyMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.passwordTimer = new System.Windows.Forms.Timer(this.components);
 			this.hotkeyTimer = new System.Windows.Forms.Timer(this.components);
-			this.yubiPanel = new MetroFramework.Controls.MetroPanel();
-			this.yubiRetryButton = new MetroFramework.Controls.MetroButton();
-			this.yubiLabel = new MetroFramework.Controls.MetroLabel();
+			this.yubiPanel = new System.Windows.Forms.Panel();
+			this.yubiRetryButton = new System.Windows.Forms.Button();
+			this.yubiLabel = new System.Windows.Forms.Label();
 			this.yubiImage = new System.Windows.Forms.PictureBox();
-			this.passwordPanel = new MetroFramework.Controls.MetroPanel();
-			this.passwordButton = new MetroFramework.Controls.MetroButton();
-			this.passwordErrorLabel = new MetroFramework.Controls.MetroLabel();
-			this.passwordLabel = new MetroFramework.Controls.MetroLabel();
-			this.passwordField = new MetroFramework.Controls.MetroTextBox();
-			this.introLabel = new MetroFramework.Controls.MetroLabel();
-			this.commandPanel = new MetroFramework.Controls.MetroPanel();
-			this.newVersionLink = new MetroFramework.Controls.MetroLink();
-			this.optionsButton = new MetroFramework.Controls.MetroButton();
-			this.addAuthenticatorButton = new MetroFramework.Controls.MetroButton();
+			this.passwordPanel = new System.Windows.Forms.Panel();
+			this.passwordButton = new System.Windows.Forms.Button();
+			this.passwordErrorLabel = new System.Windows.Forms.Label();
+			this.passwordLabel = new System.Windows.Forms.Label();
+			this.passwordField = new System.Windows.Forms.TextBox();
+			this.introLabel = new System.Windows.Forms.Label();
+			this.commandPanel = new System.Windows.Forms.Panel();
+			this.newVersionLink = new System.Windows.Forms.LinkLabel();
+			this.optionsButton = new System.Windows.Forms.Button();
+			this.addAuthenticatorButton = new System.Windows.Forms.Button();
 			this.authenticatorList = new WinAuth.AuthenticatorListBox();
-			this.metroStyleManager = new MetroFramework.Components.MetroStyleManager(this.components);
-			this.loadingPanel = new MetroFramework.Controls.MetroPanel();
+			this.loadingPanel = new System.Windows.Forms.Panel();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.authenticatorMenu.SuspendLayout();
 			this.yubiPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.yubiImage)).BeginInit();
 			this.passwordPanel.SuspendLayout();
 			this.commandPanel.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.metroStyleManager)).BeginInit();
 			this.loadingPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
@@ -130,16 +125,10 @@
 			this.yubiPanel.Controls.Add(this.yubiRetryButton);
 			this.yubiPanel.Controls.Add(this.yubiLabel);
 			this.yubiPanel.Controls.Add(this.yubiImage);
-			this.yubiPanel.HorizontalScrollbarBarColor = true;
-			this.yubiPanel.HorizontalScrollbarHighlightOnWheel = false;
-			this.yubiPanel.HorizontalScrollbarSize = 10;
 			this.yubiPanel.Location = new System.Drawing.Point(20, 60);
 			this.yubiPanel.Name = "yubiPanel";
 			this.yubiPanel.Size = new System.Drawing.Size(380, 100);
 			this.yubiPanel.TabIndex = 5;
-			this.yubiPanel.VerticalScrollbarBarColor = true;
-			this.yubiPanel.VerticalScrollbarHighlightOnWheel = false;
-			this.yubiPanel.VerticalScrollbarSize = 10;
 			// 
 			// yubiRetryButton
 			// 
@@ -148,7 +137,6 @@
 			this.yubiRetryButton.Size = new System.Drawing.Size(75, 23);
 			this.yubiRetryButton.TabIndex = 5;
 			this.yubiRetryButton.Text = "OK";
-			this.yubiRetryButton.UseSelectable = true;
 			this.yubiRetryButton.Click += new System.EventHandler(this.yubiRetryButton_Click);
 			// 
 			// yubiLabel
@@ -175,16 +163,10 @@
 			this.passwordPanel.Controls.Add(this.passwordErrorLabel);
 			this.passwordPanel.Controls.Add(this.passwordLabel);
 			this.passwordPanel.Controls.Add(this.passwordField);
-			this.passwordPanel.HorizontalScrollbarBarColor = true;
-			this.passwordPanel.HorizontalScrollbarHighlightOnWheel = false;
-			this.passwordPanel.HorizontalScrollbarSize = 10;
 			this.passwordPanel.Location = new System.Drawing.Point(20, 60);
 			this.passwordPanel.Name = "passwordPanel";
 			this.passwordPanel.Size = new System.Drawing.Size(380, 100);
 			this.passwordPanel.TabIndex = 4;
-			this.passwordPanel.VerticalScrollbarBarColor = true;
-			this.passwordPanel.VerticalScrollbarHighlightOnWheel = false;
-			this.passwordPanel.VerticalScrollbarSize = 10;
 			// 
 			// passwordButton
 			// 
@@ -193,7 +175,6 @@
 			this.passwordButton.Size = new System.Drawing.Size(75, 23);
 			this.passwordButton.TabIndex = 1;
 			this.passwordButton.Text = "OK";
-			this.passwordButton.UseSelectable = true;
 			this.passwordButton.Click += new System.EventHandler(this.passwordButton_Click);
 			// 
 			// passwordErrorLabel
@@ -203,7 +184,6 @@
 			this.passwordErrorLabel.Name = "passwordErrorLabel";
 			this.passwordErrorLabel.Size = new System.Drawing.Size(326, 19);
 			this.passwordErrorLabel.TabIndex = 3;
-			this.passwordErrorLabel.UseCustomForeColor = true;
 			// 
 			// passwordLabel
 			// 
@@ -224,7 +204,6 @@
 			this.passwordField.SelectedText = "";
 			this.passwordField.Size = new System.Drawing.Size(236, 20);
 			this.passwordField.TabIndex = 0;
-			this.passwordField.UseSelectable = true;
 			this.passwordField.UseSystemPasswordChar = true;
 			this.passwordField.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.passwordField_KeyPress);
 			// 
@@ -243,16 +222,10 @@
 			this.commandPanel.Controls.Add(this.optionsButton);
 			this.commandPanel.Controls.Add(this.addAuthenticatorButton);
 			this.commandPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.commandPanel.HorizontalScrollbarBarColor = true;
-			this.commandPanel.HorizontalScrollbarHighlightOnWheel = false;
-			this.commandPanel.HorizontalScrollbarSize = 10;
 			this.commandPanel.Location = new System.Drawing.Point(20, 128);
 			this.commandPanel.Name = "commandPanel";
 			this.commandPanel.Size = new System.Drawing.Size(380, 32);
 			this.commandPanel.TabIndex = 1;
-			this.commandPanel.VerticalScrollbarBarColor = true;
-			this.commandPanel.VerticalScrollbarHighlightOnWheel = false;
-			this.commandPanel.VerticalScrollbarSize = 10;
 			this.commandPanel.Visible = false;
 			this.commandPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.commandPanel_MouseDown);
 			// 
@@ -264,7 +237,6 @@
 			this.newVersionLink.Size = new System.Drawing.Size(225, 23);
 			this.newVersionLink.TabIndex = 2;
 			this.newVersionLink.Text = "New version is available";
-			this.newVersionLink.UseSelectable = true;
 			this.newVersionLink.Visible = false;
 			this.newVersionLink.Click += new System.EventHandler(this.newVersionLink_Click);
 			// 
@@ -278,7 +250,6 @@
 			this.optionsButton.Name = "optionsButton";
 			this.optionsButton.Size = new System.Drawing.Size(28, 23);
 			this.optionsButton.TabIndex = 0;
-			this.optionsButton.UseSelectable = true;
 			this.optionsButton.Click += new System.EventHandler(this.optionsButton_Click);
 			// 
 			// addAuthenticatorButton
@@ -289,7 +260,6 @@
 			this.addAuthenticatorButton.Size = new System.Drawing.Size(70, 23);
 			this.addAuthenticatorButton.TabIndex = 0;
 			this.addAuthenticatorButton.Text = "Add";
-			this.addAuthenticatorButton.UseSelectable = true;
 			this.addAuthenticatorButton.Click += new System.EventHandler(this.addAuthenticatorButton_Click);
 			// 
 			// authenticatorList
@@ -315,23 +285,13 @@
 			this.authenticatorList.ItemRemoved += new WinAuth.AuthenticatorListItemRemovedHandler(this.authenticatorList_ItemRemoved);
 			this.authenticatorList.Reordered += new WinAuth.AuthenticatorListReorderedHandler(this.authenticatorList_Reordered);
 			// 
-			// metroStyleManager
-			// 
-			this.metroStyleManager.Owner = this;
-			// 
 			// loadingPanel
 			// 
 			this.loadingPanel.Controls.Add(this.pictureBox1);
-			this.loadingPanel.HorizontalScrollbarBarColor = true;
-			this.loadingPanel.HorizontalScrollbarHighlightOnWheel = false;
-			this.loadingPanel.HorizontalScrollbarSize = 10;
 			this.loadingPanel.Location = new System.Drawing.Point(20, 60);
 			this.loadingPanel.Name = "loadingPanel";
 			this.loadingPanel.Size = new System.Drawing.Size(380, 100);
 			this.loadingPanel.TabIndex = 6;
-			this.loadingPanel.VerticalScrollbarBarColor = true;
-			this.loadingPanel.VerticalScrollbarHighlightOnWheel = false;
-			this.loadingPanel.VerticalScrollbarSize = 10;
 			// 
 			// pictureBox1
 			// 
@@ -373,7 +333,6 @@
 			this.passwordPanel.ResumeLayout(false);
 			this.passwordPanel.PerformLayout();
 			this.commandPanel.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.metroStyleManager)).EndInit();
 			this.loadingPanel.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
@@ -382,33 +341,31 @@
 
     #endregion
 
-		private MetroFramework.Components.MetroStyleManager metroStyleManager;
-		private MetroFramework.Components.MetroStyleExtender metroStyleExtender;
 		private AuthenticatorListBox authenticatorList;
 		private System.Windows.Forms.Timer mainTimer;
 		private System.Windows.Forms.ContextMenuStrip authenticatorMenu;
 		private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
-		private MetroFramework.Controls.MetroPanel commandPanel;
-		private MetroFramework.Controls.MetroButton addAuthenticatorButton;
+		private System.Windows.Forms.Panel commandPanel;
+		private System.Windows.Forms.Button addAuthenticatorButton;
 		private System.Windows.Forms.ContextMenuStrip addAuthenticatorMenu;
-		private MetroFramework.Controls.MetroButton optionsButton;
+		private System.Windows.Forms.Button optionsButton;
 		private System.Windows.Forms.ContextMenuStrip optionsMenu;
 		private System.Windows.Forms.NotifyIcon notifyIcon;
-		private MetroFramework.Controls.MetroLabel introLabel;
-		private MetroFramework.Controls.MetroPanel passwordPanel;
-		private MetroFramework.Controls.MetroTextBox passwordField;
-		private MetroFramework.Controls.MetroButton passwordButton;
-		private MetroFramework.Controls.MetroLabel passwordErrorLabel;
+		private System.Windows.Forms.Label introLabel;
+		private System.Windows.Forms.Panel passwordPanel;
+		private System.Windows.Forms.TextBox passwordField;
+		private System.Windows.Forms.Button passwordButton;
+		private System.Windows.Forms.Label passwordErrorLabel;
 		private System.Windows.Forms.Timer passwordTimer;
-		private MetroFramework.Controls.MetroLabel passwordLabel;
+		private System.Windows.Forms.Label passwordLabel;
 		private System.Windows.Forms.ContextMenuStrip notifyMenu;
-		private MetroFramework.Controls.MetroLink newVersionLink;
+		private System.Windows.Forms.LinkLabel newVersionLink;
 		private System.Windows.Forms.Timer hotkeyTimer;
-		private MetroFramework.Controls.MetroPanel yubiPanel;
+		private System.Windows.Forms.Panel yubiPanel;
 		private System.Windows.Forms.PictureBox yubiImage;
-		private MetroFramework.Controls.MetroButton yubiRetryButton;
-		private MetroFramework.Controls.MetroLabel yubiLabel;
-		private MetroFramework.Controls.MetroPanel loadingPanel;
+		private System.Windows.Forms.Button yubiRetryButton;
+		private System.Windows.Forms.Label yubiLabel;
+		private System.Windows.Forms.Panel loadingPanel;
 		private System.Windows.Forms.PictureBox pictureBox1;
 
   }

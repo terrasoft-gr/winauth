@@ -33,7 +33,7 @@ namespace WinAuth
 	/// <summary>
 	/// Form class for create a new Battle.net authenticator
 	/// </summary>
-	public partial class AddSteamAuthenticator : ResourceForm
+	public partial class AddSteamAuthenticator : Form
 	{
 		/// <summary>
 		/// Form instantiation

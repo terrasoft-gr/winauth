@@ -46,13 +46,13 @@ namespace WinAuth
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShowTrionSecretForm));
-			this.allowCopyCheckBox = new MetroFramework.Controls.MetroCheckBox();
+			this.allowCopyCheckBox = new System.Windows.Forms.CheckBox();
 			this.serialNumberField = new WinAuth.SecretTextBox();
-			this.label1 = new MetroFramework.Controls.MetroLabel();
+			this.label1 = new System.Windows.Forms.Label();
 			this.deviceIdField = new WinAuth.SecretTextBox();
-			this.label2 = new MetroFramework.Controls.MetroLabel();
-			this.label4 = new MetroFramework.Controls.MetroLabel();
-			this.btnClose = new MetroFramework.Controls.MetroButton();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label4 = new System.Windows.Forms.Label();
+			this.btnClose = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// allowCopyCheckBox
@@ -63,7 +63,6 @@ namespace WinAuth
 			this.allowCopyCheckBox.Size = new System.Drawing.Size(82, 15);
 			this.allowCopyCheckBox.TabIndex = 4;
 			this.allowCopyCheckBox.Text = "Allow copy";
-			this.allowCopyCheckBox.UseSelectable = true;
 			this.allowCopyCheckBox.CheckedChanged += new System.EventHandler(this.allowCopyCheckBox_CheckedChanged);
 			// 
 			// serialNumberField
@@ -121,14 +120,12 @@ namespace WinAuth
 			this.btnClose.Size = new System.Drawing.Size(75, 23);
 			this.btnClose.TabIndex = 4;
 			this.btnClose.Text = "Close";
-			this.btnClose.UseSelectable = true;
 			// 
 			// ShowTrionSecretForm
 			// 
 			this.AcceptButton = this.btnClose;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
 			this.CancelButton = this.btnClose;
 			this.ClientSize = new System.Drawing.Size(505, 416);
 			this.Controls.Add(this.allowCopyCheckBox);
@@ -139,7 +136,6 @@ namespace WinAuth
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label2);
 			this.Name = "ShowTrionSecretForm";
-			this.Resizable = false;
 			this.ShowIcon = false;
 			this.Text = "Restore Code";
 			this.Load += new System.EventHandler(this.ShowTrionSecretForm_Load);
@@ -150,12 +146,12 @@ namespace WinAuth
 
 		#endregion
 
-		private MetroFramework.Controls.MetroButton btnClose;
-		private MetroFramework.Controls.MetroLabel label4;
+		private System.Windows.Forms.Button btnClose;
+		private System.Windows.Forms.Label label4;
 		private SecretTextBox deviceIdField;
-		private MetroFramework.Controls.MetroLabel label2;
+		private System.Windows.Forms.Label label2;
 		private SecretTextBox serialNumberField;
-		private MetroFramework.Controls.MetroLabel label1;
-		private MetroFramework.Controls.MetroCheckBox allowCopyCheckBox;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.CheckBox allowCopyCheckBox;
 	}
 }

@@ -31,26 +31,26 @@ namespace WinAuth
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddMicrosoftAuthenticator));
 			this.newAuthenticatorProgress = new System.Windows.Forms.ProgressBar();
-			this.allowCopyButton = new MetroFramework.Controls.MetroCheckBox();
+			this.allowCopyButton = new System.Windows.Forms.CheckBox();
 			this.codeField = new WinAuth.SecretTextBox();
-			this.verifyAuthenticatorButton = new MetroFramework.Controls.MetroButton();
-			this.secretCodeField = new MetroFramework.Controls.MetroTextBox();
-			this.label3 = new MetroFramework.Controls.MetroLabel();
-			this.step9Label = new MetroFramework.Controls.MetroLabel();
-			this.label2 = new MetroFramework.Controls.MetroLabel();
-			this.okButton = new MetroFramework.Controls.MetroButton();
-			this.cancelButton = new MetroFramework.Controls.MetroButton();
+			this.verifyAuthenticatorButton = new System.Windows.Forms.Button();
+			this.secretCodeField = new System.Windows.Forms.TextBox();
+			this.label3 = new System.Windows.Forms.Label();
+			this.step9Label = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.okButton = new System.Windows.Forms.Button();
+			this.cancelButton = new System.Windows.Forms.Button();
 			this.icon3RadioButton = new WinAuth.GroupRadioButton();
 			this.icon2RadioButton = new WinAuth.GroupRadioButton();
 			this.icon1RadioButton = new WinAuth.GroupRadioButton();
 			this.icon3 = new System.Windows.Forms.PictureBox();
 			this.icon2 = new System.Windows.Forms.PictureBox();
 			this.icon1 = new System.Windows.Forms.PictureBox();
-			this.label10 = new MetroFramework.Controls.MetroLabel();
-			this.label12 = new MetroFramework.Controls.MetroLabel();
-			this.nameField = new MetroFramework.Controls.MetroTextBox();
+			this.label10 = new System.Windows.Forms.Label();
+			this.label12 = new System.Windows.Forms.Label();
+			this.nameField = new System.Windows.Forms.TextBox();
 			this.newAuthenticatorTimer = new System.Windows.Forms.Timer(this.components);
-			this.step8Label = new MetroFramework.Controls.MetroLabel();
+			this.step8Label = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.icon3)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.icon2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.icon1)).BeginInit();
@@ -76,7 +76,6 @@ namespace WinAuth
 			this.allowCopyButton.Size = new System.Drawing.Size(87, 15);
 			this.allowCopyButton.TabIndex = 6;
 			this.allowCopyButton.Text = "Allow copy?";
-			this.allowCopyButton.UseSelectable = true;
 			this.allowCopyButton.CheckedChanged += new System.EventHandler(this.allowCopyButton_CheckedChanged);
 			// 
 			// codeField
@@ -97,7 +96,6 @@ namespace WinAuth
 			this.verifyAuthenticatorButton.Size = new System.Drawing.Size(159, 23);
 			this.verifyAuthenticatorButton.TabIndex = 5;
 			this.verifyAuthenticatorButton.Text = "Verify Authenticator";
-			this.verifyAuthenticatorButton.UseSelectable = true;
 			this.verifyAuthenticatorButton.Click += new System.EventHandler(this.verifyAuthenticatorButton_Click);
 			// 
 			// secretCodeField
@@ -113,7 +111,6 @@ namespace WinAuth
 			this.secretCodeField.SelectedText = "";
 			this.secretCodeField.Size = new System.Drawing.Size(425, 22);
 			this.secretCodeField.TabIndex = 4;
-			this.secretCodeField.UseSelectable = true;
 			// 
 			// label3
 			// 
@@ -149,7 +146,6 @@ namespace WinAuth
 			this.okButton.Size = new System.Drawing.Size(75, 23);
 			this.okButton.TabIndex = 7;
 			this.okButton.Text = "OK";
-			this.okButton.UseSelectable = true;
 			this.okButton.Click += new System.EventHandler(this.okButton_Click);
 			// 
 			// cancelButton
@@ -161,7 +157,6 @@ namespace WinAuth
 			this.cancelButton.Size = new System.Drawing.Size(75, 23);
 			this.cancelButton.TabIndex = 8;
 			this.cancelButton.Text = "Cancel";
-			this.cancelButton.UseSelectable = true;
 			this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
 			// 
 			// icon3RadioButton
@@ -260,7 +255,6 @@ namespace WinAuth
 			this.nameField.SelectedText = "";
 			this.nameField.Size = new System.Drawing.Size(371, 22);
 			this.nameField.TabIndex = 0;
-			this.nameField.UseSelectable = true;
 			// 
 			// newAuthenticatorTimer
 			// 
@@ -279,7 +273,6 @@ namespace WinAuth
 			this.AcceptButton = this.okButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
 			this.CancelButton = this.cancelButton;
 			this.ClientSize = new System.Drawing.Size(472, 630);
 			this.Controls.Add(this.step8Label);
@@ -304,7 +297,6 @@ namespace WinAuth
 			this.Controls.Add(this.label3);
 			this.MaximizeBox = false;
 			this.Name = "AddMicrosoftAuthenticator";
-			this.Resizable = false;
 			this.ShowIcon = false;
 			this.Text = "Microsoft Authenticator";
 			this.Load += new System.EventHandler(this.AddMicrosoftAuthenticator_Load);
@@ -318,26 +310,26 @@ namespace WinAuth
 
 		#endregion
 
-		private MetroFramework.Controls.MetroLabel label2;
-		private MetroFramework.Controls.MetroButton okButton;
-		private MetroFramework.Controls.MetroButton cancelButton;
-		private MetroFramework.Controls.MetroTextBox secretCodeField;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Button okButton;
+		private System.Windows.Forms.Button cancelButton;
+		private System.Windows.Forms.TextBox secretCodeField;
 		private System.Windows.Forms.PictureBox icon2;
 		private System.Windows.Forms.PictureBox icon1;
-		private MetroFramework.Controls.MetroLabel label10;
-		private MetroFramework.Controls.MetroLabel label12;
-		private MetroFramework.Controls.MetroTextBox nameField;
-		private MetroFramework.Controls.MetroButton verifyAuthenticatorButton;
-		private MetroFramework.Controls.MetroLabel step9Label;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.TextBox nameField;
+		private System.Windows.Forms.Button verifyAuthenticatorButton;
+		private System.Windows.Forms.Label step9Label;
 		private System.Windows.Forms.ProgressBar newAuthenticatorProgress;
-		private MetroFramework.Controls.MetroCheckBox allowCopyButton;
+		private System.Windows.Forms.CheckBox allowCopyButton;
 		private SecretTextBox codeField;
-		private MetroFramework.Controls.MetroLabel label3;
+		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Timer newAuthenticatorTimer;
 		private System.Windows.Forms.PictureBox icon3;
 		private GroupRadioButton icon2RadioButton;
 		private GroupRadioButton icon1RadioButton;
 		private GroupRadioButton icon3RadioButton;
-		private MetroFramework.Controls.MetroLabel step8Label;
+		private System.Windows.Forms.Label step8Label;
 	}
 }

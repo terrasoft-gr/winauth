@@ -30,15 +30,13 @@ using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Forms.Layout;
-using MetroFramework.Controls;
-using MetroFramework.Forms;
 using WinAuth.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace WinAuth
 {
-  public partial class ShowSteamTradesForm : ResourceForm
+  public partial class ShowSteamTradesForm : Form
   {
     private void ShowSteamTradesForm_Load(object sender, EventArgs e)
     {
@@ -245,12 +243,12 @@ label_0:
                 this.FindControl<PictureBox>((Control) panel, "tradeImage").Image = Image.FromStream((Stream) memoryStream);
             }
             this.FindControl<Label>((Control) panel, "tradeLabel").Text = trade1.Details + ". " + trade1.Traded + ". " + trade1.When;
-            MetroButton control1 = this.FindControl<MetroButton>((Control) panel, "tradeAccept");
+            Button control1 = this.FindControl<Button>((Control) panel, "tradeAccept");
             ShowSteamTradesForm.Trade trade2 = trade1;
             control1.Tag = (object) trade2;
             EventHandler eventHandler1 = new EventHandler(this.tradeAccept_Click);
             control1.Click += eventHandler1;
-            MetroButton control2 = this.FindControl<MetroButton>((Control) panel, "tradeReject");
+            Button control2 = this.FindControl<Button>((Control) panel, "tradeReject");
             ShowSteamTradesForm.Trade trade3 = trade1;
             control2.Tag = (object) trade3;
             EventHandler eventHandler2 = new EventHandler(this.tradeReject_Click);
@@ -289,9 +287,9 @@ label_0:
         else
         {
           this.m_state.Trades.Remove(trade);
-          this.FindControl<MetroButton>((Control) this.tabs.SelectedTab, "tradeAccept_" + trade.Id).Visible = false;
-          this.FindControl<MetroButton>((Control) this.tabs.SelectedTab, "tradeReject_" + trade.Id).Visible = false;
-          MetroLabel control = this.FindControl<MetroLabel>((Control) this.tabs.SelectedTab, "tradeStatus_" + trade.Id);
+          this.FindControl<Button>((Control) this.tabs.SelectedTab, "tradeAccept_" + trade.Id).Visible = false;
+          this.FindControl<Button>((Control) this.tabs.SelectedTab, "tradeReject_" + trade.Id).Visible = false;
+          Label control = this.FindControl<Label>((Control) this.tabs.SelectedTab, "tradeStatus_" + trade.Id);
           string str = "Accepted";
           control.Text = str;
           int num2 = 1;
@@ -319,9 +317,9 @@ label_0:
         else
         {
           this.m_state.Trades.Remove(trade);
-          this.FindControl<MetroButton>((Control) this.tabs.SelectedTab, "tradeAccept_" + trade.Id).Visible = false;
-          this.FindControl<MetroButton>((Control) this.tabs.SelectedTab, "tradeReject_" + trade.Id).Visible = false;
-          MetroLabel control = this.FindControl<MetroLabel>((Control) this.tabs.SelectedTab, "tradeStatus_" + trade.Id);
+          this.FindControl<Button>((Control) this.tabs.SelectedTab, "tradeAccept_" + trade.Id).Visible = false;
+          this.FindControl<Button>((Control) this.tabs.SelectedTab, "tradeReject_" + trade.Id).Visible = false;
+          Label control = this.FindControl<Label>((Control) this.tabs.SelectedTab, "tradeStatus_" + trade.Id);
           string str = "Rejected";
           control.Text = str;
           int num2 = 1;
@@ -347,12 +345,12 @@ label_0:
 
     private void tradeAccept_Click(object sender, EventArgs e)
     {
-      this.AcceptTrade((sender as MetroButton).Tag as ShowSteamTradesForm.Trade);
+      this.AcceptTrade((sender as Button).Tag as ShowSteamTradesForm.Trade);
     }
 
     private void tradeReject_Click(object sender, EventArgs e)
     {
-      this.RejectTrade((sender as MetroButton).Tag as ShowSteamTradesForm.Trade);
+      this.RejectTrade((sender as Button).Tag as ShowSteamTradesForm.Trade);
     }
 
 

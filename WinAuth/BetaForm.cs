@@ -29,7 +29,7 @@ namespace WinAuth
 	/// <summary>
 	/// General Beta form
 	/// </summary>
-	public partial class BetaForm : ResourceForm
+	public partial class BetaForm : Form
 	{
 		/// <summary>
 		/// Create the  Form

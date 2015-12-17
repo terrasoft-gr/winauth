@@ -25,7 +25,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-using MetroFramework;
 
 using WinAuth.Resources;
 
@@ -34,7 +33,7 @@ namespace WinAuth
 	/// <summary>
 	/// Form to check for update
 	/// </summary>
-	public partial class UpdateCheckForm : ResourceForm
+	public partial class UpdateCheckForm : Form
 	{
 		/// <summary>
 		/// Internal item for drop down to hold interval information
@@ -79,8 +78,6 @@ namespace WinAuth
 			InitializeComponent();
 
 			// set the font for the HtmlLabel to match the form
-			Font font = MetroFonts.Label(MetroLabelSize.Small, MetroLabelWeight.Regular);
-			this.versionInfoLabel.Font = new Font(font.FontFamily, 10);
 		}
 
 		#region Form events

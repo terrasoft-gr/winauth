@@ -32,7 +32,7 @@ namespace WinAuth
 	/// <summary>
 	/// Class for form that prompts for password and unprotects authenticator
 	/// </summary>
-	public partial class UnprotectPasswordForm : ResourceForm
+	public partial class UnprotectPasswordForm : Form
 	{
 		/// <summary>
 		/// Create new form

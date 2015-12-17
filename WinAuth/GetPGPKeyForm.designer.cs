@@ -28,14 +28,14 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.okButton = new MetroFramework.Controls.MetroButton();
-			this.cancelButton = new MetroFramework.Controls.MetroButton();
-			this.pgpLabel = new MetroFramework.Controls.MetroLabel();
-			this.browseLabel = new MetroFramework.Controls.MetroLabel();
-			this.passwordLabel = new MetroFramework.Controls.MetroLabel();
-			this.browseButton = new MetroFramework.Controls.MetroButton();
-			this.pgpField = new MetroFramework.Controls.MetroTextBox();
-			this.passwordField = new MetroFramework.Controls.MetroTextBox();
+			this.okButton = new System.Windows.Forms.Button();
+			this.cancelButton = new System.Windows.Forms.Button();
+			this.pgpLabel = new System.Windows.Forms.Label();
+			this.browseLabel = new System.Windows.Forms.Label();
+			this.passwordLabel = new System.Windows.Forms.Label();
+			this.browseButton = new System.Windows.Forms.Button();
+			this.pgpField = new System.Windows.Forms.TextBox();
+			this.passwordField = new System.Windows.Forms.TextBox();
 			this.SuspendLayout();
 			// 
 			// okButton
@@ -47,7 +47,6 @@
 			this.okButton.Size = new System.Drawing.Size(75, 23);
 			this.okButton.TabIndex = 2;
 			this.okButton.Text = "strings.OK";
-			this.okButton.UseSelectable = true;
 			this.okButton.Click += new System.EventHandler(this.okButton_Click);
 			// 
 			// cancelButton
@@ -59,7 +58,6 @@
 			this.cancelButton.Size = new System.Drawing.Size(75, 23);
 			this.cancelButton.TabIndex = 2;
 			this.cancelButton.Text = "strings.Cancel";
-			this.cancelButton.UseSelectable = true;
 			// 
 			// pgpLabel
 			// 
@@ -96,7 +94,6 @@
 			this.browseButton.Size = new System.Drawing.Size(75, 23);
 			this.browseButton.TabIndex = 2;
 			this.browseButton.Text = "strings.Browse";
-			this.browseButton.UseSelectable = true;
 			this.browseButton.Click += new System.EventHandler(this.browseButton_Click);
 			// 
 			// pgpField
@@ -112,7 +109,6 @@
 			this.pgpField.SelectedText = "";
 			this.pgpField.Size = new System.Drawing.Size(394, 103);
 			this.pgpField.TabIndex = 1;
-			this.pgpField.UseSelectable = true;
 			this.pgpField.UseSystemPasswordChar = true;
 			// 
 			// passwordField
@@ -123,12 +119,10 @@
 			this.passwordField.MaxLength = 32767;
 			this.passwordField.Name = "passwordField";
 			this.passwordField.PasswordChar = '●';
-			this.passwordField.PromptText = "Optional password";
 			this.passwordField.ScrollBars = System.Windows.Forms.ScrollBars.None;
 			this.passwordField.SelectedText = "";
 			this.passwordField.Size = new System.Drawing.Size(394, 23);
 			this.passwordField.TabIndex = 1;
-			this.passwordField.UseSelectable = true;
 			this.passwordField.UseSystemPasswordChar = true;
 			// 
 			// GetPGPKeyForm
@@ -136,7 +130,6 @@
 			this.AcceptButton = this.okButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
 			this.CancelButton = this.cancelButton;
 			this.ClientSize = new System.Drawing.Size(448, 356);
 			this.Controls.Add(this.pgpLabel);
@@ -150,7 +143,6 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "GetPGPKeyForm";
-			this.Resizable = false;
 			this.Text = "_GetPGPKeyForm_";
 			this.Load += new System.EventHandler(this.GetPGPKeyForm_Load);
 			this.ResumeLayout(false);
@@ -160,13 +152,13 @@
 
 		#endregion
 
-		private MetroFramework.Controls.MetroTextBox passwordField;
-		private MetroFramework.Controls.MetroButton cancelButton;
-		private MetroFramework.Controls.MetroButton okButton;
-		private MetroFramework.Controls.MetroTextBox pgpField;
-		private MetroFramework.Controls.MetroButton browseButton;
-		private MetroFramework.Controls.MetroLabel passwordLabel;
-		private MetroFramework.Controls.MetroLabel browseLabel;
-		private MetroFramework.Controls.MetroLabel pgpLabel;
+		private System.Windows.Forms.TextBox passwordField;
+		private System.Windows.Forms.Button cancelButton;
+		private System.Windows.Forms.Button okButton;
+		private System.Windows.Forms.TextBox pgpField;
+		private System.Windows.Forms.Button browseButton;
+		private System.Windows.Forms.Label passwordLabel;
+		private System.Windows.Forms.Label browseLabel;
+		private System.Windows.Forms.Label pgpLabel;
 	}
 }

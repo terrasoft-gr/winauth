@@ -28,46 +28,46 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.loginButton = new MetroFramework.Controls.MetroButton();
-			this.authoriseTabLabel = new MetroFramework.Controls.MetroLabel();
-			this.loginTabLabel = new MetroFramework.Controls.MetroLabel();
-			this.captchaButton = new MetroFramework.Controls.MetroButton();
-			this.captchacodeField = new MetroFramework.Controls.MetroTextBox();
-			this.usernameField = new MetroFramework.Controls.MetroTextBox();
-			this.captchaTabLabel = new MetroFramework.Controls.MetroLabel();
-			this.confirmButton = new MetroFramework.Controls.MetroButton();
-			this.cancelButton = new MetroFramework.Controls.MetroButton();
+			this.loginButton = new System.Windows.Forms.Button();
+			this.authoriseTabLabel = new System.Windows.Forms.Label();
+			this.loginTabLabel = new System.Windows.Forms.Label();
+			this.captchaButton = new System.Windows.Forms.Button();
+			this.captchacodeField = new System.Windows.Forms.TextBox();
+			this.usernameField = new System.Windows.Forms.TextBox();
+			this.captchaTabLabel = new System.Windows.Forms.Label();
+			this.confirmButton = new System.Windows.Forms.Button();
+			this.cancelButton = new System.Windows.Forms.Button();
 			this.steamIconRadioButton = new WinAuth.GroupMetroRadioButton();
 			this.steamAuthenticatorIconRadioButton = new WinAuth.GroupMetroRadioButton();
-			this.iconLabel = new MetroFramework.Controls.MetroLabel();
-			this.nameLabel = new MetroFramework.Controls.MetroLabel();
-			this.nameField = new MetroFramework.Controls.MetroTextBox();
-			this.tabs = new MetroFramework.Controls.MetroTabControl();
-			this.loginTab = new MetroFramework.Controls.MetroTabPage();
+			this.iconLabel = new System.Windows.Forms.Label();
+			this.nameLabel = new System.Windows.Forms.Label();
+			this.nameField = new System.Windows.Forms.TextBox();
+			this.tabs = new System.Windows.Forms.TabControl();
+			this.loginTab = new System.Windows.Forms.TabPage();
 			this.captchaGroup = new System.Windows.Forms.Panel();
 			this.captchaBox = new System.Windows.Forms.PictureBox();
-			this.passwordField = new MetroFramework.Controls.MetroTextBox();
-			this.passwordLabel = new MetroFramework.Controls.MetroLabel();
-			this.usernameLabel = new MetroFramework.Controls.MetroLabel();
-			this.confirmTab = new MetroFramework.Controls.MetroTabPage();
-			this.revocationCheckbox = new MetroFramework.Controls.MetroCheckBox();
-			this.revocationcodeCopy = new MetroFramework.Controls.MetroCheckBox();
-			this.revocationcodeText = new MetroFramework.Controls.MetroLabel();
+			this.passwordField = new System.Windows.Forms.TextBox();
+			this.passwordLabel = new System.Windows.Forms.Label();
+			this.usernameLabel = new System.Windows.Forms.Label();
+			this.confirmTab = new System.Windows.Forms.TabPage();
+			this.revocationCheckbox = new System.Windows.Forms.CheckBox();
+			this.revocationcodeCopy = new System.Windows.Forms.CheckBox();
+			this.revocationcodeText = new System.Windows.Forms.Label();
 			this.revocationcodeField = new WinAuth.SecretTextBox();
-			this.revocationcodeLabel = new MetroFramework.Controls.MetroLabel();
-			this.activationcodeLabel = new MetroFramework.Controls.MetroLabel();
-			this.activationcodeField = new MetroFramework.Controls.MetroTextBox();
-			this.confirmTabLabel = new MetroFramework.Controls.MetroLabel();
-			this.addedTab = new MetroFramework.Controls.MetroTabPage();
-			this.revocationcode2Copy = new MetroFramework.Controls.MetroCheckBox();
-			this.revocationcode2Label = new MetroFramework.Controls.MetroLabel();
+			this.revocationcodeLabel = new System.Windows.Forms.Label();
+			this.activationcodeLabel = new System.Windows.Forms.Label();
+			this.activationcodeField = new System.Windows.Forms.TextBox();
+			this.confirmTabLabel = new System.Windows.Forms.Label();
+			this.addedTab = new System.Windows.Forms.TabPage();
+			this.revocationcode2Copy = new System.Windows.Forms.CheckBox();
+			this.revocationcode2Label = new System.Windows.Forms.Label();
 			this.revocationcode2Field = new WinAuth.SecretTextBox();
-			this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
-			this.authTab = new MetroFramework.Controls.MetroTabPage();
-			this.authcodeLabel = new MetroFramework.Controls.MetroLabel();
-			this.authcodeButton = new MetroFramework.Controls.MetroButton();
-			this.authcodeField = new MetroFramework.Controls.MetroTextBox();
-			this.closeButton = new MetroFramework.Controls.MetroButton();
+			this.metroLabel1 = new System.Windows.Forms.Label();
+			this.authTab = new System.Windows.Forms.TabPage();
+			this.authcodeLabel = new System.Windows.Forms.Label();
+			this.authcodeButton = new System.Windows.Forms.Button();
+			this.authcodeField = new System.Windows.Forms.TextBox();
+			this.closeButton = new System.Windows.Forms.Button();
 			this.steamIcon = new System.Windows.Forms.PictureBox();
 			this.steamAuthenticatorIcon = new System.Windows.Forms.PictureBox();
 			this.tabs.SuspendLayout();
@@ -88,7 +88,6 @@
 			this.loginButton.Size = new System.Drawing.Size(110, 24);
 			this.loginButton.TabIndex = 2;
 			this.loginButton.Text = "Login";
-			this.loginButton.UseSelectable = true;
 			this.loginButton.Click += new System.EventHandler(this.loginButton_Click);
 			// 
 			// authoriseTabLabel
@@ -116,7 +115,6 @@
 			this.captchaButton.Size = new System.Drawing.Size(110, 23);
 			this.captchaButton.TabIndex = 1;
 			this.captchaButton.Text = "Login";
-			this.captchaButton.UseSelectable = true;
 			this.captchaButton.Click += new System.EventHandler(this.captchaButton_Click);
 			// 
 			// captchacodeField
@@ -129,7 +127,6 @@
 			this.captchacodeField.SelectedText = "";
 			this.captchacodeField.Size = new System.Drawing.Size(206, 22);
 			this.captchacodeField.TabIndex = 0;
-			this.captchacodeField.UseSelectable = true;
 			// 
 			// usernameField
 			// 
@@ -141,7 +138,6 @@
 			this.usernameField.SelectedText = "";
 			this.usernameField.Size = new System.Drawing.Size(177, 22);
 			this.usernameField.TabIndex = 0;
-			this.usernameField.UseSelectable = true;
 			// 
 			// captchaTabLabel
 			// 
@@ -160,7 +156,6 @@
 			this.confirmButton.Size = new System.Drawing.Size(116, 23);
 			this.confirmButton.TabIndex = 2;
 			this.confirmButton.Text = "Confirm";
-			this.confirmButton.UseSelectable = true;
 			this.confirmButton.Click += new System.EventHandler(this.confirmButton_Click);
 			// 
 			// cancelButton
@@ -172,7 +167,6 @@
 			this.cancelButton.Size = new System.Drawing.Size(75, 23);
 			this.cancelButton.TabIndex = 0;
 			this.cancelButton.Text = "Cancel";
-			this.cancelButton.UseSelectable = true;
 			this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
 			// 
 			// steamIconRadioButton
@@ -183,7 +177,6 @@
 			this.steamIconRadioButton.Size = new System.Drawing.Size(14, 13);
 			this.steamIconRadioButton.TabIndex = 2;
 			this.steamIconRadioButton.Tag = "SteamIcon.png";
-			this.steamIconRadioButton.UseSelectable = true;
 			this.steamIconRadioButton.CheckedChanged += new System.EventHandler(this.iconRadioButton_CheckedChanged);
 			// 
 			// steamAuthenticatorIconRadioButton
@@ -196,7 +189,6 @@
 			this.steamAuthenticatorIconRadioButton.TabIndex = 1;
 			this.steamAuthenticatorIconRadioButton.TabStop = true;
 			this.steamAuthenticatorIconRadioButton.Tag = "SteamAuthenticatorIcon.png";
-			this.steamAuthenticatorIconRadioButton.UseSelectable = true;
 			this.steamAuthenticatorIconRadioButton.CheckedChanged += new System.EventHandler(this.iconRadioButton_CheckedChanged);
 			// 
 			// iconLabel
@@ -227,7 +219,6 @@
 			this.nameField.SelectedText = "";
 			this.nameField.Size = new System.Drawing.Size(388, 22);
 			this.nameField.TabIndex = 0;
-			this.nameField.UseSelectable = true;
 			// 
 			// tabs
 			// 
@@ -242,7 +233,6 @@
 			this.tabs.SelectedIndex = 1;
 			this.tabs.Size = new System.Drawing.Size(464, 327);
 			this.tabs.TabIndex = 0;
-			this.tabs.UseSelectable = true;
 			this.tabs.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl1_DrawItem);
 			// 
 			// loginTab
@@ -256,9 +246,6 @@
 			this.loginTab.Controls.Add(this.usernameLabel);
 			this.loginTab.Controls.Add(this.loginTabLabel);
 			this.loginTab.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.loginTab.HorizontalScrollbarBarColor = true;
-			this.loginTab.HorizontalScrollbarHighlightOnWheel = false;
-			this.loginTab.HorizontalScrollbarSize = 10;
 			this.loginTab.Location = new System.Drawing.Point(4, 22);
 			this.loginTab.Name = "loginTab";
 			this.loginTab.Padding = new System.Windows.Forms.Padding(3);
@@ -266,9 +253,6 @@
 			this.loginTab.TabIndex = 0;
 			this.loginTab.Tag = "";
 			this.loginTab.Text = "Login";
-			this.loginTab.VerticalScrollbarBarColor = true;
-			this.loginTab.VerticalScrollbarHighlightOnWheel = false;
-			this.loginTab.VerticalScrollbarSize = 10;
 			// 
 			// captchaGroup
 			// 
@@ -301,7 +285,6 @@
 			this.passwordField.SelectedText = "";
 			this.passwordField.Size = new System.Drawing.Size(177, 22);
 			this.passwordField.TabIndex = 1;
-			this.passwordField.UseSelectable = true;
 			this.passwordField.UseSystemPasswordChar = true;
 			// 
 			// passwordLabel
@@ -331,18 +314,12 @@
 			this.confirmTab.Controls.Add(this.confirmButton);
 			this.confirmTab.Controls.Add(this.activationcodeField);
 			this.confirmTab.Controls.Add(this.confirmTabLabel);
-			this.confirmTab.HorizontalScrollbarBarColor = true;
-			this.confirmTab.HorizontalScrollbarHighlightOnWheel = false;
-			this.confirmTab.HorizontalScrollbarSize = 10;
 			this.confirmTab.Location = new System.Drawing.Point(4, 22);
 			this.confirmTab.Name = "confirmTab";
 			this.confirmTab.Size = new System.Drawing.Size(456, 301);
 			this.confirmTab.TabIndex = 3;
 			this.confirmTab.Tag = "";
 			this.confirmTab.Text = "Confirm";
-			this.confirmTab.VerticalScrollbarBarColor = true;
-			this.confirmTab.VerticalScrollbarHighlightOnWheel = false;
-			this.confirmTab.VerticalScrollbarSize = 10;
 			// 
 			// revocationCheckbox
 			// 
@@ -352,7 +329,6 @@
 			this.revocationCheckbox.Size = new System.Drawing.Size(235, 15);
 			this.revocationCheckbox.TabIndex = 1;
 			this.revocationCheckbox.Text = "I have written down my revocation code";
-			this.revocationCheckbox.UseSelectable = true;
 			this.revocationCheckbox.CheckedChanged += new System.EventHandler(this.revocationCheckbox_CheckedChanged);
 			// 
 			// revocationcodeCopy
@@ -363,7 +339,6 @@
 			this.revocationcodeCopy.Size = new System.Drawing.Size(87, 15);
 			this.revocationcodeCopy.TabIndex = 3;
 			this.revocationcodeCopy.Text = "Allow copy?";
-			this.revocationcodeCopy.UseSelectable = true;
 			this.revocationcodeCopy.CheckedChanged += new System.EventHandler(this.revocationcodeCopy_CheckedChanged);
 			// 
 			// revocationcodeText
@@ -413,7 +388,6 @@
 			this.activationcodeField.SelectedText = "";
 			this.activationcodeField.Size = new System.Drawing.Size(177, 22);
 			this.activationcodeField.TabIndex = 0;
-			this.activationcodeField.UseSelectable = true;
 			// 
 			// confirmTabLabel
 			// 
@@ -429,18 +403,12 @@
 			this.addedTab.Controls.Add(this.revocationcode2Label);
 			this.addedTab.Controls.Add(this.revocationcode2Field);
 			this.addedTab.Controls.Add(this.metroLabel1);
-			this.addedTab.HorizontalScrollbarBarColor = true;
-			this.addedTab.HorizontalScrollbarHighlightOnWheel = false;
-			this.addedTab.HorizontalScrollbarSize = 10;
 			this.addedTab.Location = new System.Drawing.Point(4, 22);
 			this.addedTab.Name = "addedTab";
 			this.addedTab.Size = new System.Drawing.Size(456, 301);
 			this.addedTab.TabIndex = 4;
 			this.addedTab.Tag = "";
 			this.addedTab.Text = "Added";
-			this.addedTab.VerticalScrollbarBarColor = true;
-			this.addedTab.VerticalScrollbarHighlightOnWheel = false;
-			this.addedTab.VerticalScrollbarSize = 10;
 			// 
 			// revocationcode2Copy
 			// 
@@ -450,7 +418,6 @@
 			this.revocationcode2Copy.Size = new System.Drawing.Size(87, 15);
 			this.revocationcode2Copy.TabIndex = 0;
 			this.revocationcode2Copy.Text = "Allow copy?";
-			this.revocationcode2Copy.UseSelectable = true;
 			this.revocationcode2Copy.CheckedChanged += new System.EventHandler(this.revocationcode2Copy_CheckedChanged);
 			// 
 			// revocationcode2Label
@@ -488,18 +455,12 @@
 			this.authTab.Controls.Add(this.authcodeButton);
 			this.authTab.Controls.Add(this.authcodeField);
 			this.authTab.Controls.Add(this.authoriseTabLabel);
-			this.authTab.HorizontalScrollbarBarColor = true;
-			this.authTab.HorizontalScrollbarHighlightOnWheel = false;
-			this.authTab.HorizontalScrollbarSize = 10;
 			this.authTab.Location = new System.Drawing.Point(4, 22);
 			this.authTab.Name = "authTab";
 			this.authTab.Size = new System.Drawing.Size(456, 301);
 			this.authTab.TabIndex = 2;
 			this.authTab.Tag = "";
 			this.authTab.Text = "Authorise";
-			this.authTab.VerticalScrollbarBarColor = true;
-			this.authTab.VerticalScrollbarHighlightOnWheel = false;
-			this.authTab.VerticalScrollbarSize = 10;
 			// 
 			// authcodeLabel
 			// 
@@ -516,7 +477,6 @@
 			this.authcodeButton.Size = new System.Drawing.Size(110, 24);
 			this.authcodeButton.TabIndex = 1;
 			this.authcodeButton.Text = "Continue";
-			this.authcodeButton.UseSelectable = true;
 			this.authcodeButton.Click += new System.EventHandler(this.authcodeButton_Click);
 			// 
 			// authcodeField
@@ -529,7 +489,6 @@
 			this.authcodeField.SelectedText = "";
 			this.authcodeField.Size = new System.Drawing.Size(206, 22);
 			this.authcodeField.TabIndex = 0;
-			this.authcodeField.UseSelectable = true;
 			// 
 			// closeButton
 			// 
@@ -540,7 +499,6 @@
 			this.closeButton.Size = new System.Drawing.Size(75, 23);
 			this.closeButton.TabIndex = 1;
 			this.closeButton.Text = "Close";
-			this.closeButton.UseSelectable = true;
 			this.closeButton.Visible = false;
 			this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
 			// 
@@ -570,7 +528,6 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
 			this.CancelButton = this.cancelButton;
 			this.ClientSize = new System.Drawing.Size(501, 564);
 			this.Controls.Add(this.tabs);
@@ -586,7 +543,6 @@
 			this.KeyPreview = true;
 			this.MaximizeBox = false;
 			this.Name = "AddSteamAuthenticator";
-			this.Resizable = false;
 			this.ShowIcon = false;
 			this.Text = "Add Steam Authenticator";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AddSteamAuthenticator_FormClosing);
@@ -611,47 +567,47 @@
 
 		#endregion
 
-		private MetroFramework.Controls.MetroLabel loginTabLabel;
-		private MetroFramework.Controls.MetroButton loginButton;
-		private MetroFramework.Controls.MetroLabel authoriseTabLabel;
-		private MetroFramework.Controls.MetroLabel captchaTabLabel;
-		private MetroFramework.Controls.MetroButton confirmButton;
-		private MetroFramework.Controls.MetroButton cancelButton;
-		private MetroFramework.Controls.MetroTextBox captchacodeField;
-		private MetroFramework.Controls.MetroTextBox usernameField;
-		private MetroFramework.Controls.MetroButton captchaButton;
+		private System.Windows.Forms.Label loginTabLabel;
+		private System.Windows.Forms.Button loginButton;
+		private System.Windows.Forms.Label authoriseTabLabel;
+		private System.Windows.Forms.Label captchaTabLabel;
+		private System.Windows.Forms.Button confirmButton;
+		private System.Windows.Forms.Button cancelButton;
+		private System.Windows.Forms.TextBox captchacodeField;
+		private System.Windows.Forms.TextBox usernameField;
+		private System.Windows.Forms.Button captchaButton;
 		private WinAuth.GroupMetroRadioButton steamIconRadioButton;
 		private WinAuth.GroupMetroRadioButton steamAuthenticatorIconRadioButton;
 		private System.Windows.Forms.PictureBox steamIcon;
 		private System.Windows.Forms.PictureBox steamAuthenticatorIcon;
-		private MetroFramework.Controls.MetroLabel nameLabel;
-		private MetroFramework.Controls.MetroTextBox nameField;
-		private MetroFramework.Controls.MetroLabel iconLabel;
-		private MetroFramework.Controls.MetroTabControl tabs;
-		private MetroFramework.Controls.MetroTabPage loginTab;
-		private MetroFramework.Controls.MetroLabel passwordLabel;
-		private MetroFramework.Controls.MetroLabel usernameLabel;
-		private MetroFramework.Controls.MetroButton authcodeButton;
-		private MetroFramework.Controls.MetroTextBox passwordField;
-		private MetroFramework.Controls.MetroTabPage authTab;
-		private MetroFramework.Controls.MetroTabPage confirmTab;
+		private System.Windows.Forms.Label nameLabel;
+		private System.Windows.Forms.TextBox nameField;
+		private System.Windows.Forms.Label iconLabel;
+		private System.Windows.Forms.TabControl tabs;
+		private System.Windows.Forms.TabPage loginTab;
+		private System.Windows.Forms.Label passwordLabel;
+		private System.Windows.Forms.Label usernameLabel;
+		private System.Windows.Forms.Button authcodeButton;
+		private System.Windows.Forms.TextBox passwordField;
+		private System.Windows.Forms.TabPage authTab;
+		private System.Windows.Forms.TabPage confirmTab;
 		private System.Windows.Forms.PictureBox captchaBox;
-		private MetroFramework.Controls.MetroLabel authcodeLabel;
-		private MetroFramework.Controls.MetroTextBox authcodeField;
-		private MetroFramework.Controls.MetroLabel confirmTabLabel;
-		private MetroFramework.Controls.MetroLabel activationcodeLabel;
-		private MetroFramework.Controls.MetroTextBox activationcodeField;
+		private System.Windows.Forms.Label authcodeLabel;
+		private System.Windows.Forms.TextBox authcodeField;
+		private System.Windows.Forms.Label confirmTabLabel;
+		private System.Windows.Forms.Label activationcodeLabel;
+		private System.Windows.Forms.TextBox activationcodeField;
 		private System.Windows.Forms.Panel captchaGroup;
-		private MetroFramework.Controls.MetroTabPage addedTab;
-		private MetroFramework.Controls.MetroLabel metroLabel1;
-		private MetroFramework.Controls.MetroLabel revocationcode2Label;
+		private System.Windows.Forms.TabPage addedTab;
+		private System.Windows.Forms.Label metroLabel1;
+		private System.Windows.Forms.Label revocationcode2Label;
 		private SecretTextBox revocationcode2Field;
-		private MetroFramework.Controls.MetroButton closeButton;
-		private MetroFramework.Controls.MetroCheckBox revocationcodeCopy;
-		private MetroFramework.Controls.MetroLabel revocationcodeText;
+		private System.Windows.Forms.Button closeButton;
+		private System.Windows.Forms.CheckBox revocationcodeCopy;
+		private System.Windows.Forms.Label revocationcodeText;
 		private SecretTextBox revocationcodeField;
-		private MetroFramework.Controls.MetroCheckBox revocationCheckbox;
-		private MetroFramework.Controls.MetroLabel revocationcodeLabel;
-		private MetroFramework.Controls.MetroCheckBox revocationcode2Copy;
+		private System.Windows.Forms.CheckBox revocationCheckbox;
+		private System.Windows.Forms.Label revocationcodeLabel;
+		private System.Windows.Forms.CheckBox revocationcode2Copy;
 	}
 }

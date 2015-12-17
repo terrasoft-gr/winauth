@@ -45,15 +45,15 @@ namespace WinAuth
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.allowCopyCheckBox = new MetroFramework.Controls.MetroCheckBox();
+			this.allowCopyCheckBox = new System.Windows.Forms.CheckBox();
 			this.revocationcodeField = new WinAuth.SecretTextBox();
-			this.label2 = new MetroFramework.Controls.MetroLabel();
-			this.label4 = new MetroFramework.Controls.MetroLabel();
-			this.btnClose = new MetroFramework.Controls.MetroButton();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label4 = new System.Windows.Forms.Label();
+			this.btnClose = new System.Windows.Forms.Button();
 			this.steamdataField = new WinAuth.SecretTextBox();
-			this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
+			this.metroLabel2 = new System.Windows.Forms.Label();
 			this.deviceidField = new WinAuth.SecretTextBox();
-			this.metroLabel3 = new MetroFramework.Controls.MetroLabel();
+			this.metroLabel3 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// allowCopyCheckBox
@@ -64,7 +64,6 @@ namespace WinAuth
 			this.allowCopyCheckBox.Size = new System.Drawing.Size(82, 15);
 			this.allowCopyCheckBox.TabIndex = 1;
 			this.allowCopyCheckBox.Text = "Allow copy";
-			this.allowCopyCheckBox.UseSelectable = true;
 			this.allowCopyCheckBox.CheckedChanged += new System.EventHandler(this.allowCopyCheckBox_CheckedChanged);
 			// 
 			// revocationcodeField
@@ -105,7 +104,6 @@ namespace WinAuth
 			this.btnClose.Size = new System.Drawing.Size(75, 23);
 			this.btnClose.TabIndex = 2;
 			this.btnClose.Text = "Close";
-			this.btnClose.UseSelectable = true;
 			// 
 			// steamdataField
 			// 
@@ -157,7 +155,6 @@ namespace WinAuth
 			this.AcceptButton = this.btnClose;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
 			this.CancelButton = this.btnClose;
 			this.ClientSize = new System.Drawing.Size(491, 465);
 			this.Controls.Add(this.allowCopyCheckBox);
@@ -170,7 +167,6 @@ namespace WinAuth
 			this.Controls.Add(this.metroLabel2);
 			this.Controls.Add(this.label2);
 			this.Name = "ShowSteamSecretForm";
-			this.Resizable = false;
 			this.ShowIcon = false;
 			this.Text = "Recovery Code";
 			this.Load += new System.EventHandler(this.ShowSteamSecretForm_Load);
@@ -181,14 +177,14 @@ namespace WinAuth
 
 		#endregion
 
-		private MetroFramework.Controls.MetroButton btnClose;
-		private MetroFramework.Controls.MetroLabel label4;
+		private System.Windows.Forms.Button btnClose;
+		private System.Windows.Forms.Label label4;
 		private SecretTextBox revocationcodeField;
-		private MetroFramework.Controls.MetroLabel label2;
-		private MetroFramework.Controls.MetroCheckBox allowCopyCheckBox;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.CheckBox allowCopyCheckBox;
 		private SecretTextBox steamdataField;
-		private MetroFramework.Controls.MetroLabel metroLabel2;
+		private System.Windows.Forms.Label metroLabel2;
 		private SecretTextBox deviceidField;
-		private MetroFramework.Controls.MetroLabel metroLabel3;
+		private System.Windows.Forms.Label metroLabel3;
 	}
 }

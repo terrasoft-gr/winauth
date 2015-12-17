@@ -31,23 +31,23 @@
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddBattleNetAuthenticator));
 			this.newAuthenticatorProgress = new System.Windows.Forms.ProgressBar();
-			this.allowCopyNewButton = new MetroFramework.Controls.MetroCheckBox();
-			this.label6 = new MetroFramework.Controls.MetroLabel();
-			this.label5 = new MetroFramework.Controls.MetroLabel();
-			this.enrollAuthenticatorButton = new MetroFramework.Controls.MetroButton();
-			this.label4 = new MetroFramework.Controls.MetroLabel();
-			this.lnewLabel4 = new MetroFramework.Controls.MetroLabel();
-			this.label2 = new MetroFramework.Controls.MetroLabel();
-			this.newLabel1 = new MetroFramework.Controls.MetroLabel();
-			this.restoreRestoreCodeField = new MetroFramework.Controls.MetroTextBox();
-			this.label7 = new MetroFramework.Controls.MetroLabel();
-			this.restoreSerialNumberField = new MetroFramework.Controls.MetroTextBox();
-			this.label8 = new MetroFramework.Controls.MetroLabel();
-			this.label9 = new MetroFramework.Controls.MetroLabel();
-			this.importPrivateKeyField = new MetroFramework.Controls.MetroTextBox();
-			this.label11 = new MetroFramework.Controls.MetroLabel();
-			this.okButton = new MetroFramework.Controls.MetroButton();
-			this.cancelButton = new MetroFramework.Controls.MetroButton();
+			this.allowCopyNewButton = new System.Windows.Forms.CheckBox();
+			this.label6 = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.enrollAuthenticatorButton = new System.Windows.Forms.Button();
+			this.label4 = new System.Windows.Forms.Label();
+			this.lnewLabel4 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.newLabel1 = new System.Windows.Forms.Label();
+			this.restoreRestoreCodeField = new System.Windows.Forms.TextBox();
+			this.label7 = new System.Windows.Forms.Label();
+			this.restoreSerialNumberField = new System.Windows.Forms.TextBox();
+			this.label8 = new System.Windows.Forms.Label();
+			this.label9 = new System.Windows.Forms.Label();
+			this.importPrivateKeyField = new System.Windows.Forms.TextBox();
+			this.label11 = new System.Windows.Forms.Label();
+			this.okButton = new System.Windows.Forms.Button();
+			this.cancelButton = new System.Windows.Forms.Button();
 			this.newAuthenticatorTimer = new System.Windows.Forms.Timer(this.components);
 			this.icon3RadioButton = new WinAuth.GroupMetroRadioButton();
 			this.icon2RadioButton = new WinAuth.GroupMetroRadioButton();
@@ -55,17 +55,17 @@
 			this.icon3 = new System.Windows.Forms.PictureBox();
 			this.icon2 = new System.Windows.Forms.PictureBox();
 			this.icon1 = new System.Windows.Forms.PictureBox();
-			this.label10 = new MetroFramework.Controls.MetroLabel();
-			this.label12 = new MetroFramework.Controls.MetroLabel();
-			this.nameField = new MetroFramework.Controls.MetroTextBox();
-			this.tabControl1 = new MetroFramework.Controls.MetroTabControl();
-			this.tabPage1 = new MetroFramework.Controls.MetroTabPage();
+			this.label10 = new System.Windows.Forms.Label();
+			this.label12 = new System.Windows.Forms.Label();
+			this.nameField = new System.Windows.Forms.TextBox();
+			this.tabControl1 = new System.Windows.Forms.TabControl();
+			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.newRestoreCodeField = new WinAuth.SecretTextBox();
 			this.newLoginCodeField = new WinAuth.SecretTextBox();
 			this.newSerialNumberField = new WinAuth.SecretTextBox();
-			this.restoreAuthenticatorTab = new MetroFramework.Controls.MetroTabPage();
-			this.importAuthenticatorTab = new MetroFramework.Controls.MetroTabPage();
-			this.label13 = new MetroFramework.Controls.MetroLabel();
+			this.restoreAuthenticatorTab = new System.Windows.Forms.TabPage();
+			this.importAuthenticatorTab = new System.Windows.Forms.TabPage();
+			this.label13 = new System.Windows.Forms.Label();
 			this.pictureBox2 = new System.Windows.Forms.PictureBox();
 			((System.ComponentModel.ISupportInitialize)(this.icon3)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.icon2)).BeginInit();
@@ -97,7 +97,6 @@
 			this.allowCopyNewButton.Size = new System.Drawing.Size(87, 15);
 			this.allowCopyNewButton.TabIndex = 2;
 			this.allowCopyNewButton.Text = "Allow copy?";
-			this.allowCopyNewButton.UseSelectable = true;
 			this.allowCopyNewButton.CheckedChanged += new System.EventHandler(this.allowCopyNewButton_CheckedChanged);
 			// 
 			// label6
@@ -129,7 +128,6 @@
 			this.enrollAuthenticatorButton.Size = new System.Drawing.Size(166, 23);
 			this.enrollAuthenticatorButton.TabIndex = 0;
 			this.enrollAuthenticatorButton.Text = "Create Authenticator";
-			this.enrollAuthenticatorButton.UseSelectable = true;
 			this.enrollAuthenticatorButton.Click += new System.EventHandler(this.enrollAuthenticatorButton_Click);
 			// 
 			// label4
@@ -181,7 +179,6 @@
 			this.restoreRestoreCodeField.SelectedText = "";
 			this.restoreRestoreCodeField.Size = new System.Drawing.Size(158, 20);
 			this.restoreRestoreCodeField.TabIndex = 1;
-			this.restoreRestoreCodeField.UseSelectable = true;
 			// 
 			// label7
 			// 
@@ -204,7 +201,6 @@
 			this.restoreSerialNumberField.SelectedText = "";
 			this.restoreSerialNumberField.Size = new System.Drawing.Size(158, 20);
 			this.restoreSerialNumberField.TabIndex = 0;
-			this.restoreSerialNumberField.UseSelectable = true;
 			// 
 			// label8
 			// 
@@ -235,7 +231,6 @@
 			this.importPrivateKeyField.SelectedText = "";
 			this.importPrivateKeyField.Size = new System.Drawing.Size(354, 20);
 			this.importPrivateKeyField.TabIndex = 0;
-			this.importPrivateKeyField.UseSelectable = true;
 			// 
 			// label11
 			// 
@@ -257,7 +252,6 @@
 			this.okButton.Size = new System.Drawing.Size(75, 23);
 			this.okButton.TabIndex = 2;
 			this.okButton.Text = "OK";
-			this.okButton.UseSelectable = true;
 			this.okButton.Click += new System.EventHandler(this.okButton_Click);
 			// 
 			// cancelButton
@@ -269,7 +263,6 @@
 			this.cancelButton.Size = new System.Drawing.Size(75, 23);
 			this.cancelButton.TabIndex = 3;
 			this.cancelButton.Text = "Cancel";
-			this.cancelButton.UseSelectable = true;
 			this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
 			// 
 			// newAuthenticatorTimer
@@ -285,7 +278,6 @@
 			this.icon3RadioButton.Size = new System.Drawing.Size(14, 13);
 			this.icon3RadioButton.TabIndex = 3;
 			this.icon3RadioButton.Tag = "DiabloIcon.png";
-			this.icon3RadioButton.UseSelectable = true;
 			this.icon3RadioButton.CheckedChanged += new System.EventHandler(this.iconRadioButton_CheckedChanged);
 			// 
 			// icon2RadioButton
@@ -296,7 +288,6 @@
 			this.icon2RadioButton.Size = new System.Drawing.Size(14, 13);
 			this.icon2RadioButton.TabIndex = 2;
 			this.icon2RadioButton.Tag = "WarcraftIcon.png";
-			this.icon2RadioButton.UseSelectable = true;
 			this.icon2RadioButton.CheckedChanged += new System.EventHandler(this.iconRadioButton_CheckedChanged);
 			// 
 			// icon1RadioButton
@@ -309,7 +300,6 @@
 			this.icon1RadioButton.TabIndex = 1;
 			this.icon1RadioButton.TabStop = true;
 			this.icon1RadioButton.Tag = "BattleNetAuthenticatorIcon.png";
-			this.icon1RadioButton.UseSelectable = true;
 			this.icon1RadioButton.CheckedChanged += new System.EventHandler(this.iconRadioButton_CheckedChanged);
 			// 
 			// icon3
@@ -373,7 +363,6 @@
 			this.nameField.SelectedText = "";
 			this.nameField.Size = new System.Drawing.Size(391, 22);
 			this.nameField.TabIndex = 0;
-			this.nameField.UseSelectable = true;
 			// 
 			// tabControl1
 			// 
@@ -386,7 +375,6 @@
 			this.tabControl1.SelectedIndex = 0;
 			this.tabControl1.Size = new System.Drawing.Size(456, 337);
 			this.tabControl1.TabIndex = 1;
-			this.tabControl1.UseSelectable = true;
 			this.tabControl1.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl1_DrawItem);
 			// 
 			// tabPage1
@@ -404,18 +392,12 @@
 			this.tabPage1.Controls.Add(this.enrollAuthenticatorButton);
 			this.tabPage1.Controls.Add(this.newSerialNumberField);
 			this.tabPage1.Controls.Add(this.label5);
-			this.tabPage1.HorizontalScrollbarBarColor = true;
-			this.tabPage1.HorizontalScrollbarHighlightOnWheel = false;
-			this.tabPage1.HorizontalScrollbarSize = 10;
 			this.tabPage1.Location = new System.Drawing.Point(4, 35);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPage1.Size = new System.Drawing.Size(448, 298);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "New Authenticator";
-			this.tabPage1.VerticalScrollbarBarColor = true;
-			this.tabPage1.VerticalScrollbarHighlightOnWheel = false;
-			this.tabPage1.VerticalScrollbarSize = 10;
 			// 
 			// newRestoreCodeField
 			// 
@@ -458,18 +440,12 @@
 			this.restoreAuthenticatorTab.Controls.Add(this.label7);
 			this.restoreAuthenticatorTab.Controls.Add(this.label8);
 			this.restoreAuthenticatorTab.Controls.Add(this.restoreSerialNumberField);
-			this.restoreAuthenticatorTab.HorizontalScrollbarBarColor = true;
-			this.restoreAuthenticatorTab.HorizontalScrollbarHighlightOnWheel = false;
-			this.restoreAuthenticatorTab.HorizontalScrollbarSize = 10;
 			this.restoreAuthenticatorTab.Location = new System.Drawing.Point(4, 35);
 			this.restoreAuthenticatorTab.Name = "restoreAuthenticatorTab";
 			this.restoreAuthenticatorTab.Padding = new System.Windows.Forms.Padding(3);
 			this.restoreAuthenticatorTab.Size = new System.Drawing.Size(448, 298);
 			this.restoreAuthenticatorTab.TabIndex = 1;
 			this.restoreAuthenticatorTab.Text = "Restore Authenticator";
-			this.restoreAuthenticatorTab.VerticalScrollbarBarColor = true;
-			this.restoreAuthenticatorTab.VerticalScrollbarHighlightOnWheel = false;
-			this.restoreAuthenticatorTab.VerticalScrollbarSize = 10;
 			// 
 			// importAuthenticatorTab
 			// 
@@ -477,18 +453,12 @@
 			this.importAuthenticatorTab.Controls.Add(this.label13);
 			this.importAuthenticatorTab.Controls.Add(this.importPrivateKeyField);
 			this.importAuthenticatorTab.Controls.Add(this.label11);
-			this.importAuthenticatorTab.HorizontalScrollbarBarColor = true;
-			this.importAuthenticatorTab.HorizontalScrollbarHighlightOnWheel = false;
-			this.importAuthenticatorTab.HorizontalScrollbarSize = 10;
 			this.importAuthenticatorTab.Location = new System.Drawing.Point(4, 35);
 			this.importAuthenticatorTab.Name = "importAuthenticatorTab";
 			this.importAuthenticatorTab.Padding = new System.Windows.Forms.Padding(3);
 			this.importAuthenticatorTab.Size = new System.Drawing.Size(448, 298);
 			this.importAuthenticatorTab.TabIndex = 2;
 			this.importAuthenticatorTab.Text = "Import Authenticator";
-			this.importAuthenticatorTab.VerticalScrollbarBarColor = true;
-			this.importAuthenticatorTab.VerticalScrollbarHighlightOnWheel = false;
-			this.importAuthenticatorTab.VerticalScrollbarSize = 10;
 			// 
 			// label13
 			// 
@@ -514,7 +484,6 @@
 			this.AcceptButton = this.okButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
 			this.CancelButton = this.cancelButton;
 			this.ClientSize = new System.Drawing.Size(510, 579);
 			this.Controls.Add(this.pictureBox2);
@@ -532,7 +501,6 @@
 			this.Controls.Add(this.label10);
 			this.MaximizeBox = false;
 			this.Name = "AddBattleNetAuthenticator";
-			this.Resizable = false;
 			this.ShowIcon = false;
 			this.Text = "Battle.net Authenticator";
 			this.Load += new System.EventHandler(this.AddBattleNetAuthenticator_Load);
@@ -554,26 +522,26 @@
 
 		#endregion
 
-		private MetroFramework.Controls.MetroLabel newLabel1;
+		private System.Windows.Forms.Label newLabel1;
 		private WinAuth.SecretTextBox newRestoreCodeField;
 		private WinAuth.SecretTextBox newLoginCodeField;
-		private MetroFramework.Controls.MetroLabel label6;
+		private System.Windows.Forms.Label label6;
 		private WinAuth.SecretTextBox newSerialNumberField;
-		private MetroFramework.Controls.MetroLabel label5;
-		private MetroFramework.Controls.MetroButton enrollAuthenticatorButton;
-		private MetroFramework.Controls.MetroLabel label4;
-		private MetroFramework.Controls.MetroLabel lnewLabel4;
-		private MetroFramework.Controls.MetroLabel label2;
-		private MetroFramework.Controls.MetroCheckBox allowCopyNewButton;
-		private MetroFramework.Controls.MetroTextBox restoreRestoreCodeField;
-		private MetroFramework.Controls.MetroLabel label7;
-		private MetroFramework.Controls.MetroTextBox restoreSerialNumberField;
-		private MetroFramework.Controls.MetroLabel label8;
-		private MetroFramework.Controls.MetroLabel label9;
-		private MetroFramework.Controls.MetroTextBox importPrivateKeyField;
-		private MetroFramework.Controls.MetroLabel label11;
-		private MetroFramework.Controls.MetroButton okButton;
-		private MetroFramework.Controls.MetroButton cancelButton;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Button enrollAuthenticatorButton;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label lnewLabel4;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.CheckBox allowCopyNewButton;
+		private System.Windows.Forms.TextBox restoreRestoreCodeField;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.TextBox restoreSerialNumberField;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.TextBox importPrivateKeyField;
+		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.Button okButton;
+		private System.Windows.Forms.Button cancelButton;
 		private System.Windows.Forms.ProgressBar newAuthenticatorProgress;
 		private System.Windows.Forms.Timer newAuthenticatorTimer;
 		private GroupMetroRadioButton icon3RadioButton;
@@ -582,14 +550,14 @@
 		private System.Windows.Forms.PictureBox icon3;
 		private System.Windows.Forms.PictureBox icon2;
 		private System.Windows.Forms.PictureBox icon1;
-		private MetroFramework.Controls.MetroLabel label10;
-		private MetroFramework.Controls.MetroLabel label12;
-		private MetroFramework.Controls.MetroTextBox nameField;
-		private MetroFramework.Controls.MetroTabControl tabControl1;
-		private MetroFramework.Controls.MetroTabPage tabPage1;
-		private MetroFramework.Controls.MetroTabPage restoreAuthenticatorTab;
-		private MetroFramework.Controls.MetroTabPage importAuthenticatorTab;
-		private MetroFramework.Controls.MetroLabel label13;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.TextBox nameField;
+		private System.Windows.Forms.TabControl tabControl1;
+		private System.Windows.Forms.TabPage tabPage1;
+		private System.Windows.Forms.TabPage restoreAuthenticatorTab;
+		private System.Windows.Forms.TabPage importAuthenticatorTab;
+		private System.Windows.Forms.Label label13;
 		private System.Windows.Forms.PictureBox pictureBox2;
 	}
 }

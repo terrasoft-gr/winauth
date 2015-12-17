@@ -19,8 +19,6 @@
 // Type: WinAuth.ShowSteamTradesForm
 // Assembly: WinAuth, Version=3.3.7.2, Culture=neutral, PublicKeyToken=null
 
-using MetroFramework.Controls;
-using MetroFramework.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -42,30 +40,30 @@ namespace WinAuth
 	{
 		private ShowSteamTradesForm.TradeSession m_state = new ShowSteamTradesForm.TradeSession();
 		private Dictionary<string, TabPage> m_tabPages = new Dictionary<string, TabPage>();
-		private MetroLabel loginTabLabel;
-		private MetroButton loginButton;
-		private MetroLabel captchaTabLabel;
-		private MetroButton cancelButton;
-		private MetroTextBox captchacodeField;
-		private MetroTextBox usernameField;
-		private MetroButton captchaButton;
-		private MetroTabControl tabs;
-		private MetroTabPage loginTab;
-		private MetroLabel passwordLabel;
-		private MetroLabel usernameLabel;
-		private MetroTextBox passwordField;
-		private MetroTabPage tradesTab;
+		private Label loginTabLabel;
+		private Button loginButton;
+		private Label captchaTabLabel;
+		private Button cancelButton;
+		private TextBox captchacodeField;
+		private TextBox usernameField;
+		private Button captchaButton;
+		private TabControl tabs;
+		private TabPage loginTab;
+		private Label passwordLabel;
+		private Label usernameLabel;
+		private TextBox passwordField;
+		private TabPage tradesTab;
 		private PictureBox captchaBox;
 		private Panel captchaGroup;
-		private MetroButton closeButton;
+		private Button closeButton;
 		private Panel tradePanelMaster;
 		private PictureBox tradeImage;
-		private MetroButton tradeReject;
-		private MetroButton tradeAccept;
-		private MetroLabel tradeLabel;
+		private Button tradeReject;
+		private Button tradeAccept;
+		private Label tradeLabel;
 		private PictureBox tradeSep;
-		private MetroLabel tradeStatus;
-		private MetroLabel tradesEmptyLabel;
+		private Label tradeStatus;
+		private Label tradesEmptyLabel;
 
 		public SteamAuthenticator Authenticator { get; set; }
 
@@ -95,30 +93,30 @@ namespace WinAuth
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.loginButton = new MetroButton();
-			this.loginTabLabel = new MetroLabel();
-			this.captchaButton = new MetroButton();
-			this.captchacodeField = new MetroTextBox();
-			this.usernameField = new MetroTextBox();
-			this.captchaTabLabel = new MetroLabel();
-			this.cancelButton = new MetroButton();
-			this.tabs = new MetroTabControl();
-			this.loginTab = new MetroTabPage();
+			this.loginButton = new Button();
+			this.loginTabLabel = new Label();
+			this.captchaButton = new Button();
+			this.captchacodeField = new TextBox();
+			this.usernameField = new TextBox();
+			this.captchaTabLabel = new Label();
+			this.cancelButton = new Button();
+			this.tabs = new TabControl();
+			this.loginTab = new TabPage();
 			this.captchaGroup = new Panel();
 			this.captchaBox = new PictureBox();
-			this.passwordField = new MetroTextBox();
-			this.passwordLabel = new MetroLabel();
-			this.usernameLabel = new MetroLabel();
-			this.tradesTab = new MetroTabPage();
+			this.passwordField = new TextBox();
+			this.passwordLabel = new Label();
+			this.usernameLabel = new Label();
+			this.tradesTab = new TabPage();
 			this.tradePanelMaster = new Panel();
 			this.tradeSep = new PictureBox();
-			this.tradeLabel = new MetroLabel();
+			this.tradeLabel = new Label();
 			this.tradeImage = new PictureBox();
-			this.tradeReject = new MetroButton();
-			this.tradeAccept = new MetroButton();
-			this.tradeStatus = new MetroLabel();
-			this.closeButton = new MetroButton();
-			this.tradesEmptyLabel = new MetroLabel();
+			this.tradeReject = new Button();
+			this.tradeAccept = new Button();
+			this.tradeStatus = new Label();
+			this.closeButton = new Button();
+			this.tradesEmptyLabel = new Label();
 			this.tabs.SuspendLayout();
 			this.loginTab.SuspendLayout();
 			this.captchaGroup.SuspendLayout();
@@ -133,7 +131,6 @@ namespace WinAuth
 			this.loginButton.Size = new Size(110, 24);
 			this.loginButton.TabIndex = 2;
 			this.loginButton.Text = "Login";
-			this.loginButton.UseSelectable = true;
 			this.loginButton.Click += new EventHandler(this.loginButton_Click);
 			this.loginTabLabel.Location = new Point(7, 10);
 			this.loginTabLabel.Name = "loginTabLabel";
@@ -145,7 +142,6 @@ namespace WinAuth
 			this.captchaButton.Size = new Size(110, 23);
 			this.captchaButton.TabIndex = 1;
 			this.captchaButton.Text = "Login";
-			this.captchaButton.UseSelectable = true;
 			this.captchaButton.Click += new EventHandler(this.captchaButton_Click);
 			this.captchacodeField.Location = new Point(97, 78);
 			this.captchacodeField.MaxLength = (int) short.MaxValue;
@@ -155,7 +151,6 @@ namespace WinAuth
 			this.captchacodeField.SelectedText = "";
 			this.captchacodeField.Size = new Size(206, 22);
 			this.captchacodeField.TabIndex = 0;
-			this.captchacodeField.UseSelectable = true;
 			this.usernameField.Location = new Point(104, 59);
 			this.usernameField.MaxLength = (int) short.MaxValue;
 			this.usernameField.Name = "usernameField";
@@ -164,7 +159,6 @@ namespace WinAuth
 			this.usernameField.SelectedText = "";
 			this.usernameField.Size = new Size(177, 22);
 			this.usernameField.TabIndex = 0;
-			this.usernameField.UseSelectable = true;
 			this.captchaTabLabel.AutoSize = true;
 			this.captchaTabLabel.Location = new Point(97, 10);
 			this.captchaTabLabel.Name = "captchaTabLabel";
@@ -178,7 +172,6 @@ namespace WinAuth
 			this.cancelButton.Size = new Size(75, 23);
 			this.cancelButton.TabIndex = 0;
 			this.cancelButton.Text = "Cancel";
-			this.cancelButton.UseSelectable = true;
 			this.cancelButton.Click += new EventHandler(this.cancelButton_Click);
 			this.tabs.Controls.Add((Control) this.loginTab);
 			this.tabs.Controls.Add((Control) this.tradesTab);
@@ -189,7 +182,6 @@ namespace WinAuth
 			this.tabs.SelectedIndex = 1;
 			this.tabs.Size = new Size(464, 444);
 			this.tabs.TabIndex = 0;
-			this.tabs.UseSelectable = true;
 			this.tabs.DrawItem += new DrawItemEventHandler(this.tabControl1_DrawItem);
 			this.loginTab.BackColor = SystemColors.Control;
 			this.loginTab.Controls.Add((Control) this.captchaGroup);
@@ -200,9 +192,6 @@ namespace WinAuth
 			this.loginTab.Controls.Add((Control) this.usernameLabel);
 			this.loginTab.Controls.Add((Control) this.loginTabLabel);
 			this.loginTab.ForeColor = SystemColors.ControlText;
-			this.loginTab.HorizontalScrollbarBarColor = true;
-			this.loginTab.HorizontalScrollbarHighlightOnWheel = false;
-			this.loginTab.HorizontalScrollbarSize = 10;
 			this.loginTab.Location = new Point(4, 22);
 			this.loginTab.Name = "loginTab";
 			this.loginTab.Padding = new Padding(3);
@@ -210,9 +199,6 @@ namespace WinAuth
 			this.loginTab.TabIndex = 0;
 			this.loginTab.Tag = (object) "";
 			this.loginTab.Text = "Login";
-			this.loginTab.VerticalScrollbarBarColor = true;
-			this.loginTab.VerticalScrollbarHighlightOnWheel = false;
-			this.loginTab.VerticalScrollbarSize = 10;
 			this.captchaGroup.BackColor = SystemColors.ControlLightLight;
 			this.captchaGroup.Controls.Add((Control) this.captchaBox);
 			this.captchaGroup.Controls.Add((Control) this.captchaTabLabel);
@@ -236,7 +222,6 @@ namespace WinAuth
 			this.passwordField.SelectedText = "";
 			this.passwordField.Size = new Size(177, 22);
 			this.passwordField.TabIndex = 1;
-			this.passwordField.UseSelectable = true;
 			this.passwordField.UseSystemPasswordChar = true;
 			this.passwordLabel.Location = new Point(18, 87);
 			this.passwordLabel.Name = "passwordLabel";
@@ -251,20 +236,12 @@ namespace WinAuth
 			this.tradesTab.AutoScroll = true;
 			this.tradesTab.Controls.Add((Control) this.tradePanelMaster);
 			this.tradesTab.Controls.Add((Control) this.tradesEmptyLabel);
-			this.tradesTab.HorizontalScrollbar = true;
-			this.tradesTab.HorizontalScrollbarBarColor = true;
-			this.tradesTab.HorizontalScrollbarHighlightOnWheel = false;
-			this.tradesTab.HorizontalScrollbarSize = 10;
 			this.tradesTab.Location = new Point(4, 22);
 			this.tradesTab.Name = "tradesTab";
 			this.tradesTab.Size = new Size(456, 418);
 			this.tradesTab.TabIndex = 2;
 			this.tradesTab.Tag = (object) "";
 			this.tradesTab.Text = "Trades";
-			this.tradesTab.VerticalScrollbar = true;
-			this.tradesTab.VerticalScrollbarBarColor = true;
-			this.tradesTab.VerticalScrollbarHighlightOnWheel = false;
-			this.tradesTab.VerticalScrollbarSize = 10;
 			this.tradePanelMaster.BackColor = SystemColors.ControlLightLight;
 			this.tradePanelMaster.Controls.Add((Control) this.tradeSep);
 			this.tradePanelMaster.Controls.Add((Control) this.tradeLabel);
@@ -289,7 +266,7 @@ namespace WinAuth
 			this.tradeLabel.Name = "tradeLabel";
 			this.tradeLabel.Size = new Size(283, 50);
 			this.tradeLabel.TabIndex = 4;
-			this.tradeLabel.Text = "metroLabel1";
+			this.tradeLabel.Text = "Label1";
 			this.tradeImage.Location = new Point(4, 12);
 			this.tradeImage.Name = "tradeImage";
 			this.tradeImage.Size = new Size(36, 36);
@@ -302,7 +279,6 @@ namespace WinAuth
 			this.tradeReject.Size = new Size(75, 23);
 			this.tradeReject.TabIndex = 1;
 			this.tradeReject.Text = "Reject";
-			this.tradeReject.UseSelectable = true;
 			this.tradeReject.Click += new EventHandler(this.tradeReject_Click);
 			this.tradeAccept.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 			this.tradeAccept.BackColor = SystemColors.Control;
@@ -311,7 +287,6 @@ namespace WinAuth
 			this.tradeAccept.Size = new Size(75, 23);
 			this.tradeAccept.TabIndex = 0;
 			this.tradeAccept.Text = "Accept";
-			this.tradeAccept.UseSelectable = true;
 			this.tradeAccept.Click += new EventHandler(this.tradeAccept_Click);
 			this.tradeStatus.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 			this.tradeStatus.Location = new Point(335, 8);
@@ -328,7 +303,6 @@ namespace WinAuth
 			this.closeButton.Size = new Size(75, 23);
 			this.closeButton.TabIndex = 1;
 			this.closeButton.Text = "Close";
-			this.closeButton.UseSelectable = true;
 			this.closeButton.Visible = false;
 			this.closeButton.Click += new EventHandler(this.closeButton_Click);
 			this.tradesEmptyLabel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -340,7 +314,6 @@ namespace WinAuth
 			this.tradesEmptyLabel.Visible = false;
 			this.AutoScaleDimensions = new SizeF(6f, 13f);
 			this.AutoScaleMode = AutoScaleMode.Font;
-			this.BorderStyle = MetroFormBorderStyle.FixedSingle;
 			this.CancelButton = (IButtonControl) this.cancelButton;
 			this.ClientSize = new Size(501, 564);
 			this.Controls.Add((Control) this.tabs);
@@ -349,7 +322,6 @@ namespace WinAuth
 			this.KeyPreview = true;
 			this.MaximizeBox = false;
 			this.Name = "ShowSteamTradesForm";
-			this.Resizable = false;
 			this.ShowIcon = false;
 			this.Text = "Steam Trades";
 			this.FormClosing += new FormClosingEventHandler(this.ShowSteamTradesForm_FormClosing);
