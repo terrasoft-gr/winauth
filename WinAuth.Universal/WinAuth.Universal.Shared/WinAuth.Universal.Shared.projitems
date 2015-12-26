@@ -15,6 +15,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)AuthenticatorListItem.xaml.cs">
+      <DependentUpon>AuthenticatorListItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Authenticator\Authenticator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Authenticator\AuthenticatorException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Authenticator\Base32.cs" />
@@ -106,6 +109,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)AuthenticatorListItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Forms\AboutForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
