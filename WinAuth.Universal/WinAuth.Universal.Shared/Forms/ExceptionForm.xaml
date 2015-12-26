@@ -1,0 +1,60 @@
+<Page mc:Ignorable="d"
+      x:Class="WinAuth.Universal.ExceptionForm"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="using:WinAuth.Universal"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Canvas Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+          x:Name="cvsExceptionForm">
+    <TextBlock Canvas.Left="95"
+               Canvas.Top="63"
+               Height="257"
+               Text="An error has occured in WinAuth.
+
+{0}
+
+Some diagnostic information has been recorded and saved that might help track down issues in WinAuth.
+
+It would help if you can submit this information so we can investigate the crash and try and fix the issue. This information does include information about your authenticators but is only used by the WinAuth developers solely for the purpose of investigating bugs and error reports. It does not include any personal or identifying information. Any information sent has been encrypted using PGP and cannot be read by anyone else.
+
+If you are happy to send this information please either click Send Error Report or you can click Show Details and manually copy the text and file a bug report at https://code.google.com/p/winauth/issues."
+               Width="574"
+               x:Name="errorLabel" />
+    <Image Canvas.Left="23"
+           Canvas.Top="63"
+           Height="48"
+           Width="48"
+           x:Name="errorIcon" />
+    <Button Canvas.Left="98"
+            Canvas.Top="324"
+            Content="Show Details"
+            Height="28"
+            Width="117"
+            x:Name="detailsButton" />
+    <Button Canvas.Left="223"
+            Canvas.Top="324"
+            Content="Send Error Report"
+            Height="28"
+            Width="153"
+            x:Name="reportButton" />
+    <Button Canvas.Left="461"
+            Canvas.Top="324"
+            Content="Continue"
+            Height="28"
+            Width="100"
+            x:Name="continueButton" />
+    <Button Canvas.Left="569"
+            Canvas.Top="324"
+            Content="Quit"
+            Height="28"
+            Width="100"
+            x:Name="quitButton" />
+    <TextBox Canvas.Left="98"
+             Canvas.Top="380"
+             Height="130"
+             Text=""
+             Width="571"
+             x:Name="dataText" />
+  </Canvas>
+</Page>

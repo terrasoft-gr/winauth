@@ -1,0 +1,60 @@
+<Page mc:Ignorable="d"
+      x:Class="WinAuth.Universal.AddAuthenticator"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="using:WinAuth.Universal"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Name:" x:Name="nameLabel" />
+        <TextBox Grid.Row="0" Grid.Column="1" x:Name="nameField" />
+        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" TextWrapping="WrapWholeWords" Text="1. Enter the Secret Code for your authenticator. Spaces don't matter. If have a QR code, you can paste the URL of the image instead."/>
+        <Button Content="Decode" Grid.Row="2" Grid.Column="2" x:Name="secretCodeButton" />
+        <TextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" x:Name="secretCodeField" />
+        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" TextWrapping="WrapWholeWords" Text="2. Choose if this is a time-based or a counter-based authenticator. If you don&#39;t know, it&#39;s likely time-based, so just leave the default choice." x:Name="step2Label" />
+
+        <Hub><HubSection></HubSection></Hub>
+        <!--<Grid Grid.Row="6" Grid.Column="0" x:Name="counterBasedPanel">
+            <Button Content="Verify Authenticator"
+              x:Name="verifyCounterButton" />
+            <TextBox 
+               x:Name="counterField" />
+            <TextBlock 
+                 Text="3. Enter the initial counter value if known. Click the Verify button that will show the last code that was used."
+                 x:Name="step3CounterLabel" />
+        </Grid>
+        <Grid Grid.Row="7" Grid.Column="0"
+            x:Name="timeBasedPanel">
+            <TextBlock 
+                 Text="3. Click the Verify button to check the first code."
+                 x:Name="step3Label" />
+            <Button 
+              Content="Verify Authenticator"
+              x:Name="verifyButton" />
+        </Grid>
+        <RadioButton Grid.Row="9" Grid.Column="0" Content="Counter-based" x:Name="counterBasedRadio" />
+        <RadioButton Grid.Row="9" Grid.Column="0" Content="Time-based" x:Name="timeBasedRadio" />
+        <ProgressBar Grid.Row="9" Grid.Column="0" x:Name="codeProgress" />
+        <TextBox Grid.Row="9" Grid.Column="0" x:Name="codeField" />
+        <TextBlock Grid.Row="9" Grid.Column="0" Text="4. Verify the following code matches your service" x:Name="step4Label" />
+        <Button Grid.Row="9" Grid.Column="0" Content="Cancel" x:Name="cancelButton" />
+        <Button Grid.Row="9" Grid.Column="0" Content="OK" x:Name="okButton" />-->
+    </Grid>
+</Page>
