@@ -25,6 +25,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Authenticator\MicrosoftAuthenticator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Authenticator\SteamAuthenticator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Authenticator\TrionAuthenticator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\NavigationHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\ObservableDictionary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\RelayCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\SuspensionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Forms\AboutForm.xaml.cs">
       <DependentUpon>AboutForm.xaml</DependentUpon>
     </Compile>
