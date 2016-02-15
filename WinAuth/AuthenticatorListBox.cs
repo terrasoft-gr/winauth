@@ -141,9 +141,33 @@ namespace WinAuth
 	}
 
 	/// <summary>
+	/// Delegate for event when double click
+	/// </summary>
+	/// <param name="source"></param>
+	/// <param name="args"></param>
+	public delegate void AuthenticatorListDoubleClickHandler(object source, AuthenticatorListDoubleClickEventArgs args);
+
+	/// <summary>
+	/// Event arguments for double click
+	/// </summary>
+	public class AuthenticatorListDoubleClickEventArgs : EventArgs
+	{
+		public WinAuthAuthenticator Authenticator;
+
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public AuthenticatorListDoubleClickEventArgs(WinAuthAuthenticator auth)
+			: base()
+		{
+			Authenticator = auth;
+		}
+	}
+
+	/// <summary>
 	/// An owner draw listbox that displays wrapped authenticators
 	/// </summary>
-  public class AuthenticatorListBox : ListBox
+	public class AuthenticatorListBox : ListBox
   {
 		private const int MARGIN_LEFT = 4;
 		private const int MARGIN_TOP = 8;
@@ -179,6 +203,11 @@ namespace WinAuth
 		/// </summary>
 		[Category("Action")]
 		public event ScrollEventHandler Scrolled = null;
+
+		/// <summary>
+		/// Event handler for double click
+		/// </summary>
+		public new event AuthenticatorListDoubleClickHandler DoubleClick;
 
 		/// <summary>
 		/// Rename textbox
@@ -264,6 +293,19 @@ namespace WinAuth
 			int y = (e.Delta * this.ItemHeight) + MARGIN_TOP;
 			ScrollEventArgs sargs = new ScrollEventArgs(ScrollEventType.ThumbPosition, y, ScrollOrientation.VerticalScroll);
 			Scrolled(this, sargs);
+		}
+
+		/// <summary>
+		/// Copy the current code when double-clicking
+		/// </summary>
+		/// <param name="e"></param>
+		protected override void OnMouseDoubleClick(MouseEventArgs e)
+		{
+			var item = this.CurrentItem;
+			if (item != null)
+			{
+				DoubleClick(this, new AuthenticatorListDoubleClickEventArgs(item.Authenticator));
+			}
 		}
 
 		#region Control Events
@@ -1014,10 +1056,12 @@ namespace WinAuth
 			menuitem.Click += ContextMenu_Click;
 			this.ContextMenuStrip.Items.Add(menuitem);
 			//
-			//menuitem = new ToolStripMenuItem(strings.ConfirmTrades + "...");
-			//menuitem.Name = "showSteamTradesMenuItem";
-			//menuitem.Click += ContextMenu_Click;
-			//this.ContextMenuStrip.Items.Add(menuitem);
+			this.ContextMenuStrip.Items.Add(new ToolStripSeparator { Name = "steamSeperator" });
+			//
+			menuitem = new ToolStripMenuItem(strings.ConfirmTrades + "...");
+			menuitem.Name = "showSteamTradesMenuItem";
+			menuitem.Click += ContextMenu_Click;
+			this.ContextMenuStrip.Items.Add(menuitem);
 			//
 			this.ContextMenuStrip.Items.Add(new ToolStripSeparator());
 			//
@@ -1140,6 +1184,7 @@ namespace WinAuth
 				labelitem.Text += " (" + auth.HotKey.ToString() + ")";
 			}
 
+			ToolStripItem sepitem;
 			ToolStripMenuItem menuitem = menu.Items.Cast<ToolStripItem>().Where(i => i.Name == "setPasswordMenuItem").FirstOrDefault() as ToolStripMenuItem;
 			menuitem.Text = (item.Authenticator.AuthenticatorData.PasswordType == Authenticator.PasswordTypes.Explicit ? strings.ChangeOrRemovePassword + "..." : strings.SetPassword + "...");
 
@@ -1159,9 +1204,12 @@ namespace WinAuth
 			menuitem.Visible = (auth.AuthenticatorData is SteamAuthenticator);
 			menuitem.Enabled = (auth.AuthenticatorData is SteamAuthenticator && string.IsNullOrEmpty(((SteamAuthenticator)auth.AuthenticatorData).SteamData) == false);
 			//
-			//menuitem = menu.Items.Cast<ToolStripItem>().Where(i => i.Name == "showSteamTradesMenuItem").FirstOrDefault() as ToolStripMenuItem;
-			//menuitem.Visible = (auth.AuthenticatorData is SteamAuthenticator);
-			//menuitem.Enabled = (auth.AuthenticatorData is SteamAuthenticator && string.IsNullOrEmpty(((SteamAuthenticator)auth.AuthenticatorData).SteamData) == false);
+			sepitem = menu.Items.Cast<ToolStripItem>().Where(i => i.Name == "steamSeperator").FirstOrDefault() as ToolStripItem;
+			sepitem.Visible = (auth.AuthenticatorData is SteamAuthenticator);
+			//
+			menuitem = menu.Items.Cast<ToolStripItem>().Where(i => i.Name == "showSteamTradesMenuItem").FirstOrDefault() as ToolStripMenuItem;
+			menuitem.Visible = (auth.AuthenticatorData is SteamAuthenticator);
+			menuitem.Enabled = (auth.AuthenticatorData is SteamAuthenticator && string.IsNullOrEmpty(((SteamAuthenticator)auth.AuthenticatorData).SteamData) == false);
 			//
 			menuitem = menu.Items.Cast<ToolStripItem>().Where(i => i.Name == "autoRefreshMenuItem").FirstOrDefault() as ToolStripMenuItem;
 			menuitem.Visible = !(auth.AuthenticatorData is HOTPAuthenticator);
@@ -1194,7 +1242,7 @@ namespace WinAuth
 				}
 			}
 			//
-			ToolStripItem sepitem = menu.Items.Cast<ToolStripItem>().Where(i => i.Name == "syncMenuSep").FirstOrDefault() as ToolStripItem;
+			sepitem = menu.Items.Cast<ToolStripItem>().Where(i => i.Name == "syncMenuSep").FirstOrDefault() as ToolStripItem;
 			sepitem.Visible = !(auth.AuthenticatorData is HOTPAuthenticator);
 			menuitem = menu.Items.Cast<ToolStripItem>().Where(i => i.Name == "syncMenuItem").FirstOrDefault() as ToolStripMenuItem;
 			menuitem.Visible = !(auth.AuthenticatorData is HOTPAuthenticator);
@@ -1512,7 +1560,7 @@ namespace WinAuth
 				{
 					// show the Steam trades dialog
 					ShowSteamTradesForm form = new ShowSteamTradesForm();
-					form.Authenticator = auth.AuthenticatorData as SteamAuthenticator;
+					form.Authenticator = auth;
 					form.ShowDialog(this.Parent as Form);
 				}
 				finally
@@ -1738,9 +1786,9 @@ namespace WinAuth
 			return bmp;
 		}
 
-		#endregion
+#endregion
 
-		#region Owner Draw
+#region Owner Draw
 
 		/// <summary>
 		/// Calculate the maximum available label with based on the currnet control size
@@ -2019,6 +2067,6 @@ namespace WinAuth
       base.OnPaint(e);
 		}
 
-		#endregion
+#endregion
 	}
 }

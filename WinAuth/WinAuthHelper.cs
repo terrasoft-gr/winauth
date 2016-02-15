@@ -300,9 +300,24 @@ namespace WinAuth
 					try
 					{
 						byte[] data = ms.ToArray();
+
+						// getting instance of zerod files, so do some sanity checks
+						if (data.Length == 0 || data[0] == 0)
+						{
+							throw new ApplicationException("Zero data when saving config");
+						}
+
 						using (FileStream fs = new FileStream(config.Filename, FileMode.Create, FileAccess.Write, FileShare.None))
 						{
 							fs.Write(data, 0, data.Length);
+							fs.Flush();
+						}
+
+						// read it back
+						var verify = File.ReadAllBytes(config.Filename);
+						if (verify.Length != data.Length || verify.SequenceEqual(data) == false)
+						{
+							throw new ApplicationException("Save config doesn't compare with memory: " + Convert.ToBase64String(data));
 						}
 					}
 					catch (UnauthorizedAccessException )
@@ -1117,7 +1132,12 @@ namespace WinAuth
 						}
 						if (key.GetSubKeyNames().Contains(valuekey) == true)
 						{
+#if NETFX_4
 							key.DeleteSubKeyTree(valuekey, false);
+#endif
+#if NETFX_3
+							key.DeleteSubKeyTree(valuekey);
+#endif
 						}
 
 						// if the parent now has no values, we can remove it too
@@ -1134,9 +1154,9 @@ namespace WinAuth
 			}
 		}
 
-		#endregion
+#endregion
 
-		#region PGP functions
+#region PGP functions
 
 		/// <summary>
     /// Build a PGP key pair
@@ -1263,7 +1283,7 @@ namespace WinAuth
     public static string PGPDecrypt(string armoredCipher, string armoredPrivateKey, string keyPassword)
     {
       // decode the private key
-      PgpPrivateKey privateKey = null;
+      Dictionary<long, PgpPrivateKey> privateKeys = new Dictionary<long, PgpPrivateKey>();
       using (MemoryStream ms = new MemoryStream(Encoding.ASCII.GetBytes(armoredPrivateKey)))
       {
         using (Stream dis = PgpUtilities.GetDecoderStream(ms))
@@ -1273,8 +1293,7 @@ namespace WinAuth
           {
             foreach (PgpSecretKey key in keyring.GetSecretKeys())
             {
-              privateKey = key.ExtractPrivateKey(keyPassword != null ? keyPassword.ToCharArray() : null);
-              break;
+							privateKeys.Add(key.KeyId, key.ExtractPrivateKey(keyPassword != null ? keyPassword.ToCharArray() : null));
             }
           }
         }
@@ -1293,7 +1312,7 @@ namespace WinAuth
             {
               foreach (PgpPublicKeyEncryptedData pked in ((PgpEncryptedDataList)message).GetEncryptedDataObjects())
               {
-                message = new PgpObjectFactory(pked.GetDataStream(privateKey)).NextPgpObject();
+								message = new PgpObjectFactory(pked.GetDataStream(privateKeys[pked.KeyId])).NextPgpObject();
               }
             }
             if (message is PgpCompressedData)
@@ -1319,7 +1338,7 @@ namespace WinAuth
       }
 		}
 
-		#endregion
+#endregion
 
 	}
 

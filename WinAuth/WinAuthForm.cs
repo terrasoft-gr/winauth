@@ -29,7 +29,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+#if NETFX_4
 using System.Threading.Tasks;
+#endif
 using System.Xml;
 using System.Web;
 using System.Windows.Forms;
@@ -37,14 +39,16 @@ using System.Windows.Forms;
 using MetroFramework;
 using MetroFramework.Forms;
 
+using NLog;
+
 using WinAuth.Resources;
 using System.Security;
 using System.Net;
 
 namespace WinAuth
 {
-	public partial class WinAuthForm : Form
-	{
+	public partial class WinAuthForm : ResourceForm
+  {
 #if BETA
 		/// <summary>
 		/// Registry data name for beta key
@@ -57,7 +61,7 @@ namespace WinAuth
       InitializeComponent();
     }
 
-    #region Properties
+#region Properties
 
 		/// <summary>
 		/// The current winauth config
@@ -148,7 +152,7 @@ namespace WinAuth
 		/// </summary>
 		private object m_deviceArrivalMutex = new object();
 
-    #endregion
+#endregion
 
 		/// <summary>
 		/// Load the main form
@@ -183,6 +187,22 @@ namespace WinAuth
 							// set proxy [user[:pass]@]ip[:host]
 							i++;
 							proxy = args[i];
+							break;
+						case "-l":
+						case "--log":
+							i++;
+							FieldInfo fi = typeof(LogLevel).GetField(args[i], BindingFlags.Static | BindingFlags.IgnoreCase | BindingFlags.Public);
+							if (fi == null)
+							{
+								WinAuthForm.ErrorDialog(this, "Invalid parameter: log value: " + args[i] + " (must be error,info,debug,trace)");
+								System.Diagnostics.Process.GetCurrentProcess().Kill();
+							}
+							var loglevel = fi.GetValue(null) as LogLevel;
+							var target = NLog.LogManager.Configuration.AllTargets.Where(t => t.Name == null).FirstOrDefault();
+							if (target != null)
+							{
+								LogManager.Configuration.LoggingRules.Add(new NLog.Config.LoggingRule("*", loglevel, target));
+							}
 							break;
 						default:
               break;
@@ -235,13 +255,14 @@ namespace WinAuth
 			passwordPanel.Visible = false;
 			yubiPanel.Visible = false;
 
+#if NETFX_4
 			Task.Factory.StartNew<Tuple<WinAuthConfig, Exception>>(() =>
 			{
 				try
 				{
 					// use previous config if we have one
 					WinAuthConfig config = WinAuthHelper.LoadConfig(this, configFile, password);
-					return new Tuple<WinAuthConfig,Exception>(config, null);
+					return new Tuple<WinAuthConfig, Exception>(config, null);
 				}
 				catch (Exception ex)
 				{
@@ -256,7 +277,7 @@ namespace WinAuth
 					System.Diagnostics.Process.GetCurrentProcess().Kill();
 					return;
 				}
-				else if (ex is EncryptedSecretDataException)
+				else if (ex is EncrpytedSecretDataException)
 				{
 					loadingPanel.Visible = false;
 					passwordPanel.Visible = true;
@@ -282,6 +303,8 @@ namespace WinAuth
 					passwordPanel.Visible = true;
 					this.passwordErrorLabel.Text = strings.InvalidPassword;
 					this.passwordErrorLabel.Tag = DateTime.Now.AddSeconds(3);
+					// oddity with MetroFrame controls in have to set focus away and back to field to make it stick
+					this.Invoke((MethodInvoker)delegate { this.passwordButton.Focus(); this.passwordField.Focus(); });
 					this.passwordTimer.Enabled = true;
 					return;
 				}
@@ -321,6 +344,89 @@ namespace WinAuth
 
 				InitializeForm();
 			}, TaskScheduler.FromCurrentSynchronizationContext());
+#endif
+#if NETFX_3
+			WinAuthConfig config;
+			try
+			{
+				// use previous config if we have one
+				config = WinAuthHelper.LoadConfig(this, configFile, password);
+				if (config == null)
+				{
+					System.Diagnostics.Process.GetCurrentProcess().Kill();
+					return;
+				}
+
+				// check for a v2 config file if this is a new config
+				if (config.Count == 0 && string.IsNullOrEmpty(config.Filename) == true)
+				{
+					_existingv2Config = WinAuthHelper.GetLastV2Config();
+				}
+
+				this.Config = config;
+				this.Config.OnConfigChanged += new ConfigChangedHandler(OnConfigChanged);
+
+				if (config.Upgraded == true)
+				{
+					SaveConfig(true);
+					// display warning
+					WinAuthForm.ErrorDialog(this, string.Format(strings.ConfigUpgraded, WinAuthConfig.CURRENTVERSION));
+				}
+
+				InitializeForm();
+			}
+			catch (Exception ex)
+			{
+				if (ex is WinAuthInvalidNewerConfigException)
+				{
+					MessageBox.Show(this, ex.Message, WinAuthMain.APPLICATION_TITLE, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					System.Diagnostics.Process.GetCurrentProcess().Kill();
+					return;
+				}
+				else if (ex is EncrpytedSecretDataException)
+				{
+					loadingPanel.Visible = false;
+					passwordPanel.Visible = true;
+					yubiPanel.Visible = false;
+
+					this.passwordButton.Focus();
+					this.passwordField.Focus();
+
+					return;
+				}
+				else if (ex is BadYubiKeyException)
+				{
+					loadingPanel.Visible = false;
+					passwordPanel.Visible = false;
+					yubiPanel.Visible = true;
+					this.yubiLabel.Text = strings.YubikeyInsert;
+					return;
+				}
+				else if (ex is BadPasswordException)
+				{
+					loadingPanel.Visible = false;
+					yubiPanel.Visible = false;
+					passwordPanel.Visible = true;
+					this.passwordErrorLabel.Text = strings.InvalidPassword;
+					this.passwordErrorLabel.Tag = DateTime.Now.AddSeconds(3);
+					// oddity with MetroFrame controls in have to set focus away and back to field to make it stick
+					this.Invoke((MethodInvoker)delegate { this.passwordButton.Focus(); this.passwordField.Focus(); });
+					this.passwordTimer.Enabled = true;
+					return;
+				}
+				else // if (ex is Exception)
+				{
+					if (ErrorDialog(this, strings.UnknownError + ": " + ex.Message, ex, MessageBoxButtons.RetryCancel) == System.Windows.Forms.DialogResult.Cancel)
+					{
+						this.Close();
+						return;
+					}
+					loadConfig(password);
+					return;
+				}
+			};
+#endif
+
 		}
 
 		/// <summary>
@@ -485,7 +591,7 @@ namespace WinAuth
 					needPassword = false;
 					retry = false;
 				}
-				catch (EncryptedSecretDataException)
+				catch (EncrpytedSecretDataException)
 				{
 					needPassword = true;
 					invalidPassword = false;
@@ -620,8 +726,19 @@ namespace WinAuth
 			// hook hotkeys
 			HookHotkeys();
 
+			// hook Steam notifications
+			HookSteam();
+
 			// save the position of the list within the form else starting as minimized breaks the size
 			_listoffset = new Rectangle(authenticatorList.Left, authenticatorList.Top, (this.Width - authenticatorList.Width), (this.Height - authenticatorList.Height));
+
+			// set the shadow type (change in config for compatibility)
+			try
+			{
+				MetroFormShadowType shadow = (MetroFormShadowType)Enum.Parse(typeof(MetroFormShadowType), this.Config.ShadowType, true);
+				this.ShadowType = shadow;
+			}
+			catch (Exception) { }
 
 			// set positions
 			if (this.Config.Position.IsEmpty == false)
@@ -856,6 +973,176 @@ namespace WinAuth
 			}
 		}
 
+#region Steam Notifications
+
+		/// <summary>
+		/// Unhook the Steam notifications
+		/// </summary>
+		public void UnhookSteam()
+		{
+			if (this.Config == null)
+			{
+				return;
+			}
+
+#if NETFX_4
+			foreach (var auth in this.Config)
+			{
+				if (auth.AuthenticatorData != null && auth.AuthenticatorData is SteamAuthenticator && ((SteamAuthenticator)auth.AuthenticatorData).Client != null)
+				{
+					var client = ((SteamAuthenticator)auth.AuthenticatorData).GetClient();
+					client.ConfirmationEvent -= SteamClient_ConfirmationEvent;
+					client.ConfirmationErrorEvent -= SteamClient_ConfirmationErrorEvent;
+				}
+			}
+#endif
+		}
+
+		/// <summary>
+		/// Hook the Steam authenticators for notifications
+		/// </summary>
+		public void HookSteam()
+		{
+			UnhookSteam();
+			if (this.Config == null)
+			{
+				return;
+			}
+
+#if NETFX_4
+			// do async as setting up clients can take time (Task.Factory.StartNew wait for UI so need to use new Thread(...))
+			new Thread(new ThreadStart(() =>
+			{
+				foreach (var auth in this.Config)
+				{
+					if (auth.AuthenticatorData != null && auth.AuthenticatorData is SteamAuthenticator)
+					{
+						var client = ((SteamAuthenticator)auth.AuthenticatorData).GetClient();
+						client.ConfirmationEvent += SteamClient_ConfirmationEvent;
+						client.ConfirmationErrorEvent += SteamClient_ConfirmationErrorEvent;
+					}
+				}
+			})).Start();
+#endif
+		}
+
+		/// <summary>
+		/// Display error message from Steam polling
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="message"></param>
+		/// <param name="ex"></param>
+		private void SteamClient_ConfirmationErrorEvent(object sender, string message, Exception ex)
+		{
+			WinAuthForm.ErrorDialog(this, message, ex);
+		}
+
+		/// <summary>
+		/// Delegate for Steam notification
+		/// </summary>
+		/// <param name="auth">current Authenticator</param>
+		/// <param name="title">title of notification</param>
+		/// <param name="message">notification body</param>
+		/// <param name="openOnClick">if can open on click</param>
+		/// <param name="extraHeight">extra height (for errors)</param>
+		public delegate void ShowNotificationCallback(WinAuthAuthenticator auth, string title, string message, bool openOnClick, int extraHeight);
+
+		/// <summary>
+		/// Display a new Notification for a Trading confirmation
+		/// </summary>
+		/// <param name="auth"></param>
+		/// <param name="title"></param>
+		/// <param name="message"></param>
+		/// <param name="extraHeight"></param>
+		public void ShowNotification(WinAuthAuthenticator auth, string title, string message, bool openOnClick, int extraHeight)
+		{
+			var notify = new Notification(title, message, 10000);
+			if (extraHeight != 0)
+			{
+				notify.Height += extraHeight;
+			}
+			notify.Tag = auth;
+			if (openOnClick == true)
+			{
+				notify.OnNotificationClicked += Notify_Click;
+			}
+			notify.Show();
+		}
+
+		/// <summary>
+		/// The Notification window is clicked
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void Notify_Click(object sender, EventArgs e)
+		{
+			WinAuthAuthenticator auth = ((Notification)sender).Tag as WinAuthAuthenticator;
+
+			// ensure window is front
+			BringToFront();
+			Show();
+			WindowState = FormWindowState.Normal;
+			Activate();
+
+			// show waiting
+			Cursor.Current = Cursors.WaitCursor;
+
+			// open the confirmations
+			var item = authenticatorList.ContextMenuStrip.Items.Cast<ToolStripItem>().Where(i => i.Name == "showSteamTradesMenuItem").FirstOrDefault();
+			authenticatorList.CurrentItem = authenticatorList.Items.Cast<AuthenticatorListitem>().Where(i => i.Authenticator == auth).FirstOrDefault();
+			item.PerformClick();
+		}
+
+		/// <summary>
+		/// Receive a new confirmation event from the SteamClient
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="newconfirmation"></param>
+		/// <param name="action"></param>
+		private void SteamClient_ConfirmationEvent(object sender, SteamClient.Confirmation newconfirmation, SteamClient.PollerAction action)
+		{
+			SteamClient steam = sender as SteamClient;
+
+			var auth = this.Config.Cast<WinAuthAuthenticator>().Where(a => a.AuthenticatorData is SteamAuthenticator && ((SteamAuthenticator)a.AuthenticatorData).Serial == steam.Authenticator.Serial).FirstOrDefault();
+
+			string title;
+			string message;
+			bool openOnClick = false;
+			int extraHeight = 0;
+
+			if (action == SteamClient.PollerAction.AutoConfirm)
+			{
+				if (steam.ConfirmTrade(newconfirmation.Id, newconfirmation.Key, true) == true)
+				{
+					title = "Confirmed";
+					message = string.Format("<h1>{0}</h1><table width=250 cellspacing=0 cellpadding=0 border=0><tr><td width=40><img src=\"{1}\" /></td><td width=210>{2}<br/>{3}</td></tr></table>", auth.Name, newconfirmation.Image, newconfirmation.Details, newconfirmation.Traded);
+				}
+				else
+				{
+					title = "Confirmation Failed";
+					message = string.Format("<h1>{0}</h1><table width=250 cellspacing=0 cellpadding=0 border=0><tr><td width=40><img src=\"{1}\" /></td><td width=210>{2}<br/>{3}<br/>Error: {4}</td></tr></table>", auth.Name, newconfirmation.Image, newconfirmation.Details, newconfirmation.Traded, steam.Error ?? "Unknown error");
+					extraHeight += 20;
+				}
+			}
+			else // if (action == SteamClient.PollerAction.Notify)
+			{
+				title = "New Confirmation";
+				message = string.Format("<h1>{0}</h1><table width=250 cellspacing=0 cellpadding=0 border=0><tr valign=top><td width=40><img src=\"{1}\" /></td><td width=210>{2}<br/>{3}</td></tr></table>", auth.Name, newconfirmation.Image, newconfirmation.Details, newconfirmation.Traded);
+				openOnClick = true;
+			}
+
+			// show the Notification window in the correct context
+			this.Invoke(new ShowNotificationCallback(ShowNotification), new object[] {
+				auth,
+				title,
+				message,
+				openOnClick,
+				extraHeight
+			});
+		}
+
+#endregion
+
 		/// <summary>
 		/// General Windows Message handler
 		/// </summary>
@@ -994,7 +1281,7 @@ namespace WinAuth
 			{
 				code = auth.CurrentCode;
 			}
-			catch (EncryptedSecretDataException)
+			catch (EncrpytedSecretDataException)
 			{
 				// if the authenticator is current protected we display the password window, get the code, and reprotect it
 				// with a bit of window jiggling to make sure we get focus and then put it back
@@ -1054,6 +1341,72 @@ namespace WinAuth
 				}
 			}
 	  }
+
+		/// <summary>
+		/// Run an action on the authenticator
+		/// </summary>
+		/// <param name="auth">Authenticator to use</param>
+		/// <param name="action">Action to perform</param>
+		private void RunAction(WinAuthAuthenticator auth, WinAuthConfig.NotifyActions action)
+		{
+			// get the code
+			string code = null;
+			try
+			{
+				code = auth.CurrentCode;
+			}
+			catch (EncrpytedSecretDataException)
+			{
+				// if the authenticator is current protected we display the password window, get the code, and reprotect it
+				// with a bit of window jiggling to make sure we get focus and then put it back
+
+				// save the current window
+				var fgwindow = WinAPI.GetForegroundWindow();
+				Screen screen = Screen.FromHandle(fgwindow);
+				IntPtr activewindow = IntPtr.Zero;
+				if (this.Visible == true)
+				{
+					activewindow = WinAPI.SetActiveWindow(this.Handle);
+					BringToFront();
+				}
+
+				var item = authenticatorList.Items.Cast<AuthenticatorListitem>().Where(i => i.Authenticator == auth).FirstOrDefault();
+				code = authenticatorList.GetItemCode(item, screen);
+
+				// restore active window
+				if (activewindow != IntPtr.Zero)
+				{
+					WinAPI.SetActiveWindow(activewindow);
+				}
+				WinAPI.SetForegroundWindow(fgwindow);
+			}
+			if (code != null)
+			{
+				KeyboardSender keysend = new KeyboardSender(auth.HotKey != null ? auth.HotKey.Window : null);
+				string command = null;
+
+				if (action == WinAuthConfig.NotifyActions.CopyToClipboard)
+				{
+					command = "{COPY}";
+				}
+				else if (action == WinAuthConfig.NotifyActions.HotKey)
+				{
+					command = auth.HotKey != null ? auth.HotKey.Advanced : null;
+				}
+				else // if (this.Config.NotifyAction == WinAuthConfig.NotifyActions.Notification)
+				{
+					if (code.Length > 5)
+					{
+						code = code.Insert(code.Length / 2, " ");
+					}
+					notifyIcon.ShowBalloonTip(10000, auth.Name, code, ToolTipIcon.Info);
+				}
+				if (command != null)
+				{
+					keysend.SendKeys(this, command, code);
+				}
+			}
+		}
 
 		/// <summary>
 		/// Put data into the clipboard
@@ -1129,9 +1482,11 @@ namespace WinAuth
 				height += (this.Config.Count * authenticatorList.ItemHeight);
 				this.Height = Math.Min(Screen.GetWorkingArea(this).Height * 62 / 100, height);
 
+				this.Resizable = false;
 			}
 			else
 			{
+				this.Resizable = true;
 				if (Config.Width != 0)
 				{
 					this.Width = Config.Width;
@@ -1247,6 +1602,9 @@ namespace WinAuth
 				} while ((form = form.Owner) != null);
 				return;
 			}
+
+			// remove the Steam hook
+			UnhookSteam();
 
 			// remove the hotkey hook
 			UnhookHotkeys();
@@ -1593,6 +1951,16 @@ namespace WinAuth
 		}
 
 		/// <summary>
+		/// Double click an item in the list
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="args"></param>
+		private void authenticatorList_DoubleClick(object source, AuthenticatorListDoubleClickEventArgs args)
+		{
+			RunAction(args.Authenticator, WinAuthConfig.NotifyActions.CopyToClipboard);
+		}
+
+		/// <summary>
 		/// Click in the main form
 		/// </summary>
 		/// <param name="sender"></param>
@@ -1673,11 +2041,7 @@ namespace WinAuth
 				this.passwordTimer.Enabled = false;
 				this.passwordErrorLabel.Tag = null;
 				this.passwordErrorLabel.Text = string.Empty;
-
-				// oddity with MetroFrame controls in have to set focus away and back to field to make it stick
-				this.Invoke((MethodInvoker)delegate { this.passwordButton.Focus(); this.passwordField.Focus(); });
 			}
-
 		}
 
 		/// <summary>
@@ -1824,6 +2188,7 @@ namespace WinAuth
 		private void loadNotifyMenu(ContextMenuStrip menu)
 		{
 			ToolStripMenuItem menuitem;
+			ToolStripMenuItem subitem;
 
 			menu.Items.Clear();
 
@@ -1851,17 +2216,38 @@ namespace WinAuth
 				var separator = new ToolStripSeparator();
 				separator.Name = "authenticatorOptionsSeparatorItem";
 				menu.Items.Add(separator);
-			}
 
-			if (this.Config != null)
-			{
-				menuitem = new ToolStripMenuItem(strings.MenuUseSystemTrayIcon);
-				menuitem.Name = "useSystemTrayIconOptionsMenuItem";
-				menuitem.Click += useSystemTrayIconOptionsMenuItem_Click;
+				menuitem = new ToolStripMenuItem(strings.DefaultAction);
+				menuitem.Name = "defaultActionOptionsMenuItem";
+				menu.Items.Add(menuitem);
+				subitem = new ToolStripMenuItem(strings.DefaultActionNotification);
+				subitem.Name = "defaultActionNotificationOptionsMenuItem";
+				subitem.Click += defaultActionNotificationOptionsMenuItem_Click;
+				menuitem.DropDownItems.Add(subitem);
+				subitem = new ToolStripMenuItem(strings.DefaultActionCopyToClipboard);
+				subitem.Name = "defaultActionCopyToClipboardOptionsMenuItem";
+				subitem.Click += defaultActionCopyToClipboardOptionsMenuItem_Click;
+				menuitem.DropDownItems.Add(subitem);
+				subitem = new ToolStripMenuItem(strings.DefaultActionHotkey);
+				subitem.Name = "defaultActionHotkeyOptionsMenuItem";
+				subitem.Click += defaultActionHotkeyOptionsMenuItem_Click;
+				menuitem.DropDownItems.Add(subitem);
 				menu.Items.Add(menuitem);
 
-				menu.Items.Add(new ToolStripSeparator());
+				separator = new ToolStripSeparator();
+				separator.Name = "authenticatorActionOptionsSeparatorItem";
+				menu.Items.Add(separator);
 			}
+
+			//if (this.Config != null)
+			//{
+			//	menuitem = new ToolStripMenuItem(strings.MenuUseSystemTrayIcon);
+			//	menuitem.Name = "useSystemTrayIconOptionsMenuItem";
+			//	menuitem.Click += useSystemTrayIconOptionsMenuItem_Click;
+			//	menu.Items.Add(menuitem);
+
+			//	menu.Items.Add(new ToolStripSeparator());
+			//}
 
 			menuitem = new ToolStripMenuItem(strings.MenuAbout + "...");
 			menuitem.Name = "aboutOptionsMenuItem";
@@ -1992,11 +2378,24 @@ namespace WinAuth
 				item.Visible = (this.Config.UseTrayIcon == true && this.Visible == false);
 			}
 
-			menuitem = menu.Items.Cast<ToolStripItem>().Where(t => t.Name == "useSystemTrayIconOptionsMenuItem").FirstOrDefault() as ToolStripMenuItem;
+			menuitem = menu.Items.Cast<ToolStripItem>().Where(t => t.Name == "defaultActionOptionsMenuItem").FirstOrDefault() as ToolStripMenuItem;
 			if (menuitem != null)
 			{
-				menuitem.Checked = this.Config.UseTrayIcon;
+				var subitem = menuitem.DropDownItems.Cast<ToolStripItem>().Where(t => t.Name == "defaultActionNotificationOptionsMenuItem").FirstOrDefault() as ToolStripMenuItem;
+				subitem.Checked = (this.Config.NotifyAction == WinAuthConfig.NotifyActions.Notification);
+
+				subitem = menuitem.DropDownItems.Cast<ToolStripItem>().Where(t => t.Name == "defaultActionCopyToClipboardOptionsMenuItem").FirstOrDefault() as ToolStripMenuItem;
+				subitem.Checked = (this.Config.NotifyAction == WinAuthConfig.NotifyActions.CopyToClipboard);
+
+				subitem = menuitem.DropDownItems.Cast<ToolStripItem>().Where(t => t.Name == "defaultActionHotkeyOptionsMenuItem").FirstOrDefault() as ToolStripMenuItem;
+				subitem.Checked = (this.Config.NotifyAction == WinAuthConfig.NotifyActions.HotKey);
 			}
+
+			//menuitem = menu.Items.Cast<ToolStripItem>().Where(t => t.Name == "useSystemTrayIconOptionsMenuItem").FirstOrDefault() as ToolStripMenuItem;
+			//if (menuitem != null)
+			//{
+			//	menuitem.Checked = this.Config.UseTrayIcon;
+			//}
 		}
 
 		/// <summary>
@@ -2102,19 +2501,21 @@ namespace WinAuth
 			var item = authenticatorList.Items.Cast<AuthenticatorListitem>().Where(i => i.Authenticator == auth).FirstOrDefault();
 			if (item != null)
 			{
-				string code = authenticatorList.GetItemCode(item);
-				if (code != null)
-				{
-					if (auth.CopyOnCode)
-					{
-						auth.CopyCodeToClipboard(this, code);
-					}
-					if (code.Length > 5)
-					{
-						code = code.Insert(code.Length / 2, " ");
-					}
-					notifyIcon.ShowBalloonTip(10000, auth.Name, code, ToolTipIcon.Info);
-				}
+				RunAction(auth, this.Config.NotifyAction);
+
+				//string code = authenticatorList.GetItemCode(item);
+				//if (code != null)
+				//{
+				//	if (auth.CopyOnCode)
+				//	{
+				//		auth.CopyCodeToClipboard(this, code);
+				//	}
+				//	if (code.Length > 5)
+				//	{
+				//		code = code.Insert(code.Length / 2, " ");
+				//	}
+				//	notifyIcon.ShowBalloonTip(10000, auth.Name, code, ToolTipIcon.Info);
+				//}
 			}
 		}
 
@@ -2146,6 +2547,36 @@ namespace WinAuth
 		private void useSystemTrayIconOptionsMenuItem_Click(object sender, EventArgs e)
 		{
 			this.Config.UseTrayIcon = !this.Config.UseTrayIcon;
+		}
+		
+		/// <summary>
+		/// Click the default action options menu item
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void defaultActionNotificationOptionsMenuItem_Click(object sender, EventArgs e)
+		{
+			this.Config.NotifyAction = WinAuthConfig.NotifyActions.Notification;
+		}
+
+		/// <summary>
+		/// Click the default action options menu item
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void defaultActionCopyToClipboardOptionsMenuItem_Click(object sender, EventArgs e)
+		{
+			this.Config.NotifyAction = WinAuthConfig.NotifyActions.CopyToClipboard;
+		}
+
+		/// <summary>
+		/// Click the default action options menu item
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void defaultActionHotkeyOptionsMenuItem_Click(object sender, EventArgs e)
+		{
+			this.Config.NotifyAction = WinAuthConfig.NotifyActions.HotKey;
 		}
 
 		/// <summary>

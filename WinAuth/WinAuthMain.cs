@@ -28,15 +28,19 @@ using System.Text;
 using System.Resources;
 using System.Runtime.CompilerServices;
 
+using NLog;
+using NLog.Config;
+using NLog.Targets;
+
 using WinAuth.Resources;
 
 namespace WinAuth
 {
-  /// <summary>
-  /// Class that launches the main form
-  /// </summary>
-  static class WinAuthMain
-  {
+	/// <summary>
+	/// Class that launches the main form
+	/// </summary>
+	static class WinAuthMain
+	{
     /// <summary>
     /// Name of this application used for %USEPATH%\[name] folder
     /// </summary>
@@ -151,14 +155,37 @@ namespace WinAuth
 
 		public static ResourceManager StringResources = new ResourceManager(typeof(WinAuth.Resources.strings).FullName, typeof(WinAuth.Resources.strings).Assembly);
 
-    /// <summary>
-    /// The main entry point for the application.
-    /// </summary>
-    [STAThread]
+		public static ILogger Logger;
+
+		/// <summary>
+		/// The main entry point for the application.
+		/// </summary>
+		[STAThread]
     static void Main()
     {
 			try
 			{
+				// configure Logger
+				var config = new LoggingConfiguration();
+				//
+				var fileTarget = new FileTarget();
+				string dir = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), WinAuthMain.APPLICATION_NAME);
+				if (Directory.Exists(dir) == false)
+				{
+					dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+				}
+				fileTarget.FileName = Path.Combine(dir, "winauth.log");
+				fileTarget.Layout = @"${longdate} ${assembly-version} ${logger} ${message} ${exception:format=tostring}";
+				fileTarget.DeleteOldFileOnStartup = false;
+				fileTarget.AutoFlush = true;
+				config.AddTarget("file", fileTarget);
+				//
+				var rule = new LoggingRule("*", LogLevel.Error, fileTarget);
+				config.LoggingRules.Add(rule);
+				//
+				LogManager.Configuration = config;
+				Logger = LogManager.GetLogger(APPLICATION_NAME);
+
 				using (var instance = new SingleGlobalInstance(2000))
 				{
 					if (!System.Diagnostics.Debugger.IsAttached)
@@ -207,7 +234,7 @@ namespace WinAuth
 				// fallback
 				MessageBox.Show(string.Format(strings.AlreadyRunning, APPLICATION_NAME), APPLICATION_TITLE, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
-    }
+		}
 
 		static void OnThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
 		{
@@ -222,26 +249,22 @@ namespace WinAuth
 		public static void LogException(Exception ex)
 		{
 			// add catch for unknown application exceptions to try and get closer to bug
-			StringBuilder capture = new StringBuilder();
-			//
-			try
-			{
-				Exception e = ex;
-				capture.Append(e.Message).Append(Environment.NewLine);
-				while (e != null)
-				{
-					capture.Append(new StackTrace(e, true).ToString()).Append(Environment.NewLine);
-					e = e.InnerException;
-				}
-				//
-				string dir = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), WinAuthMain.APPLICATION_NAME);
-				if (Directory.Exists(dir) == false)
-				{
-					dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-				}
-				File.WriteAllText(Path.Combine(dir, "winauth.log"), capture.ToString());
-			}
-			catch (Exception) { }
+			//StringBuilder capture = new StringBuilder(DateTime.Now.ToString("u") + " ");
+			//try
+			//{
+			//	Exception e = ex;
+			//	capture.Append(e.Message).Append(Environment.NewLine);
+			//	while (e != null)
+			//	{
+			//		capture.Append(new StackTrace(e, true).ToString()).Append(Environment.NewLine);
+			//		e = e.InnerException;
+			//	}
+			//	//
+			//	LogMessage(capture.ToString());
+			//}
+			//catch (Exception) { }
+
+			Logger.Error(ex);
 
 			try
 			{
@@ -260,10 +283,25 @@ namespace WinAuth
 			catch (Exception) { }
 		}
 
+		/// <summary>
+		/// Log a message into the winauth.log file
+		/// </summary>
+		/// <param name="msg">messagae to be logged</param>
+		public static void LogMessage(string msg)
+		{
+			if (string.IsNullOrEmpty(msg) == true)
+			{
+				return;
+			}
+
+			Logger.Info(msg);
+		}
+
 		private static WinAuthForm _form;
 
 		private static void main()
 		{
+#if NETFX_4
 			// Fix #226: set to use TLS1.2
 			try
 			{
@@ -273,6 +311,7 @@ namespace WinAuth
 			{
 				// not 4.5 installed - we could prompt, but not for now
 			}
+#endif
 
 			// Issue #53: set a default culture
 			if (System.Threading.Thread.CurrentThread.CurrentCulture == null || System.Threading.Thread.CurrentThread.CurrentUICulture == null)

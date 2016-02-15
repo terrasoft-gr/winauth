@@ -24,9 +24,15 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.XPath;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace WinAuth
 {
@@ -35,6 +41,26 @@ namespace WinAuth
 	/// </summary>
 	public partial class AddSteamAuthenticator : ResourceForm
 	{
+		/// <summary>
+		/// Entry for a single SDA account
+		/// </summary>
+		class ImportedSDAEntry
+		{
+			public const int PBKDF2_ITERATIONS = 50000;
+			public const int SALT_LENGTH = 8;
+			public const int KEY_SIZE_BYTES = 32;
+			public const int IV_LENGTH = 16;
+
+			public string Username;
+			public string SteamId;
+			public string json;
+
+			public override string ToString()
+			{
+				return Username + " (" + this.SteamId + ")";
+			}
+		}
+
 		/// <summary>
 		/// Form instantiation
 		/// </summary>
@@ -63,7 +89,7 @@ namespace WinAuth
 		/// </summary>
 		private Dictionary<string, TabPage> m_tabPages = new Dictionary<string, TabPage>();
 
-#region Form Events
+		#region Form Events
 
 		/// <summary>
 		/// Load the form
@@ -74,7 +100,7 @@ namespace WinAuth
 		{
 			nameField.Text = this.Authenticator.Name;
 
-			for (var i=0; i<tabs.TabPages.Count; i++)
+			for (var i = 0; i < tabs.TabPages.Count; i++)
 			{
 				m_tabPages.Add(tabs.TabPages[i].Name, tabs.TabPages[i]);
 			}
@@ -85,6 +111,8 @@ namespace WinAuth
 
 			revocationcodeField.SecretMode = true;
 			revocationcode2Field.SecretMode = true;
+
+			importSDAList.Font = this.Font;
 
 			nameField.Focus();
 		}
@@ -252,6 +280,24 @@ namespace WinAuth
 		private void closeButton_Click(object sender, EventArgs e)
 		{
 			this.Authenticator.Name = nameField.Text;
+
+			if (tabs.SelectedTab.Name == "importAndroidTab")
+			{
+				if (ImportSteamGuard() == false)
+				{
+					this.DialogResult = System.Windows.Forms.DialogResult.None;
+					return;
+				}
+			}
+			if (tabs.SelectedTab.Name == "importSDATab")
+			{
+				if (ImportSDA() == false)
+				{
+					this.DialogResult = System.Windows.Forms.DialogResult.None;
+					return;
+				}
+			}
+
 			this.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.Close();
 		}
@@ -285,6 +331,14 @@ namespace WinAuth
 					case "confirmTab":
 						e.Handled = true;
 						confirmButton_Click(sender, new EventArgs());
+						break;
+					case "importAndroidTab":
+						e.Handled = true;
+						closeButton_Click(sender, new EventArgs());
+						break;
+					case "importSDATab":
+						e.Handled = true;
+						closeButton_Click(sender, new EventArgs());
 						break;
 					default:
 						e.Handled = false;
@@ -327,9 +381,365 @@ namespace WinAuth
 			revocationcode2Field.SecretMode = !revocationcode2Copy.Checked;
 		}
 
-#endregion
+		/// <summary>
+		/// When changing tabs, set the correct buttons
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void tabs_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (tabs.SelectedTab != null && (tabs.SelectedTab.Name == "importAndroidTab" || tabs.SelectedTab.Name == "importSDATab"))
+			{
+				closeButton.Text = "OK";
+				closeButton.Visible = true;
+			}
+			else
+			{
+				closeButton.Text = "Close";
+				closeButton.Visible = false;
+			}
+		}
 
-#region Private methods
+		/// <summary>
+		/// Browse the SDA folder
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void importSDABrowse_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.AddExtension = true;
+			ofd.CheckFileExists = true;
+			ofd.CheckPathExists = true;
+			ofd.DefaultExt = "*.json";
+			ofd.FileName = "manifest.json";
+			ofd.Filter = "Manifest file|manifest.json|maFile (*.maFile)|*.maFile";
+			ofd.FilterIndex = 0;
+			ofd.RestoreDirectory = true;
+			ofd.Title = "SteamDesktopAuthenticator";
+			if (ofd.ShowDialog() == DialogResult.OK)
+			{
+				this.importSDAPath.Text = ofd.FileName;
+			}
+		}
+
+		/// <summary>
+		/// Click the load the SDA accounts
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void importSDALoad_Click(object sender, EventArgs e)
+		{
+			LoadSDA();
+		}
+
+		#endregion
+
+		#region Private methods
+
+		/// <summary>
+		/// Import an authenticator from the uuid and steamguard files
+		/// </summary>
+		/// <returns>true if successful</returns>
+		private bool ImportSteamGuard()
+		{
+			string uuid = importUuid.Text.Trim();
+			if (uuid.Length == 0)
+			{
+				WinAuthForm.ErrorDialog(this, "Please enter the contents of the steam.uuid.xml file or your DeviceId");
+				return false;
+			}
+			string steamguard = this.importSteamguard.Text.Trim();
+			if (steamguard.Length == 0)
+			{
+				WinAuthForm.ErrorDialog(this, "Please enter the contents of your SteamGuard file");
+				return false;
+			}
+
+			// check the deviceid
+			string deviceId;
+			if (uuid.IndexOf("?xml") != -1)
+			{
+				try
+				{
+					XmlDocument doc = new XmlDocument();
+					doc.LoadXml(uuid);
+					var node = doc.SelectSingleNode("//string[@name='uuidKey']");
+					if (node == null)
+					{
+						WinAuthForm.ErrorDialog(this, "Cannot find uuidKey in xml");
+						return false;
+					}
+
+					deviceId = node.InnerText;
+				}
+				catch (Exception ex)
+				{
+					WinAuthForm.ErrorDialog(this, "Invalid uuid xml: " + ex.Message);
+					return false;
+				}
+			}
+			else
+			{
+				deviceId = uuid;
+			}
+			if (string.IsNullOrEmpty(deviceId) || Regex.IsMatch(deviceId, @"android:[0-9abcdef-]+", RegexOptions.Singleline | RegexOptions.IgnoreCase) == false)
+			{
+				WinAuthForm.ErrorDialog(this, "Invalid deviceid, expecting \"android:NNNN...\"");
+				return false;
+			}
+
+			// check the steamguard
+			byte[] secret;
+			string serial;
+			try
+			{
+				var json = JObject.Parse(steamguard);
+
+				var node = json.SelectToken("shared_secret");
+				if (node == null)
+				{
+					throw new ApplicationException("no shared_secret");
+				}			
+				secret = Convert.FromBase64String(node.Value<string>());
+
+				node = json.SelectToken("serial_number");
+				if (node == null)
+				{
+					throw new ApplicationException("no serial_number");
+				}
+				serial = node.Value<string>();
+			}
+			catch (Exception ex)
+			{
+				WinAuthForm.ErrorDialog(this, "Invalid SteamGuard JSON contents: " + ex.Message);
+				return false;
+			}
+
+			SteamAuthenticator auth = new SteamAuthenticator();
+			auth.SecretKey = secret;
+			auth.Serial = serial;
+			auth.SteamData = steamguard;
+			auth.DeviceId = deviceId;
+
+			this.Authenticator.AuthenticatorData = auth;
+
+			return true;
+		}
+
+		/// <summary>
+		/// Import the selected SDA account
+		/// </summary>
+		/// <returns>true if successful</returns>
+		private bool ImportSDA()
+		{
+			var entry = this.importSDAList.SelectedItem as ImportedSDAEntry;
+			if (entry == null)
+			{
+				WinAuthForm.ErrorDialog(this, "Please load and select a Steam account");
+				return false;
+			}
+
+			SteamAuthenticator auth = new SteamAuthenticator();
+			var token = JObject.Parse(entry.json);
+			foreach (var prop in token.Root.Children().ToList())
+			{
+				var child = token.SelectToken(prop.Path);
+
+				string lkey = prop.Path.ToLower();
+				if (lkey == "fully_enrolled" || lkey == "session")
+				{
+					prop.Remove();
+				}
+				else if (lkey == "device_id")
+				{
+					auth.DeviceId = child.Value<string>();
+					prop.Remove();
+				}
+				else if (lkey == "serial_number")
+				{
+					auth.Serial = child.Value<string>();
+				}
+				else if (lkey == "account_name")
+				{
+					if (this.nameField.Text.Length == 0)
+					{
+						this.nameField.Text = "Steam (" + child.Value<string>() + ")";
+					}
+				}
+				else if (lkey == "shared_secret")
+				{
+					auth.SecretKey = Convert.FromBase64String(child.Value<string>());
+				}
+			}
+			auth.SteamData = token.ToString(Newtonsoft.Json.Formatting.None);
+
+			this.Authenticator.AuthenticatorData = auth;
+
+			return true;
+		}
+
+		/// <summary>
+		/// Load all the accounts from the SDA manifest into the listbox
+		/// </summary>
+		private void LoadSDA()
+		{
+			string manifestfile = this.importSDAPath.Text.Trim();
+			if (string.IsNullOrEmpty(manifestfile) == true || File.Exists(manifestfile) == false)
+			{
+				WinAuthForm.ErrorDialog(this, "Enter a path for SteamDesktopAuthenticator");
+				return;
+			}
+
+			string password = this.importSDAPassword.Text.Trim();
+
+			importSDAList.Items.Clear();
+			try
+			{
+				string path = Path.GetDirectoryName(manifestfile);
+
+				if (manifestfile.IndexOf("manifest.json") != -1)
+				{
+					var manifest = JObject.Parse(File.ReadAllText(manifestfile));
+					var token = manifest.SelectToken("encrypted");
+					bool encrypted = token != null ? token.Value<bool>() : false;
+					if (encrypted == true && password.Length == 0)
+					{
+						throw new ApplicationException("Please enter your password");
+					}
+
+					JArray entries = manifest["entries"] as JArray;
+					if (entries == null || entries.Count == 0)
+					{
+						throw new ApplicationException("SteamDesktopAuthenticator has no SteamGuard authenticators");
+					}
+
+					foreach (var entry in entries)
+					{
+						token = entry.SelectToken("filename");
+						if (token != null)
+						{
+							string filename = token.Value<string>();
+							string steamid = null;
+							string iv = null;
+							string salt = null;
+
+							token = entry.SelectToken("steamid");
+							if (token != null)
+							{
+								steamid = token.Value<string>();
+							}
+							token = entry.SelectToken("encryption_iv");
+							if (token != null)
+							{
+								iv = token.Value<string>();
+							}
+							token = entry.SelectToken("encryption_salt");
+							if (token != null)
+							{
+								salt = token.Value<string>();
+							}
+
+							LoadSDAFile(Path.Combine(path, filename), password, steamid, iv, salt);
+						}
+					}
+				}
+				else if (string.IsNullOrEmpty(password) == false)
+				{
+					throw new ApplicationException("Cannot load an single maFile that has been encrypted");
+				}
+				else
+				{
+					LoadSDAFile(manifestfile);
+				}
+			}
+			catch (ApplicationException ex)
+			{
+				WinAuthForm.ErrorDialog(this, ex.Message);
+			}
+			catch (Exception ex)
+			{
+				WinAuthForm.ErrorDialog(this, "Error while importing: " + ex.Message, ex);
+			}
+		}
+
+		/// <summary>
+		/// Load a single maFile with the security credentials
+		/// </summary>
+		/// <param name="mafile">filename</param>
+		/// <param name="password">optional password</param>
+		/// <param name="steamid">steamid if known</param>
+		/// <param name="iv">optional iv for decryption</param>
+		/// <param name="salt">optional salt</param>
+		private void LoadSDAFile(string mafile, string password = null, string steamid = null, string iv = null, string salt = null)
+		{
+			string data;
+			if (File.Exists(mafile) == false || (data = File.ReadAllText(mafile)) == null)
+			{
+				throw new ApplicationException("Cannot read file " + mafile);
+			}
+
+			// decrypt
+			if (string.IsNullOrEmpty(password) == false)
+			{
+				byte[] ciphertext = Convert.FromBase64String(data);
+
+#if NETFX_4
+				using (Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(password, Convert.FromBase64String(salt), ImportedSDAEntry.PBKDF2_ITERATIONS))
+#endif
+#if NETFX_3
+				Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(password, Convert.FromBase64String(salt), ImportedSDAEntry.PBKDF2_ITERATIONS);
+#endif
+				{
+					byte[] key = pbkdf2.GetBytes(ImportedSDAEntry.KEY_SIZE_BYTES);
+
+					using (RijndaelManaged aes256 = new RijndaelManaged())
+					{
+						aes256.IV = Convert.FromBase64String(iv);
+						aes256.Key = key;
+						aes256.Padding = PaddingMode.PKCS7;
+						aes256.Mode = CipherMode.CBC;
+
+						try
+						{
+							using (ICryptoTransform decryptor = aes256.CreateDecryptor(aes256.Key, aes256.IV))
+							{
+								using (MemoryStream ms = new MemoryStream(ciphertext))
+								{
+									using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+									{
+										using (StreamReader sr = new StreamReader(cs))
+										{
+											data = sr.ReadToEnd();
+										}
+									}
+								}
+							}
+						}
+						catch (CryptographicException )
+						{
+							throw new ApplicationException("Invalid password");
+						}
+					}
+				}
+			}
+
+			var token = JObject.Parse(data);
+			var sdaentry = new ImportedSDAEntry();
+			sdaentry.Username = token.SelectToken("account_name") != null ? token.SelectToken("account_name").Value<string>() : null;
+			sdaentry.SteamId = steamid;
+			if (string.IsNullOrEmpty(sdaentry.SteamId) == true)
+			{
+				sdaentry.SteamId = token.SelectToken("Session.SteamID") != null ? token.SelectToken("Session.SteamID").Value<string>() : null;
+			}
+			if (string.IsNullOrEmpty(sdaentry.SteamId) == true)
+			{
+				sdaentry.SteamId = mafile.Split('.')[0];
+			}
+			sdaentry.json = data;
+
+			importSDAList.Items.Add(sdaentry);
+		}
 
 		/// <summary>
 		/// Process the enrolling calling the authenticator method, checking the state and displaying appropriate tab
@@ -468,8 +878,8 @@ namespace WinAuth
 			tabs.SelectedTab = tabs.TabPages[name];
 		}
 
-#endregion
 
+#endregion
 
 	}
 }

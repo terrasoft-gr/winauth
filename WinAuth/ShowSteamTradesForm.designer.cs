@@ -1,74 +1,7 @@
-/*
- * Copyright (C) 2015 Colin Mackie.
- * This software is distributed under the terms of the GNU General Public License.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-// Decompiled with JetBrains decompiler
-// Type: WinAuth.ShowSteamTradesForm
-// Assembly: WinAuth, Version=3.3.7.2, Culture=neutral, PublicKeyToken=null
-
-using MetroFramework.Controls;
-using MetroFramework.Forms;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.IO;
-using System.Net;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using System.Windows.Forms.Layout;
-using WinAuth.Properties;
-
-namespace WinAuth
+﻿namespace WinAuth
 {
 	partial class ShowSteamTradesForm
 	{
-		private ShowSteamTradesForm.TradeSession m_state = new ShowSteamTradesForm.TradeSession();
-		private Dictionary<string, TabPage> m_tabPages = new Dictionary<string, TabPage>();
-		private MetroLabel loginTabLabel;
-		private MetroButton loginButton;
-		private MetroLabel captchaTabLabel;
-		private MetroButton cancelButton;
-		private MetroTextBox captchacodeField;
-		private MetroTextBox usernameField;
-		private MetroButton captchaButton;
-		private MetroTabControl tabs;
-		private MetroTabPage loginTab;
-		private MetroLabel passwordLabel;
-		private MetroLabel usernameLabel;
-		private MetroTextBox passwordField;
-		private MetroTabPage tradesTab;
-		private PictureBox captchaBox;
-		private Panel captchaGroup;
-		private MetroButton closeButton;
-		private Panel tradePanelMaster;
-		private PictureBox tradeImage;
-		private MetroButton tradeReject;
-		private MetroButton tradeAccept;
-		private MetroLabel tradeLabel;
-		private PictureBox tradeSep;
-		private MetroLabel tradeStatus;
-		private MetroLabel tradesEmptyLabel;
-
-		public SteamAuthenticator Authenticator { get; set; }
-
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -95,334 +28,571 @@ namespace WinAuth
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.loginButton = new MetroButton();
-			this.loginTabLabel = new MetroLabel();
-			this.captchaButton = new MetroButton();
-			this.captchacodeField = new MetroTextBox();
-			this.usernameField = new MetroTextBox();
-			this.captchaTabLabel = new MetroLabel();
-			this.cancelButton = new MetroButton();
-			this.tabs = new MetroTabControl();
-			this.loginTab = new MetroTabPage();
-			this.captchaGroup = new Panel();
-			this.captchaBox = new PictureBox();
-			this.passwordField = new MetroTextBox();
-			this.passwordLabel = new MetroLabel();
-			this.usernameLabel = new MetroLabel();
-			this.tradesTab = new MetroTabPage();
-			this.tradePanelMaster = new Panel();
-			this.tradeSep = new PictureBox();
-			this.tradeLabel = new MetroLabel();
-			this.tradeImage = new PictureBox();
-			this.tradeReject = new MetroButton();
-			this.tradeAccept = new MetroButton();
-			this.tradeStatus = new MetroLabel();
-			this.closeButton = new MetroButton();
-			this.tradesEmptyLabel = new MetroLabel();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShowSteamTradesForm));
+			this.loginButton = new MetroFramework.Controls.MetroButton();
+			this.loginTabLabel = new MetroFramework.Controls.MetroLabel();
+			this.captchaButton = new MetroFramework.Controls.MetroButton();
+			this.captchacodeField = new MetroFramework.Controls.MetroTextBox();
+			this.usernameField = new MetroFramework.Controls.MetroTextBox();
+			this.captchaTabLabel = new MetroFramework.Controls.MetroLabel();
+			this.cancelButton = new MetroFramework.Controls.MetroButton();
+			this.tabs = new MetroFramework.Controls.MetroTabControl();
+			this.loginTab = new MetroFramework.Controls.MetroTabPage();
+			this.rememberPermBox = new MetroFramework.Controls.MetroCheckBox();
+			this.rememberBox = new MetroFramework.Controls.MetroCheckBox();
+			this.captchaGroup = new System.Windows.Forms.Panel();
+			this.captchaBox = new System.Windows.Forms.PictureBox();
+			this.passwordField = new MetroFramework.Controls.MetroTextBox();
+			this.passwordLabel = new MetroFramework.Controls.MetroLabel();
+			this.usernameLabel = new MetroFramework.Controls.MetroLabel();
+			this.tradesTab = new MetroFramework.Controls.MetroTabPage();
+			this.pollPanel = new System.Windows.Forms.Panel();
+			this.pollAction = new MetroFramework.Controls.MetroComboBox();
+			this.pollCheckbox = new MetroFramework.Controls.MetroCheckBox();
+			this.pollNumeric = new System.Windows.Forms.NumericUpDown();
+			this.pollMinuesLabel = new MetroFramework.Controls.MetroLabel();
+			this.tradesContainer = new System.Windows.Forms.Panel();
+			this.tradePanelMaster = new System.Windows.Forms.Panel();
+			this.tradeSep = new System.Windows.Forms.PictureBox();
+			this.tradeLabel = new MetroFramework.Controls.MetroLabel();
+			this.tradeImage = new System.Windows.Forms.PictureBox();
+			this.tradeReject = new MetroFramework.Controls.MetroButton();
+			this.tradeAccept = new MetroFramework.Controls.MetroButton();
+			this.tradeStatus = new MetroFramework.Controls.MetroLabel();
+			this.tradesEmptyLabel = new MetroFramework.Controls.MetroLabel();
+			this.browserContainer = new System.Windows.Forms.Panel();
+			this.closeButton = new MetroFramework.Controls.MetroButton();
+			this.refreshButton = new MetroFramework.Controls.MetroButton();
+			this.logoutButton = new MetroFramework.Controls.MetroButton();
 			this.tabs.SuspendLayout();
 			this.loginTab.SuspendLayout();
 			this.captchaGroup.SuspendLayout();
-			((ISupportInitialize) this.captchaBox).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.captchaBox)).BeginInit();
 			this.tradesTab.SuspendLayout();
+			this.pollPanel.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pollNumeric)).BeginInit();
+			this.tradesContainer.SuspendLayout();
 			this.tradePanelMaster.SuspendLayout();
-			((ISupportInitialize) this.tradeSep).BeginInit();
-			((ISupportInitialize) this.tradeImage).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.tradeSep)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.tradeImage)).BeginInit();
 			this.SuspendLayout();
-			this.loginButton.Location = new Point(104, (int) sbyte.MaxValue);
+			// 
+			// loginButton
+			// 
+			this.loginButton.Location = new System.Drawing.Point(104, 126);
 			this.loginButton.Name = "loginButton";
-			this.loginButton.Size = new Size(110, 24);
-			this.loginButton.TabIndex = 2;
+			this.loginButton.Size = new System.Drawing.Size(110, 24);
+			this.loginButton.TabIndex = 3;
 			this.loginButton.Text = "Login";
 			this.loginButton.UseSelectable = true;
-			this.loginButton.Click += new EventHandler(this.loginButton_Click);
-			this.loginTabLabel.Location = new Point(7, 10);
+			this.loginButton.Click += new System.EventHandler(this.loginButton_Click);
+			// 
+			// loginTabLabel
+			// 
+			this.loginTabLabel.Location = new System.Drawing.Point(7, 10);
 			this.loginTabLabel.Name = "loginTabLabel";
-			this.loginTabLabel.Size = new Size(431, 46);
+			this.loginTabLabel.Size = new System.Drawing.Size(431, 29);
 			this.loginTabLabel.TabIndex = 0;
-			this.loginTabLabel.Text = "Enter your steam username and password. This is needed to login to your account to add a new authenticator.";
-			this.captchaButton.Location = new Point(97, 118);
+			this.loginTabLabel.Text = "Enter your steam username and password.";
+			// 
+			// captchaButton
+			// 
+			this.captchaButton.Location = new System.Drawing.Point(97, 118);
 			this.captchaButton.Name = "captchaButton";
-			this.captchaButton.Size = new Size(110, 23);
-			this.captchaButton.TabIndex = 1;
+			this.captchaButton.Size = new System.Drawing.Size(110, 23);
+			this.captchaButton.TabIndex = 4;
 			this.captchaButton.Text = "Login";
 			this.captchaButton.UseSelectable = true;
-			this.captchaButton.Click += new EventHandler(this.captchaButton_Click);
-			this.captchacodeField.Location = new Point(97, 78);
-			this.captchacodeField.MaxLength = (int) short.MaxValue;
+			this.captchaButton.Click += new System.EventHandler(this.captchaButton_Click);
+			// 
+			// captchacodeField
+			// 
+			this.captchacodeField.Location = new System.Drawing.Point(97, 78);
+			this.captchacodeField.MaxLength = 32767;
 			this.captchacodeField.Name = "captchacodeField";
-			this.captchacodeField.PasswordChar = char.MinValue;
-			this.captchacodeField.ScrollBars = ScrollBars.None;
+			this.captchacodeField.PasswordChar = '\0';
+			this.captchacodeField.ScrollBars = System.Windows.Forms.ScrollBars.None;
 			this.captchacodeField.SelectedText = "";
-			this.captchacodeField.Size = new Size(206, 22);
-			this.captchacodeField.TabIndex = 0;
+			this.captchacodeField.Size = new System.Drawing.Size(206, 22);
+			this.captchacodeField.TabIndex = 3;
 			this.captchacodeField.UseSelectable = true;
-			this.usernameField.Location = new Point(104, 59);
-			this.usernameField.MaxLength = (int) short.MaxValue;
+			// 
+			// usernameField
+			// 
+			this.usernameField.Location = new System.Drawing.Point(104, 41);
+			this.usernameField.MaxLength = 32767;
 			this.usernameField.Name = "usernameField";
-			this.usernameField.PasswordChar = char.MinValue;
-			this.usernameField.ScrollBars = ScrollBars.None;
+			this.usernameField.PasswordChar = '\0';
+			this.usernameField.ScrollBars = System.Windows.Forms.ScrollBars.None;
 			this.usernameField.SelectedText = "";
-			this.usernameField.Size = new Size(177, 22);
+			this.usernameField.Size = new System.Drawing.Size(177, 22);
 			this.usernameField.TabIndex = 0;
 			this.usernameField.UseSelectable = true;
+			// 
+			// captchaTabLabel
+			// 
 			this.captchaTabLabel.AutoSize = true;
-			this.captchaTabLabel.Location = new Point(97, 10);
+			this.captchaTabLabel.Location = new System.Drawing.Point(97, 10);
 			this.captchaTabLabel.Name = "captchaTabLabel";
-			this.captchaTabLabel.Size = new Size(249, 19);
+			this.captchaTabLabel.Size = new System.Drawing.Size(249, 19);
 			this.captchaTabLabel.TabIndex = 0;
 			this.captchaTabLabel.Text = "Enter the characters you see in the image";
-			this.cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-			this.cancelButton.DialogResult = DialogResult.Cancel;
-			this.cancelButton.Location = new Point(403, 518);
+			// 
+			// cancelButton
+			// 
+			this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.cancelButton.Location = new System.Drawing.Point(403, 489);
 			this.cancelButton.Name = "cancelButton";
-			this.cancelButton.Size = new Size(75, 23);
+			this.cancelButton.Size = new System.Drawing.Size(75, 23);
 			this.cancelButton.TabIndex = 0;
 			this.cancelButton.Text = "Cancel";
 			this.cancelButton.UseSelectable = true;
-			this.cancelButton.Click += new EventHandler(this.cancelButton_Click);
-			this.tabs.Controls.Add((Control) this.loginTab);
-			this.tabs.Controls.Add((Control) this.tradesTab);
-			this.tabs.DrawMode = TabDrawMode.OwnerDrawFixed;
-			this.tabs.ItemSize = new Size(120, 18);
-			this.tabs.Location = new Point(15, 63);
+			this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+			// 
+			// tabs
+			// 
+			this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.tabs.Controls.Add(this.loginTab);
+			this.tabs.Controls.Add(this.tradesTab);
+			this.tabs.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
+			this.tabs.ItemSize = new System.Drawing.Size(120, 18);
+			this.tabs.Location = new System.Drawing.Point(15, 63);
 			this.tabs.Name = "tabs";
 			this.tabs.SelectedIndex = 1;
-			this.tabs.Size = new Size(464, 444);
+			this.tabs.Size = new System.Drawing.Size(464, 406);
 			this.tabs.TabIndex = 0;
 			this.tabs.UseSelectable = true;
-			this.tabs.DrawItem += new DrawItemEventHandler(this.tabControl1_DrawItem);
-			this.loginTab.BackColor = SystemColors.Control;
-			this.loginTab.Controls.Add((Control) this.captchaGroup);
-			this.loginTab.Controls.Add((Control) this.loginButton);
-			this.loginTab.Controls.Add((Control) this.passwordField);
-			this.loginTab.Controls.Add((Control) this.usernameField);
-			this.loginTab.Controls.Add((Control) this.passwordLabel);
-			this.loginTab.Controls.Add((Control) this.usernameLabel);
-			this.loginTab.Controls.Add((Control) this.loginTabLabel);
-			this.loginTab.ForeColor = SystemColors.ControlText;
+			this.tabs.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl1_DrawItem);
+			// 
+			// loginTab
+			// 
+			this.loginTab.BackColor = System.Drawing.SystemColors.Control;
+			this.loginTab.Controls.Add(this.rememberPermBox);
+			this.loginTab.Controls.Add(this.rememberBox);
+			this.loginTab.Controls.Add(this.captchaGroup);
+			this.loginTab.Controls.Add(this.loginButton);
+			this.loginTab.Controls.Add(this.passwordField);
+			this.loginTab.Controls.Add(this.usernameField);
+			this.loginTab.Controls.Add(this.passwordLabel);
+			this.loginTab.Controls.Add(this.usernameLabel);
+			this.loginTab.Controls.Add(this.loginTabLabel);
+			this.loginTab.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.loginTab.HorizontalScrollbarBarColor = true;
 			this.loginTab.HorizontalScrollbarHighlightOnWheel = false;
 			this.loginTab.HorizontalScrollbarSize = 10;
-			this.loginTab.Location = new Point(4, 22);
+			this.loginTab.Location = new System.Drawing.Point(4, 22);
 			this.loginTab.Name = "loginTab";
-			this.loginTab.Padding = new Padding(3);
-			this.loginTab.Size = new Size(456, 418);
+			this.loginTab.Padding = new System.Windows.Forms.Padding(3);
+			this.loginTab.Size = new System.Drawing.Size(456, 380);
 			this.loginTab.TabIndex = 0;
-			this.loginTab.Tag = (object) "";
+			this.loginTab.Tag = "";
 			this.loginTab.Text = "Login";
 			this.loginTab.VerticalScrollbarBarColor = true;
 			this.loginTab.VerticalScrollbarHighlightOnWheel = false;
 			this.loginTab.VerticalScrollbarSize = 10;
-			this.captchaGroup.BackColor = SystemColors.ControlLightLight;
-			this.captchaGroup.Controls.Add((Control) this.captchaBox);
-			this.captchaGroup.Controls.Add((Control) this.captchaTabLabel);
-			this.captchaGroup.Controls.Add((Control) this.captchacodeField);
-			this.captchaGroup.Controls.Add((Control) this.captchaButton);
-			this.captchaGroup.Location = new Point(7, 115);
+			// 
+			// rememberPermBox
+			// 
+			this.rememberPermBox.AutoSize = true;
+			this.rememberPermBox.Location = new System.Drawing.Point(224, 97);
+			this.rememberPermBox.Name = "rememberPermBox";
+			this.rememberPermBox.Size = new System.Drawing.Size(95, 15);
+			this.rememberPermBox.TabIndex = 2;
+			this.rememberPermBox.Text = "permanently?";
+			this.rememberPermBox.UseSelectable = true;
+			this.rememberPermBox.Visible = false;
+			// 
+			// rememberBox
+			// 
+			this.rememberBox.AutoSize = true;
+			this.rememberBox.Location = new System.Drawing.Point(104, 97);
+			this.rememberBox.Name = "rememberBox";
+			this.rememberBox.Size = new System.Drawing.Size(103, 15);
+			this.rememberBox.TabIndex = 2;
+			this.rememberBox.Text = "remember me?";
+			this.rememberBox.UseSelectable = true;
+			this.rememberBox.CheckedChanged += new System.EventHandler(this.rememberBox_CheckedChanged);
+			// 
+			// captchaGroup
+			// 
+			this.captchaGroup.BackColor = System.Drawing.SystemColors.ControlLightLight;
+			this.captchaGroup.Controls.Add(this.captchaBox);
+			this.captchaGroup.Controls.Add(this.captchaTabLabel);
+			this.captchaGroup.Controls.Add(this.captchacodeField);
+			this.captchaGroup.Controls.Add(this.captchaButton);
+			this.captchaGroup.Location = new System.Drawing.Point(7, 120);
 			this.captchaGroup.Name = "captchaGroup";
-			this.captchaGroup.Size = new Size(431, 167);
+			this.captchaGroup.Size = new System.Drawing.Size(431, 167);
 			this.captchaGroup.TabIndex = 4;
 			this.captchaGroup.Visible = false;
-			this.captchaBox.Location = new Point(97, 32);
+			// 
+			// captchaBox
+			// 
+			this.captchaBox.Location = new System.Drawing.Point(97, 32);
 			this.captchaBox.Name = "captchaBox";
-			this.captchaBox.Size = new Size(206, 40);
+			this.captchaBox.Size = new System.Drawing.Size(206, 40);
 			this.captchaBox.TabIndex = 3;
 			this.captchaBox.TabStop = false;
-			this.passwordField.Location = new Point(104, 87);
-			this.passwordField.MaxLength = (int) short.MaxValue;
+			// 
+			// passwordField
+			// 
+			this.passwordField.Location = new System.Drawing.Point(104, 69);
+			this.passwordField.MaxLength = 32767;
 			this.passwordField.Name = "passwordField";
 			this.passwordField.PasswordChar = '●';
-			this.passwordField.ScrollBars = ScrollBars.None;
+			this.passwordField.ScrollBars = System.Windows.Forms.ScrollBars.None;
 			this.passwordField.SelectedText = "";
-			this.passwordField.Size = new Size(177, 22);
+			this.passwordField.Size = new System.Drawing.Size(177, 22);
 			this.passwordField.TabIndex = 1;
 			this.passwordField.UseSelectable = true;
 			this.passwordField.UseSystemPasswordChar = true;
-			this.passwordLabel.Location = new Point(18, 87);
+			// 
+			// passwordLabel
+			// 
+			this.passwordLabel.Location = new System.Drawing.Point(18, 69);
 			this.passwordLabel.Name = "passwordLabel";
-			this.passwordLabel.Size = new Size(80, 25);
+			this.passwordLabel.Size = new System.Drawing.Size(80, 25);
 			this.passwordLabel.TabIndex = 1;
 			this.passwordLabel.Text = "Password";
-			this.usernameLabel.Location = new Point(18, 60);
+			// 
+			// usernameLabel
+			// 
+			this.usernameLabel.Location = new System.Drawing.Point(18, 42);
 			this.usernameLabel.Name = "usernameLabel";
-			this.usernameLabel.Size = new Size(80, 25);
+			this.usernameLabel.Size = new System.Drawing.Size(80, 25);
 			this.usernameLabel.TabIndex = 1;
 			this.usernameLabel.Text = "Username";
+			// 
+			// tradesTab
+			// 
 			this.tradesTab.AutoScroll = true;
-			this.tradesTab.Controls.Add((Control) this.tradePanelMaster);
-			this.tradesTab.Controls.Add((Control) this.tradesEmptyLabel);
+			this.tradesTab.Controls.Add(this.pollPanel);
+			this.tradesTab.Controls.Add(this.tradesContainer);
+			this.tradesTab.Controls.Add(this.browserContainer);
 			this.tradesTab.HorizontalScrollbar = true;
 			this.tradesTab.HorizontalScrollbarBarColor = true;
 			this.tradesTab.HorizontalScrollbarHighlightOnWheel = false;
 			this.tradesTab.HorizontalScrollbarSize = 10;
-			this.tradesTab.Location = new Point(4, 22);
+			this.tradesTab.Location = new System.Drawing.Point(4, 22);
 			this.tradesTab.Name = "tradesTab";
-			this.tradesTab.Size = new Size(456, 418);
+			this.tradesTab.Size = new System.Drawing.Size(456, 380);
 			this.tradesTab.TabIndex = 2;
-			this.tradesTab.Tag = (object) "";
-			this.tradesTab.Text = "Trades";
+			this.tradesTab.Tag = "";
+			this.tradesTab.Text = "Confirmations";
 			this.tradesTab.VerticalScrollbar = true;
 			this.tradesTab.VerticalScrollbarBarColor = true;
 			this.tradesTab.VerticalScrollbarHighlightOnWheel = false;
 			this.tradesTab.VerticalScrollbarSize = 10;
-			this.tradePanelMaster.BackColor = SystemColors.ControlLightLight;
-			this.tradePanelMaster.Controls.Add((Control) this.tradeSep);
-			this.tradePanelMaster.Controls.Add((Control) this.tradeLabel);
-			this.tradePanelMaster.Controls.Add((Control) this.tradeImage);
-			this.tradePanelMaster.Controls.Add((Control) this.tradeReject);
-			this.tradePanelMaster.Controls.Add((Control) this.tradeAccept);
-			this.tradePanelMaster.Controls.Add((Control) this.tradeStatus);
-			this.tradePanelMaster.Location = new Point(4, 3);
+			// 
+			// pollPanel
+			// 
+			this.pollPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.pollPanel.BackColor = System.Drawing.SystemColors.Window;
+			this.pollPanel.Controls.Add(this.pollAction);
+			this.pollPanel.Controls.Add(this.pollCheckbox);
+			this.pollPanel.Controls.Add(this.pollNumeric);
+			this.pollPanel.Controls.Add(this.pollMinuesLabel);
+			this.pollPanel.Location = new System.Drawing.Point(5, 343);
+			this.pollPanel.Name = "pollPanel";
+			this.pollPanel.Size = new System.Drawing.Size(440, 43);
+			this.pollPanel.TabIndex = 8;
+			this.pollPanel.Visible = false;
+			// 
+			// pollAction
+			// 
+			this.pollAction.FontSize = MetroFramework.MetroComboBoxSize.Small;
+			this.pollAction.FontWeight = MetroFramework.MetroComboBoxWeight.Light;
+			this.pollAction.FormattingEnabled = true;
+			this.pollAction.ItemHeight = 19;
+			this.pollAction.Items.AddRange(new object[] {
+            "Show a notification",
+            "Show the Confirmations",
+            "Auto-confirm",
+            "Auto-cancel"});
+			this.pollAction.Location = new System.Drawing.Point(250, 5);
+			this.pollAction.Name = "pollAction";
+			this.pollAction.Size = new System.Drawing.Size(173, 25);
+			this.pollAction.TabIndex = 8;
+			this.pollAction.UseSelectable = true;
+			this.pollAction.SelectedIndexChanged += new System.EventHandler(this.pollAction_SelectedIndexChanged);
+			// 
+			// pollCheckbox
+			// 
+			this.pollCheckbox.AutoSize = true;
+			this.pollCheckbox.FontSize = MetroFramework.MetroCheckBoxSize.Medium;
+			this.pollCheckbox.FontWeight = MetroFramework.MetroCheckBoxWeight.Light;
+			this.pollCheckbox.Location = new System.Drawing.Point(3, 6);
+			this.pollCheckbox.Name = "pollCheckbox";
+			this.pollCheckbox.Size = new System.Drawing.Size(96, 19);
+			this.pollCheckbox.TabIndex = 5;
+			this.pollCheckbox.Text = "Check every";
+			this.pollCheckbox.UseSelectable = true;
+			// 
+			// pollNumeric
+			// 
+			this.pollNumeric.Location = new System.Drawing.Point(105, 8);
+			this.pollNumeric.Maximum = new decimal(new int[] {
+            10080,
+            0,
+            0,
+            0});
+			this.pollNumeric.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.pollNumeric.Name = "pollNumeric";
+			this.pollNumeric.Size = new System.Drawing.Size(53, 20);
+			this.pollNumeric.TabIndex = 6;
+			this.pollNumeric.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+			// 
+			// pollMinuesLabel
+			// 
+			this.pollMinuesLabel.AutoSize = true;
+			this.pollMinuesLabel.Location = new System.Drawing.Point(164, 6);
+			this.pollMinuesLabel.Name = "pollMinuesLabel";
+			this.pollMinuesLabel.Size = new System.Drawing.Size(80, 19);
+			this.pollMinuesLabel.TabIndex = 7;
+			this.pollMinuesLabel.Text = "minutes and";
+			// 
+			// tradesContainer
+			// 
+			this.tradesContainer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.tradesContainer.AutoScroll = true;
+			this.tradesContainer.BackColor = System.Drawing.SystemColors.Window;
+			this.tradesContainer.Controls.Add(this.tradePanelMaster);
+			this.tradesContainer.Controls.Add(this.tradesEmptyLabel);
+			this.tradesContainer.Location = new System.Drawing.Point(5, 5);
+			this.tradesContainer.Name = "tradesContainer";
+			this.tradesContainer.Size = new System.Drawing.Size(440, 193);
+			this.tradesContainer.TabIndex = 5;
+			// 
+			// tradePanelMaster
+			// 
+			this.tradePanelMaster.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.tradePanelMaster.BackColor = System.Drawing.SystemColors.ControlLightLight;
+			this.tradePanelMaster.Controls.Add(this.tradeSep);
+			this.tradePanelMaster.Controls.Add(this.tradeLabel);
+			this.tradePanelMaster.Controls.Add(this.tradeImage);
+			this.tradePanelMaster.Controls.Add(this.tradeReject);
+			this.tradePanelMaster.Controls.Add(this.tradeAccept);
+			this.tradePanelMaster.Controls.Add(this.tradeStatus);
+			this.tradePanelMaster.Location = new System.Drawing.Point(0, 0);
 			this.tradePanelMaster.Name = "tradePanelMaster";
-			this.tradePanelMaster.Size = new Size(449, 73);
+			this.tradePanelMaster.Size = new System.Drawing.Size(440, 79);
 			this.tradePanelMaster.TabIndex = 0;
-			this.tradeSep.Image = (Image) WinAuth.Properties.Resources.BluePixel;
-			this.tradeSep.ImeMode = ImeMode.NoControl;
-			this.tradeSep.Location = new Point(0, 70);
+			// 
+			// tradeSep
+			// 
+			this.tradeSep.Image = global::WinAuth.Properties.Resources.BluePixel;
+			this.tradeSep.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+			this.tradeSep.Location = new System.Drawing.Point(0, 76);
 			this.tradeSep.Name = "tradeSep";
-			this.tradeSep.Size = new Size(448, 1);
-			this.tradeSep.SizeMode = PictureBoxSizeMode.StretchImage;
+			this.tradeSep.Size = new System.Drawing.Size(448, 1);
+			this.tradeSep.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
 			this.tradeSep.TabIndex = 6;
 			this.tradeSep.TabStop = false;
-			this.tradeLabel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-			this.tradeLabel.Location = new Point(46, 10);
+			// 
+			// tradeLabel
+			// 
+			this.tradeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.tradeLabel.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.tradeLabel.Location = new System.Drawing.Point(46, 10);
 			this.tradeLabel.Name = "tradeLabel";
-			this.tradeLabel.Size = new Size(283, 50);
+			this.tradeLabel.Size = new System.Drawing.Size(271, 61);
 			this.tradeLabel.TabIndex = 4;
 			this.tradeLabel.Text = "metroLabel1";
-			this.tradeImage.Location = new Point(4, 12);
+			// 
+			// tradeImage
+			// 
+			this.tradeImage.Location = new System.Drawing.Point(4, 12);
 			this.tradeImage.Name = "tradeImage";
-			this.tradeImage.Size = new Size(36, 36);
+			this.tradeImage.Size = new System.Drawing.Size(36, 36);
 			this.tradeImage.TabIndex = 3;
 			this.tradeImage.TabStop = false;
-			this.tradeReject.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-			this.tradeReject.BackColor = SystemColors.Control;
-			this.tradeReject.Location = new Point(357, 39);
+			// 
+			// tradeReject
+			// 
+			this.tradeReject.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.tradeReject.BackColor = System.Drawing.SystemColors.Control;
+			this.tradeReject.Location = new System.Drawing.Point(348, 39);
 			this.tradeReject.Name = "tradeReject";
-			this.tradeReject.Size = new Size(75, 23);
+			this.tradeReject.Size = new System.Drawing.Size(75, 23);
 			this.tradeReject.TabIndex = 1;
-			this.tradeReject.Text = "Reject";
+			this.tradeReject.Text = "Cancel";
 			this.tradeReject.UseSelectable = true;
-			this.tradeReject.Click += new EventHandler(this.tradeReject_Click);
-			this.tradeAccept.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-			this.tradeAccept.BackColor = SystemColors.Control;
-			this.tradeAccept.Location = new Point(357, 10);
+			this.tradeReject.Click += new System.EventHandler(this.tradeReject_Click);
+			// 
+			// tradeAccept
+			// 
+			this.tradeAccept.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.tradeAccept.BackColor = System.Drawing.SystemColors.Control;
+			this.tradeAccept.Location = new System.Drawing.Point(348, 10);
 			this.tradeAccept.Name = "tradeAccept";
-			this.tradeAccept.Size = new Size(75, 23);
+			this.tradeAccept.Size = new System.Drawing.Size(75, 23);
 			this.tradeAccept.TabIndex = 0;
-			this.tradeAccept.Text = "Accept";
+			this.tradeAccept.Text = "Confirm";
 			this.tradeAccept.UseSelectable = true;
-			this.tradeAccept.Click += new EventHandler(this.tradeAccept_Click);
-			this.tradeStatus.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-			this.tradeStatus.Location = new Point(335, 8);
+			this.tradeAccept.Click += new System.EventHandler(this.tradeAccept_Click);
+			// 
+			// tradeStatus
+			// 
+			this.tradeStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.tradeStatus.Location = new System.Drawing.Point(323, 11);
 			this.tradeStatus.Name = "tradeStatus";
-			this.tradeStatus.Size = new Size(97, 28);
+			this.tradeStatus.Size = new System.Drawing.Size(99, 28);
 			this.tradeStatus.TabIndex = 4;
 			this.tradeStatus.Text = "tradeStatus";
-			this.tradeStatus.TextAlign = ContentAlignment.TopRight;
+			this.tradeStatus.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			this.tradeStatus.Visible = false;
-			this.closeButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-			this.closeButton.DialogResult = DialogResult.OK;
-			this.closeButton.Location = new Point(324, 518);
+			// 
+			// tradesEmptyLabel
+			// 
+			this.tradesEmptyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.tradesEmptyLabel.Location = new System.Drawing.Point(0, 0);
+			this.tradesEmptyLabel.Name = "tradesEmptyLabel";
+			this.tradesEmptyLabel.Size = new System.Drawing.Size(383, 29);
+			this.tradesEmptyLabel.TabIndex = 4;
+			this.tradesEmptyLabel.Text = "You have no trade confirmations";
+			this.tradesEmptyLabel.Visible = false;
+			// 
+			// browserContainer
+			// 
+			this.browserContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.browserContainer.BackColor = System.Drawing.SystemColors.Window;
+			this.browserContainer.Location = new System.Drawing.Point(5, 204);
+			this.browserContainer.Name = "browserContainer";
+			this.browserContainer.Size = new System.Drawing.Size(440, 148);
+			this.browserContainer.TabIndex = 5;
+			// 
+			// closeButton
+			// 
+			this.closeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.closeButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.closeButton.Location = new System.Drawing.Point(324, 489);
 			this.closeButton.Name = "closeButton";
-			this.closeButton.Size = new Size(75, 23);
+			this.closeButton.Size = new System.Drawing.Size(75, 23);
 			this.closeButton.TabIndex = 1;
 			this.closeButton.Text = "Close";
 			this.closeButton.UseSelectable = true;
 			this.closeButton.Visible = false;
-			this.closeButton.Click += new EventHandler(this.closeButton_Click);
-			this.tradesEmptyLabel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-			this.tradesEmptyLabel.Location = new Point(4, 4);
-			this.tradesEmptyLabel.Name = "tradesEmptyLabel";
-			this.tradesEmptyLabel.Size = new Size(448, 29);
-			this.tradesEmptyLabel.TabIndex = 4;
-			this.tradesEmptyLabel.Text = "You have no trades";
-			this.tradesEmptyLabel.Visible = false;
-			this.AutoScaleDimensions = new SizeF(6f, 13f);
-			this.AutoScaleMode = AutoScaleMode.Font;
-			this.BorderStyle = MetroFormBorderStyle.FixedSingle;
-			this.CancelButton = (IButtonControl) this.cancelButton;
-			this.ClientSize = new Size(501, 564);
-			this.Controls.Add((Control) this.tabs);
-			this.Controls.Add((Control) this.closeButton);
-			this.Controls.Add((Control) this.cancelButton);
+			this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
+			// 
+			// refreshButton
+			// 
+			this.refreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.refreshButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("refreshButton.BackgroundImage")));
+			this.refreshButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+			this.refreshButton.Location = new System.Drawing.Point(24, 489);
+			this.refreshButton.Name = "refreshButton";
+			this.refreshButton.Size = new System.Drawing.Size(23, 23);
+			this.refreshButton.TabIndex = 4;
+			this.refreshButton.UseSelectable = true;
+			this.refreshButton.Visible = false;
+			this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
+			// 
+			// logoutButton
+			// 
+			this.logoutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.logoutButton.Location = new System.Drawing.Point(53, 489);
+			this.logoutButton.Name = "logoutButton";
+			this.logoutButton.Size = new System.Drawing.Size(75, 23);
+			this.logoutButton.TabIndex = 4;
+			this.logoutButton.Text = "Forget me";
+			this.logoutButton.UseSelectable = true;
+			this.logoutButton.Visible = false;
+			this.logoutButton.Click += new System.EventHandler(this.logoutButton_Click);
+			// 
+			// ShowSteamTradesForm
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
+			this.CancelButton = this.cancelButton;
+			this.ClientSize = new System.Drawing.Size(501, 535);
+			this.Controls.Add(this.tabs);
+			this.Controls.Add(this.refreshButton);
+			this.Controls.Add(this.logoutButton);
+			this.Controls.Add(this.closeButton);
+			this.Controls.Add(this.cancelButton);
 			this.KeyPreview = true;
 			this.MaximizeBox = false;
 			this.Name = "ShowSteamTradesForm";
-			this.Resizable = false;
 			this.ShowIcon = false;
-			this.Text = "Steam Trades";
-			this.FormClosing += new FormClosingEventHandler(this.ShowSteamTradesForm_FormClosing);
-			this.Load += new EventHandler(this.ShowSteamTradesForm_Load);
-			this.KeyPress += new KeyPressEventHandler(this.ShowSteamTradesForm_KeyPress);
+			this.Text = "Steam Confirmations";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ShowSteamTradesForm_FormClosing);
+			this.Load += new System.EventHandler(this.ShowSteamTradesForm_Load);
+			this.Shown += new System.EventHandler(this.ShowSteamTradesForm_Shown);
+			this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ShowSteamTradesForm_KeyPress);
 			this.tabs.ResumeLayout(false);
 			this.loginTab.ResumeLayout(false);
+			this.loginTab.PerformLayout();
 			this.captchaGroup.ResumeLayout(false);
 			this.captchaGroup.PerformLayout();
-			((ISupportInitialize) this.captchaBox).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.captchaBox)).EndInit();
 			this.tradesTab.ResumeLayout(false);
+			this.pollPanel.ResumeLayout(false);
+			this.pollPanel.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pollNumeric)).EndInit();
+			this.tradesContainer.ResumeLayout(false);
 			this.tradePanelMaster.ResumeLayout(false);
-			((ISupportInitialize) this.tradeSep).EndInit();
-			((ISupportInitialize) this.tradeImage).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.tradeSep)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.tradeImage)).EndInit();
 			this.ResumeLayout(false);
+
 		}
 
-		public ShowSteamTradesForm()
-		{
-			this.InitializeComponent();
-		}
-
-		private T FindControl<T>(Control control, string name) where T : Control
-		{
-			if (control.Name.StartsWith(name) && control is T)
-				return (T) control;
-			foreach (Control control1 in (ArrangedElementCollection) control.Controls)
-			{
-				T control2 = this.FindControl<T>(control1, name);
-				if ((object) control2 != null)
-					return control2;
-			}
-			return default (T);
-		}
-
-		private Control Clone(Control control, string suffix)
-		{
-			Type type = control.GetType();
-			Control control1 = Activator.CreateInstance(type) as Control;
-			control1.Name = control.Name + (!string.IsNullOrEmpty(suffix) ? suffix : string.Empty);
-			control1.SuspendLayout();
-			if (control1 is ISupportInitialize)
-				((ISupportInitialize) control1).BeginInit();
-			int num = 84;
-			foreach (PropertyInfo propertyInfo in type.GetProperties((BindingFlags) num))
-			{
-				if (propertyInfo.CanWrite && propertyInfo.CanRead && (!(propertyInfo.Name == "Controls") && !(propertyInfo.Name == "Name")) && !(propertyInfo.Name == "WindowTarget"))
-				{
-					object obj1 = propertyInfo.GetValue((object) control);
-					if (obj1 != null && !obj1.GetType().IsValueType)
-					{
-						if (obj1 is ICloneable)
-							obj1 = ((ICloneable) obj1).Clone();
-						else if (obj1 is ISerializable)
-						{
-							object obj2 = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(obj1));
-							if (obj2.GetType() == obj1.GetType())
-								obj1 = obj2;
-						}
-					}
-					propertyInfo.SetValue((object) control1, obj1);
-				}
-			}
-			if (control.Controls != null)
-			{
-				foreach (Control control2 in (ArrangedElementCollection) control.Controls)
-					control1.Controls.Add(this.Clone(control2, suffix));
-			}
-			control1.ResumeLayout();
-			if (control1 is ISupportInitialize)
-				((ISupportInitialize) control1).EndInit();
-			return control1;
-		}
 		#endregion
+
+		private MetroFramework.Controls.MetroLabel loginTabLabel;
+		private MetroFramework.Controls.MetroButton loginButton;
+		private MetroFramework.Controls.MetroLabel captchaTabLabel;
+		private MetroFramework.Controls.MetroButton cancelButton;
+		private MetroFramework.Controls.MetroTextBox captchacodeField;
+		private MetroFramework.Controls.MetroTextBox usernameField;
+		private MetroFramework.Controls.MetroButton captchaButton;
+		private MetroFramework.Controls.MetroTabControl tabs;
+		private MetroFramework.Controls.MetroTabPage loginTab;
+		private MetroFramework.Controls.MetroLabel passwordLabel;
+		private MetroFramework.Controls.MetroLabel usernameLabel;
+		private MetroFramework.Controls.MetroTextBox passwordField;
+		private MetroFramework.Controls.MetroTabPage tradesTab;
+		private System.Windows.Forms.PictureBox captchaBox;
+		private System.Windows.Forms.Panel captchaGroup;
+		private MetroFramework.Controls.MetroButton closeButton;
+		private System.Windows.Forms.Panel tradePanelMaster;
+		private System.Windows.Forms.PictureBox tradeImage;
+		private MetroFramework.Controls.MetroButton tradeReject;
+		private MetroFramework.Controls.MetroButton tradeAccept;
+		private MetroFramework.Controls.MetroLabel tradeLabel;
+		private System.Windows.Forms.PictureBox tradeSep;
+		private MetroFramework.Controls.MetroLabel tradeStatus;
+		private MetroFramework.Controls.MetroLabel tradesEmptyLabel;
+		private System.Windows.Forms.Panel browserContainer;
+		private System.Windows.Forms.Panel tradesContainer;
+		private MetroFramework.Controls.MetroCheckBox rememberBox;
+		private MetroFramework.Controls.MetroCheckBox rememberPermBox;
+		private MetroFramework.Controls.MetroButton refreshButton;
+		private MetroFramework.Controls.MetroButton logoutButton;
+		private MetroFramework.Controls.MetroLabel pollMinuesLabel;
+		private System.Windows.Forms.NumericUpDown pollNumeric;
+		private MetroFramework.Controls.MetroCheckBox pollCheckbox;
+		private System.Windows.Forms.Panel pollPanel;
+		private MetroFramework.Controls.MetroComboBox pollAction;
 	}
 }

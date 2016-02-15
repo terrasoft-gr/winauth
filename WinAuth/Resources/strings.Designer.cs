@@ -736,7 +736,7 @@ namespace WinAuth.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Trades.
+        ///   Looks up a localized string similar to Confirmations.
         /// </summary>
         internal static string ConfirmTrades {
             get {
@@ -759,6 +759,42 @@ namespace WinAuth.Resources {
         internal static string CopyOnNewCode {
             get {
                 return ResourceManager.GetString("CopyOnNewCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Action.
+        /// </summary>
+        internal static string DefaultAction {
+            get {
+                return ResourceManager.GetString("DefaultAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy To Clipboard.
+        /// </summary>
+        internal static string DefaultActionCopyToClipboard {
+            get {
+                return ResourceManager.GetString("DefaultActionCopyToClipboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Simulate Hotkey.
+        /// </summary>
+        internal static string DefaultActionHotkey {
+            get {
+                return ResourceManager.GetString("DefaultActionHotkey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Notification.
+        /// </summary>
+        internal static string DefaultActionNotification {
+            get {
+                return ResourceManager.GetString("DefaultActionNotification", resourceCulture);
             }
         }
         
@@ -1133,7 +1169,7 @@ namespace WinAuth.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Recovery Code and Steam Data.
+        ///   Looks up a localized string similar to Show SteamGuard and Recovery Code.
         /// </summary>
         internal static string ShowRevocation {
             get {
